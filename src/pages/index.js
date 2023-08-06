@@ -34,14 +34,14 @@ const Homepage = () => {
     return (
       <table>
         <thead>
-          <tr>
+          <tr className="border border-black">
             <th>Day</th>
             {meals.map((meal) => <th key={meal}>{meal}</th>)}
           </tr>
         </thead>
         <tbody>
           {daysOfMonth.map((day, index) => (
-            <tr key={day}>
+            <tr className="border border-black" key={day}>
               <td>{`${day.getDate()}, ${weekDays[day.getDay()]}`}</td>
               {meals.map((meal) => <td key={`${day}-${meal}`}>Content for {meal}</td>)}
             </tr>
