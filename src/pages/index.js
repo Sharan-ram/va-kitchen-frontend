@@ -86,10 +86,14 @@ const Homepage = () => {
           <select
             selected={mealPlan[`${date}-${meal}`] || "Select Recipe"}
             onChange={(e) => {
-              setMealPlan({
-                ...mealPlan,
-                [`${date}-${meal}`]: e.target.value,
-              });
+              let newMealPlan = Object.assign(mealPlan);
+              if (newMealPlan[`${date}-${meal}`]) {
+                newMealPlan[`${date}-${meal}`][i] = e.target.value;
+              } else {
+                newMealPlan[`${date}-${meal}`] = [];
+                newMealPlan[`${date}-${meal}`][i] = e.target.value;
+              }
+              setMealPlan(newMealPlan);
             }}
           >
             <option value="Select Recipe">Select Recipe</option>
