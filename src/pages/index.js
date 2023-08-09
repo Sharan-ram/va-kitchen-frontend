@@ -45,7 +45,7 @@ const Homepage = () => {
   console.log({ mealPlan });
 
   const submitMealPlan = () => {
-    if (veganCount !== undefined && nonVeganCount !== undefined) {
+    if (veganCount !== undefined && nonVeganCount !== undefined && season) {
       togglePurchaseOrder(true);
       setPurchaseOrder(getPurchaseOrder());
     }
