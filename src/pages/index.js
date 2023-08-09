@@ -34,85 +34,146 @@ const Homepage = () => {
   const [veganCount, setVeganCount] = useState();
   const [nonVeganCount, setNonVeganCount] = useState();
   const [mealPlan, setMealPlan] = useState({});
-
-  console.log({ recipes, ingredients });
+  const [showPurchaseOrder, togglePurchaseOrder] = useState(false);
+  const [season, setSeason] = useState();
+  const [purchaseOrder, setPurchaseOrder] = useState();
 
   // Function to check if a date is Sunday
   const isSunday = (date) => date.getDay() === 0;
 
   console.log({ mealPlan });
 
+  const submitMealPlan = () => {
+    togglePurchaseOrder(true);
+    setPurchaseOrder(getPurchaseOrder());
+  };
+
+  console.log({ purchaseOrder, showPurchaseOrder });
+
+  const getPurchaseOrder = () => {
+    const obj = {};
+    Object.keys(mealPlan).forEach((meal) => {
+      const recipe = mealPlan[meal];
+      console.log({ recipe });
+      const count =
+        recipes[recipe].type === "vegan" ? veganCount : nonVeganCount;
+      console.log({ count });
+      const mealIngredients = Object.keys(recipes[recipe].ingredients);
+      console.log({ mealIngredients });
+      mealIngredients.forEach((ingredient) => {
+        if (obj[ingredient]) {
+          obj[ingredient] =
+            obj[ingredient] +
+            recipes[recipe].ingredients[ingredient][season] * Number(count);
+        } else {
+          obj[ingredient] =
+            recipes[recipe].ingredients[ingredient][season] * Number(count);
+        }
+      });
+    });
+    console.log({ obj });
+    return obj;
+  };
+
   return (
-    <div>
-      <div className="flex">
-        <div>
-          <input
-            type="text"
-            placeholder="Select head count"
-            value={headcount}
-            onChange={(e) => setHeadcount(e.target.value)}
-          />
+    <div style={{ display: "flex" }}>
+      <div style={{ width: "50%" }}>
+        <div className="flex">
+          <div>
+            <input
+              type="text"
+              placeholder="Select head count"
+              value={headcount}
+              onChange={(e) => setHeadcount(e.target.value)}
+            />
+          </div>
+          <div>
+            <input
+              type="text"
+              placeholder="Select Vegan Count"
+              value={veganCount}
+              onChange={(e) => setVeganCount(e.target.value)}
+            />
+          </div>
+          <div>
+            <input
+              type="text"
+              placeholder="Select Non Vegan"
+              value={nonVeganCount}
+              onChange={(e) => setNonVeganCount(e.target.value)}
+            />
+          </div>
+          <div>
+            <select
+              selected={season}
+              onChange={(e) => setSeason(e.target.value)}
+            >
+              <option value="Select Seaon">Select Season</option>
+              <option value="summerQuantity">Summer</option>
+              <option value="monsoonQuantity">Monsoon</option>
+              <option value="winterQuantity">Winter</option>
+              <option value="retreatQuantity">Retreat</option>
+            </select>
+          </div>
         </div>
         <div>
-          <input
-            type="text"
-            placeholder="Select Vegan Count"
-            value={veganCount}
-            onChange={(e) => setVeganCount(e.target.value)}
-          />
-        </div>
-        <div>
-          <input
-            type="text"
-            placeholder="Select Non Vegan"
-            value={nonVeganCount}
-            onChange={(e) => setNonVeganCount(e.target.value)}
-          />
+          <table>
+            <thead>
+              <tr className="border border-black">
+                <th>Day</th>
+                {meals.map((meal) => (
+                  <th key={meal}>{meal}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {daysOfMonth.map((day, index) => {
+                const date = day.getDate();
+                const dayName = day.getDay();
+                return (
+                  <tr className="border border-black" key={day}>
+                    <td>{`${date}, ${weekDays[dayName]}`}</td>
+                    {meals.map((meal) => (
+                      <td key={`${date}-${meal}`}>
+                        <select
+                          selected={
+                            mealPlan[`${date}-${meal}`] || "Select Recipe"
+                          }
+                          onChange={(e) => {
+                            setMealPlan({
+                              ...mealPlan,
+                              [`${date}-${meal}`]: e.target.value,
+                            });
+                          }}
+                        >
+                          <option value="Select Recipe">Select Recipe</option>
+                          {Object.keys(recipes).map((option) => {
+                            return <option value={option}>{option}</option>;
+                          })}
+                        </select>
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })}
+              {daysOfMonth.some(isSunday) && <tr style={{ height: "30px" }} />}
+            </tbody>
+          </table>
+          <button onClick={submitMealPlan}>Submit</button>
         </div>
       </div>
-      <div>
-        <table>
-          <thead>
-            <tr className="border border-black">
-              <th>Day</th>
-              {meals.map((meal) => (
-                <th key={meal}>{meal}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {daysOfMonth.map((day, index) => {
-              const date = day.getDate();
-              const dayName = day.getDay();
-              return (
-                <tr className="border border-black" key={day}>
-                  <td>{`${date}, ${weekDays[dayName]}`}</td>
-                  {meals.map((meal) => (
-                    <td key={`${date}-${meal}`}>
-                      <select
-                        selected={
-                          mealPlan[`${date}-${meal}`] || "Select Recipe"
-                        }
-                        onChange={(e) => {
-                          setMealPlan({
-                            ...mealPlan,
-                            [`${date}-${meal}`]: e.target.value,
-                          });
-                        }}
-                      >
-                        <option value="Select Recipe">Select Recipe</option>
-                        {Object.keys(recipes).map((option) => {
-                          return <option value={option}>{option}</option>;
-                        })}
-                      </select>
-                    </td>
-                  ))}
-                </tr>
-              );
-            })}
-            {daysOfMonth.some(isSunday) && <tr style={{ height: "30px" }} />}
-          </tbody>
-        </table>
+
+      <div style={{ width: "50%" }}>
+        {showPurchaseOrder &&
+          Object.keys(purchaseOrder).map((ingredient) => {
+            return (
+              <div>
+                {`${ingredient} - ${purchaseOrder[ingredient].toFixed(4)} ${
+                  ingredients[ingredient].purchaseUnit
+                }`}
+              </div>
+            );
+          })}
       </div>
     </div>
   );
