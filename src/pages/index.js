@@ -45,8 +45,10 @@ const Homepage = () => {
   console.log({ mealPlan });
 
   const submitMealPlan = () => {
-    togglePurchaseOrder(true);
-    setPurchaseOrder(getPurchaseOrder());
+    if (veganCount !== undefined && nonVeganCount !== undefined) {
+      togglePurchaseOrder(true);
+      setPurchaseOrder(getPurchaseOrder());
+    }
   };
 
   console.log({ purchaseOrder, showPurchaseOrder });
@@ -54,23 +56,29 @@ const Homepage = () => {
   const getPurchaseOrder = () => {
     const obj = {};
     Object.keys(mealPlan).forEach((meal) => {
-      const recipe = mealPlan[meal];
-      console.log({ recipe });
-      const count =
-        recipes[recipe].type === "vegan" ? veganCount : nonVeganCount;
-      console.log({ count });
-      const mealIngredients = Object.keys(recipes[recipe].ingredients);
-      console.log({ mealIngredients });
-      mealIngredients.forEach((ingredient) => {
-        if (obj[ingredient]) {
-          obj[ingredient] =
-            obj[ingredient] +
-            recipes[recipe].ingredients[ingredient][season] * Number(count);
-        } else {
-          obj[ingredient] =
-            recipes[recipe].ingredients[ingredient][season] * Number(count);
-        }
-      });
+      mealPlan[meal]
+        .filter((recipe) => {
+          if (recipe) return true;
+          return false;
+        })
+        .forEach((recipe) => {
+          console.log({ recipe });
+          const count =
+            recipes[recipe].type === "vegan" ? veganCount : nonVeganCount;
+          console.log({ count });
+          const mealIngredients = Object.keys(recipes[recipe].ingredients);
+          console.log({ mealIngredients });
+          mealIngredients.forEach((ingredient) => {
+            if (obj[ingredient]) {
+              obj[ingredient] =
+                obj[ingredient] +
+                recipes[recipe].ingredients[ingredient][season] * Number(count);
+            } else {
+              obj[ingredient] =
+                recipes[recipe].ingredients[ingredient][season] * Number(count);
+            }
+          });
+        });
     });
     console.log({ obj });
     return obj;
