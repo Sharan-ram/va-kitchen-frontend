@@ -37,6 +37,7 @@ const Homepage = () => {
   const [showPurchaseOrder, togglePurchaseOrder] = useState(false);
   const [season, setSeason] = useState();
   const [purchaseOrder, setPurchaseOrder] = useState();
+  const [dropdowns, setDropdowns] = useState({});
 
   // Function to check if a date is Sunday
   const isSunday = (date) => date.getDay() === 0;
@@ -73,6 +74,51 @@ const Homepage = () => {
     });
     console.log({ obj });
     return obj;
+  };
+
+  console.log({ dropdowns });
+
+  const getDropdownsForAMeal = ({ date, meal }) => {
+    const cell = [];
+    for (let i = 0; i <= (dropdowns[`${date}-${meal}`] || 1); i++) {
+      cell.push(
+        <div>
+          <select
+            selected={mealPlan[`${date}-${meal}`] || "Select Recipe"}
+            onChange={(e) => {
+              setMealPlan({
+                ...mealPlan,
+                [`${date}-${meal}`]: e.target.value,
+              });
+            }}
+          >
+            <option value="Select Recipe">Select Recipe</option>
+            {Object.keys(recipes).map((option) => {
+              return <option value={option}>{option}</option>;
+            })}
+          </select>
+          <button
+            onClick={() => {
+              if (dropdowns[`${date}-${meal}`]) {
+                setDropdowns({
+                  ...dropdowns,
+                  [`${date}-${meal}`]: dropdowns[`${date}-${meal}`] + 1,
+                });
+              } else {
+                setDropdowns({
+                  ...dropdowns,
+                  [`${date}-${meal}`]: 2,
+                });
+              }
+            }}
+          >
+            +
+          </button>
+        </div>
+      );
+    }
+
+    return cell;
   };
 
   return (
@@ -133,26 +179,13 @@ const Homepage = () => {
                 return (
                   <tr className="border border-black" key={day}>
                     <td>{`${date}, ${weekDays[dayName]}`}</td>
-                    {meals.map((meal) => (
-                      <td key={`${date}-${meal}`}>
-                        <select
-                          selected={
-                            mealPlan[`${date}-${meal}`] || "Select Recipe"
-                          }
-                          onChange={(e) => {
-                            setMealPlan({
-                              ...mealPlan,
-                              [`${date}-${meal}`]: e.target.value,
-                            });
-                          }}
-                        >
-                          <option value="Select Recipe">Select Recipe</option>
-                          {Object.keys(recipes).map((option) => {
-                            return <option value={option}>{option}</option>;
-                          })}
-                        </select>
-                      </td>
-                    ))}
+                    {meals.map((meal) => {
+                      return (
+                        <td key={`${date}-${meal}`}>
+                          {getDropdownsForAMeal({ date, meal })}
+                        </td>
+                      );
+                    })}
                   </tr>
                 );
               })}
