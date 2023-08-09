@@ -80,7 +80,7 @@ const Homepage = () => {
 
   const getDropdownsForAMeal = ({ date, meal }) => {
     const cell = [];
-    for (let i = 0; i <= (dropdowns[`${date}-${meal}`] || 1); i++) {
+    for (let i = 0; i < (dropdowns[`${date}-${meal}`] || 1); i++) {
       cell.push(
         <div>
           <select
@@ -97,23 +97,6 @@ const Homepage = () => {
               return <option value={option}>{option}</option>;
             })}
           </select>
-          <button
-            onClick={() => {
-              if (dropdowns[`${date}-${meal}`]) {
-                setDropdowns({
-                  ...dropdowns,
-                  [`${date}-${meal}`]: dropdowns[`${date}-${meal}`] + 1,
-                });
-              } else {
-                setDropdowns({
-                  ...dropdowns,
-                  [`${date}-${meal}`]: 2,
-                });
-              }
-            }}
-          >
-            +
-          </button>
         </div>
       );
     }
@@ -183,6 +166,24 @@ const Homepage = () => {
                       return (
                         <td key={`${date}-${meal}`}>
                           {getDropdownsForAMeal({ date, meal })}
+                          <button
+                            onClick={() => {
+                              if (dropdowns[`${date}-${meal}`]) {
+                                setDropdowns({
+                                  ...dropdowns,
+                                  [`${date}-${meal}`]:
+                                    dropdowns[`${date}-${meal}`] + 1,
+                                });
+                              } else {
+                                setDropdowns({
+                                  ...dropdowns,
+                                  [`${date}-${meal}`]: 2,
+                                });
+                              }
+                            }}
+                          >
+                            +
+                          </button>
                         </td>
                       );
                     })}
