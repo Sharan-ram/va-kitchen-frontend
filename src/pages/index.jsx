@@ -1,8 +1,9 @@
 // import { startOfMonth, addMonths, eachDayOfInterval } from 'date-fns';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import recipes from "../recipes.json";
 import ingredients from "../ingredients.json";
 import { useRouter } from "next/router";
+import { generateDaysOfMonth } from "@/helpers/utils";
 
 const Homepage = () => {
   const meals = ["Breakfast", "Lunch", "Dinner"];
@@ -15,28 +16,39 @@ const Homepage = () => {
   const [season, setSeason] = useState();
   const [purchaseOrder, setPurchaseOrder] = useState();
   const [dropdowns, setDropdowns] = useState({});
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    if (window) {
+      setMealPlan(JSON.parse(localStorage.getItem("mealPlan")));
+      setVeganCount(Number(JSON.parse(localStorage.getItem("veganCount"))));
+      setNonVeganCount(
+        Number(JSON.parse(localStorage.getItem("nonVeganCount")))
+      );
+      setSeason(JSON.parse(localStorage.getItem("season")));
+      setMounted(true);
+    }
+  }, []);
 
   // Function to check if a date is Sunday
   const isSunday = (date) => date.getDay() === 0;
 
-  console.log({ mealPlan });
+  console.log({ mealPlan, mounted });
 
-  console.log({ purchaseOrder, showPurchaseOrder });
+  // function generateDaysOfMonth() {
+  //   const currentDate = new Date();
+  //   const currentYear = currentDate.getFullYear();
+  //   const currentMonth = currentDate.getMonth();
+  //   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate(); // Get the last day of the current month
 
-  function generateDaysOfMonth() {
-    const currentDate = new Date();
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth();
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate(); // Get the last day of the current month
+  //   const days = [];
+  //   for (let day = 1; day <= daysInMonth; day++) {
+  //     days.push(new Date(currentYear, currentMonth, day));
+  //   }
 
-    const days = [];
-    for (let day = 1; day <= daysInMonth; day++) {
-      days.push(new Date(currentYear, currentMonth, day));
-    }
-
-    return days;
-  }
+  //   return days;
+  // }
 
   const currentDate = new Date(); // Use the current date or any other date
   const daysOfMonth = generateDaysOfMonth(currentDate);
@@ -48,15 +60,31 @@ const Homepage = () => {
   //     return dayOfMonth
   //   });
 
-  console.log({ dropdowns });
-
   const getDropdownsForAMeal = ({ date, meal }) => {
     const cell = [];
-    for (let i = 0; i < (dropdowns[`${date}-${meal}`] || 1); i++) {
+
+    const getExitStrategy = () => {
+      const recipes = mealPlan[`${date}-${meal}`];
+      const mealDropdownsLength = dropdowns[`${date}-${meal}`];
+      if (recipes) {
+        if (mealDropdownsLength) {
+          return recipes.length > mealDropdownsLength
+            ? recipes.length
+            : mealDropdownsLength;
+        }
+        return recipes.length;
+      }
+      if (mealDropdownsLength) return mealDropdownsLength;
+      return 1;
+    };
+
+    for (let i = 0; i < getExitStrategy(); i++) {
       cell.push(
         <div>
           <select
-            selected={mealPlan[`${date}-${meal}`] || "Select Recipe"}
+            key={mealPlan[`${date}-${meal}`]?.[i]}
+            selected={mealPlan[`${date}-${meal}`]?.[i] || "Select Recipe"}
+            defaultValue={mealPlan[`${date}-${meal}`]?.[i] || "Select Recipe"}
             onChange={(e) => {
               let newMealPlan = Object.assign(mealPlan);
               if (newMealPlan[`${date}-${meal}`]) {
@@ -92,37 +120,6 @@ const Homepage = () => {
     }
   };
 
-  const getPurchaseOrder = () => {
-    const obj = {};
-    Object.keys(mealPlan).forEach((meal) => {
-      mealPlan[meal]
-        .filter((recipe) => {
-          if (recipe) return true;
-          return false;
-        })
-        .forEach((recipe) => {
-          console.log({ recipe });
-          const count =
-            recipes[recipe].type === "vegan" ? veganCount : nonVeganCount;
-          console.log({ count });
-          const mealIngredients = Object.keys(recipes[recipe].ingredients);
-          console.log({ mealIngredients });
-          mealIngredients.forEach((ingredient) => {
-            if (obj[ingredient]) {
-              obj[ingredient] =
-                obj[ingredient] +
-                recipes[recipe].ingredients[ingredient][season] * Number(count);
-            } else {
-              obj[ingredient] =
-                recipes[recipe].ingredients[ingredient][season] * Number(count);
-            }
-          });
-        });
-    });
-    console.log({ obj });
-    return obj;
-  };
-
   return (
     <div style={{ display: "flex" }}>
       <div style={{ width: "50%" }}>
@@ -155,6 +152,8 @@ const Homepage = () => {
             <select
               selected={season}
               onChange={(e) => setSeason(e.target.value)}
+              key={season}
+              defaultValue={season}
             >
               <option value="Select Seaon">Select Season</option>
               <option value="summerQuantity">Summer</option>
