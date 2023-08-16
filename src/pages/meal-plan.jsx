@@ -36,16 +36,6 @@ const Mealplan = () => {
   const currentDate = new Date(); // Use the current date or any other date
   const daysOfMonth = generateDaysOfMonth(currentDate);
 
-  console.log({
-    mealPlan,
-    veganCount,
-    nonVeganCount,
-    season,
-    startDateNumber,
-    endDateNumber,
-    daysOfMonth,
-  });
-
   const meals = ["Breakfast", "Lunch", "Dinner"];
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -58,12 +48,9 @@ const Mealplan = () => {
           return false;
         })
         .forEach((recipe) => {
-          console.log({ recipe });
           const count =
             recipes[recipe].type === "vegan" ? veganCount : nonVeganCount;
-          console.log({ count });
           const mealIngredients = Object.keys(recipes[recipe].ingredients);
-          console.log({ mealIngredients });
           mealIngredients.forEach((ingredient) => {
             if (obj[ingredient]) {
               obj[ingredient] =
@@ -76,15 +63,26 @@ const Mealplan = () => {
           });
         });
     });
-    console.log({ obj });
     return obj;
   };
 
   const generateOrder = () => {
     const purchaseOrder = getPurchaseOrder();
-    setPurchaseOrder(purchaseOrder);
+    const obj = { provisions: {}, consumables: {} };
+    Object.keys(purchaseOrder).forEach((ingredient) => {
+      if (
+        ingredients[ingredient].storageType.toLowerCase().includes("provisions")
+      ) {
+        obj.provisions[ingredient] = purchaseOrder[ingredient];
+      } else {
+        obj.consumables[ingredient] = purchaseOrder[ingredient];
+      }
+    });
+    setPurchaseOrder(obj);
     togglePurchaseOrder(true);
   };
+
+  console.log("provisions list", Object.keys(purchaseOrder.provisions));
 
   return (
     <div>
@@ -156,16 +154,31 @@ const Mealplan = () => {
             <button onClick={generateOrder}>Generate order</button>
           </div>
           <div style={{ width: "50%" }}>
-            {showPurchaseOrder &&
-              Object.keys(purchaseOrder).map((ingredient) => {
-                return (
-                  <div>
-                    {`${ingredient} - ${purchaseOrder[ingredient].toFixed(4)} ${
-                      ingredients[ingredient].purchaseUnit
-                    }`}
-                  </div>
-                );
-              })}
+            {showPurchaseOrder && (
+              <div>
+                <h3>Provisions</h3>
+                {Object.keys(purchaseOrder.provisions).map((ingredient) => {
+                  return (
+                    <p>{`${ingredient} - ${purchaseOrder.provisions[
+                      ingredient
+                    ].toFixed(4)} ${ingredients[ingredient].purchaseUnit}`}</p>
+                  );
+                })}
+                <h3>Consumables</h3>
+
+                {Object.keys(purchaseOrder.consumables).map((ingredient) => {
+                  return (
+                    <p>
+                      {`${ingredient} - ${purchaseOrder.consumables[
+                        ingredient
+                      ].toFixed(4)} ${
+                        ingredients[ingredient].purchaseUnit
+                      }`}{" "}
+                    </p>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </>
       )}
