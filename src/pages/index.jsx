@@ -62,7 +62,7 @@ const Homepage = () => {
     const cell = [];
 
     const getExitStrategy = () => {
-      const recipes = mealPlan[`${date}-${meal}`];
+      const recipes = mealPlan ? mealPlan[`${date}-${meal}`] : undefined;
       const mealDropdownsLength = dropdowns[`${date}-${meal}`];
       if (recipes) {
         if (mealDropdownsLength) {
@@ -80,11 +80,15 @@ const Homepage = () => {
       cell.push(
         <div>
           <select
-            key={mealPlan[`${date}-${meal}`]?.[i]}
-            selected={mealPlan[`${date}-${meal}`]?.[i] || "Select Recipe"}
-            defaultValue={mealPlan[`${date}-${meal}`]?.[i] || "Select Recipe"}
+            key={mealPlan ? mealPlan[`${date}-${meal}`]?.[i] : i}
+            selected={
+              mealPlan ? mealPlan[`${date}-${meal}`]?.[i] : "Select Recipe"
+            }
+            defaultValue={
+              mealPlan ? mealPlan[`${date}-${meal}`]?.[i] : "Select Recipe"
+            }
             onChange={(e) => {
-              let newMealPlan = Object.assign(mealPlan);
+              let newMealPlan = Object.assign(mealPlan || {});
               if (newMealPlan[`${date}-${meal}`]) {
                 newMealPlan[`${date}-${meal}`][i] = e.target.value;
               } else {
