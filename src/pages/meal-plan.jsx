@@ -12,6 +12,8 @@ const Mealplan = () => {
   const [veganCount, setVeganCount] = useState();
   const [nonVeganCount, setNonVeganCount] = useState();
   const [season, setSeason] = useState();
+  const [purchaseOrder, setPurchaseOrder] = useState();
+  const [showPurchaseOrder, togglePurchaseOrder] = useState(false);
 
   useEffect(() => {
     if (window) {
@@ -78,12 +80,19 @@ const Mealplan = () => {
     return obj;
   };
 
+  const generateOrder = () => {
+    const purchaseOrder = getPurchaseOrder();
+    setPurchaseOrder(purchaseOrder);
+    togglePurchaseOrder(true);
+  };
+
   return (
     <div>
       <DatePicker
         value={startDate}
         onChange={(date) => {
           toggleMealPlan(false);
+          togglePurchaseOrder(false);
           changeStartDate(date);
         }}
       />
@@ -91,58 +100,74 @@ const Mealplan = () => {
         value={endDate}
         onChange={(date) => {
           toggleMealPlan(false);
+          togglePurchaseOrder(false);
           changeEndDate(date);
         }}
       />
-      <button onClick={() => toggleMealPlan(true)}>Check meal plan</button>
+      <button onClick={() => toggleMealPlan(true)}>Select date range</button>
 
       {showMealPlan && (
-        <div>
-          <table>
-            <thead>
-              <tr className="border border-black">
-                <th>Day</th>
-                {meals.map((meal) => (
-                  <th key={meal}>{meal}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {daysOfMonth
-                .filter((day) => {
-                  const dateNumber = Number(day.getDate());
-                  if (
-                    Number(dateNumber) >= startDateNumber &&
-                    Number(dateNumber) <= endDateNumber
-                  ) {
-                    return true;
-                  }
-                  return false;
-                })
-                .map((day, index) => {
-                  const date = day.getDate();
-                  const dayName = day.getDay();
-                  return (
-                    <tr className="border border-black" key={day}>
-                      <td>{`${date}, ${weekDays[dayName]}`}</td>
-                      {meals.map((meal) => {
-                        return (
-                          <td key={`${date}-${meal}`}>
-                            {/* {getDropdownsForAMeal({ date, meal })} */}
-                            {mealPlan[`${date}-${meal}`]?.map(
-                              (recipe, index) => {
-                                return <div>{recipe}</div>;
-                              }
-                            )}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
-        </div>
+        <>
+          <div>
+            <table>
+              <thead>
+                <tr className="border border-black">
+                  <th>Day</th>
+                  {meals.map((meal) => (
+                    <th key={meal}>{meal}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {daysOfMonth
+                  .filter((day) => {
+                    const dateNumber = Number(day.getDate());
+                    if (
+                      Number(dateNumber) >= startDateNumber &&
+                      Number(dateNumber) <= endDateNumber
+                    ) {
+                      return true;
+                    }
+                    return false;
+                  })
+                  .map((day, index) => {
+                    const date = day.getDate();
+                    const dayName = day.getDay();
+                    return (
+                      <tr className="border border-black" key={day}>
+                        <td>{`${date}, ${weekDays[dayName]}`}</td>
+                        {meals.map((meal) => {
+                          return (
+                            <td key={`${date}-${meal}`}>
+                              {/* {getDropdownsForAMeal({ date, meal })} */}
+                              {mealPlan[`${date}-${meal}`]?.map(
+                                (recipe, index) => {
+                                  return <div>{recipe}</div>;
+                                }
+                              )}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+            <button onClick={generateOrder}>Generate order</button>
+          </div>
+          <div style={{ width: "50%" }}>
+            {showPurchaseOrder &&
+              Object.keys(purchaseOrder).map((ingredient) => {
+                return (
+                  <div>
+                    {`${ingredient} - ${purchaseOrder[ingredient].toFixed(4)} ${
+                      ingredients[ingredient].purchaseUnit
+                    }`}
+                  </div>
+                );
+              })}
+          </div>
+        </>
       )}
     </div>
   );

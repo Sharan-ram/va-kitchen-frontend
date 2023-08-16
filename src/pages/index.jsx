@@ -12,9 +12,7 @@ const Homepage = () => {
   const [veganCount, setVeganCount] = useState();
   const [nonVeganCount, setNonVeganCount] = useState();
   const [mealPlan, setMealPlan] = useState({});
-  const [showPurchaseOrder, togglePurchaseOrder] = useState(false);
   const [season, setSeason] = useState();
-  const [purchaseOrder, setPurchaseOrder] = useState();
   const [dropdowns, setDropdowns] = useState({});
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
@@ -213,19 +211,6 @@ const Homepage = () => {
           </table>
           <button onClick={submitMealPlan}>Submit</button>
         </div>
-      </div>
-
-      <div style={{ width: "50%" }}>
-        {showPurchaseOrder &&
-          Object.keys(purchaseOrder).map((ingredient) => {
-            return (
-              <div>
-                {`${ingredient} - ${purchaseOrder[ingredient].toFixed(4)} ${
-                  ingredients[ingredient].purchaseUnit
-                }`}
-              </div>
-            );
-          })}
       </div>
     </div>
   );
