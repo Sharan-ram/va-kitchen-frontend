@@ -41,13 +41,18 @@ const Mealplan = () => {
 
   const getPurchaseOrder = () => {
     const obj = {};
-    Object.keys(mealPlan).forEach((meal) => {
-      mealPlan[meal]
-        .filter((recipe) => {
-          if (recipe) return true;
-          return false;
-        })
-        .forEach((recipe) => {
+    Object.keys(mealPlan)
+      .filter((meal) => {
+        const mealDateNumber = Number(meal.split("-")[0]);
+        if (
+          mealDateNumber >= startDateNumber &&
+          mealDateNumber <= endDateNumber
+        )
+          return true;
+        return false;
+      })
+      .forEach((meal) => {
+        mealPlan[meal].forEach((recipe) => {
           const count =
             recipes[recipe].type === "vegan" ? veganCount : nonVeganCount;
           const mealIngredients = Object.keys(recipes[recipe].ingredients);
@@ -62,7 +67,7 @@ const Mealplan = () => {
             }
           });
         });
-    });
+      });
     return obj;
   };
 
@@ -81,8 +86,6 @@ const Mealplan = () => {
     setPurchaseOrder(obj);
     togglePurchaseOrder(true);
   };
-
-  console.log("provisions list", Object.keys(purchaseOrder.provisions));
 
   return (
     <div>
