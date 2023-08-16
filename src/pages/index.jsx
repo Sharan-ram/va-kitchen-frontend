@@ -2,8 +2,28 @@
 import { useState } from "react";
 import recipes from "../recipes.json";
 import ingredients from "../ingredients.json";
+import { useRouter } from "next/router";
 
 const Homepage = () => {
+  const meals = ["Breakfast", "Lunch", "Dinner"];
+  const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const [headcount, setHeadcount] = useState();
+  const [veganCount, setVeganCount] = useState();
+  const [nonVeganCount, setNonVeganCount] = useState();
+  const [mealPlan, setMealPlan] = useState({});
+  const [showPurchaseOrder, togglePurchaseOrder] = useState(false);
+  const [season, setSeason] = useState();
+  const [purchaseOrder, setPurchaseOrder] = useState();
+  const [dropdowns, setDropdowns] = useState({});
+  const router = useRouter();
+
+  // Function to check if a date is Sunday
+  const isSunday = (date) => date.getDay() === 0;
+
+  console.log({ mealPlan });
+
+  console.log({ purchaseOrder, showPurchaseOrder });
+
   function generateDaysOfMonth() {
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
@@ -27,62 +47,6 @@ const Homepage = () => {
   //     // Render each day of the month in your tabular column
   //     return dayOfMonth
   //   });
-
-  const meals = ["Breakfast", "Lunch", "Dinner"];
-  const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const [headcount, setHeadcount] = useState();
-  const [veganCount, setVeganCount] = useState();
-  const [nonVeganCount, setNonVeganCount] = useState();
-  const [mealPlan, setMealPlan] = useState({});
-  const [showPurchaseOrder, togglePurchaseOrder] = useState(false);
-  const [season, setSeason] = useState();
-  const [purchaseOrder, setPurchaseOrder] = useState();
-  const [dropdowns, setDropdowns] = useState({});
-
-  // Function to check if a date is Sunday
-  const isSunday = (date) => date.getDay() === 0;
-
-  console.log({ mealPlan });
-
-  const submitMealPlan = () => {
-    if (veganCount !== undefined && nonVeganCount !== undefined && season) {
-      togglePurchaseOrder(true);
-      setPurchaseOrder(getPurchaseOrder());
-    }
-  };
-
-  console.log({ purchaseOrder, showPurchaseOrder });
-
-  const getPurchaseOrder = () => {
-    const obj = {};
-    Object.keys(mealPlan).forEach((meal) => {
-      mealPlan[meal]
-        .filter((recipe) => {
-          if (recipe) return true;
-          return false;
-        })
-        .forEach((recipe) => {
-          console.log({ recipe });
-          const count =
-            recipes[recipe].type === "vegan" ? veganCount : nonVeganCount;
-          console.log({ count });
-          const mealIngredients = Object.keys(recipes[recipe].ingredients);
-          console.log({ mealIngredients });
-          mealIngredients.forEach((ingredient) => {
-            if (obj[ingredient]) {
-              obj[ingredient] =
-                obj[ingredient] +
-                recipes[recipe].ingredients[ingredient][season] * Number(count);
-            } else {
-              obj[ingredient] =
-                recipes[recipe].ingredients[ingredient][season] * Number(count);
-            }
-          });
-        });
-    });
-    console.log({ obj });
-    return obj;
-  };
 
   console.log({ dropdowns });
 
@@ -114,6 +78,49 @@ const Homepage = () => {
     }
 
     return cell;
+  };
+
+  const submitMealPlan = () => {
+    if (veganCount !== undefined && nonVeganCount !== undefined && season) {
+      //   togglePurchaseOrder(true);
+      //   setPurchaseOrder(getPurchaseOrder());
+      localStorage.setItem("mealPlan", JSON.stringify(mealPlan));
+      localStorage.setItem("veganCount", JSON.stringify(veganCount));
+      localStorage.setItem("nonVeganCount", JSON.stringify(nonVeganCount));
+      localStorage.setItem("season", JSON.stringify(season));
+      router.push("/meal-plan");
+    }
+  };
+
+  const getPurchaseOrder = () => {
+    const obj = {};
+    Object.keys(mealPlan).forEach((meal) => {
+      mealPlan[meal]
+        .filter((recipe) => {
+          if (recipe) return true;
+          return false;
+        })
+        .forEach((recipe) => {
+          console.log({ recipe });
+          const count =
+            recipes[recipe].type === "vegan" ? veganCount : nonVeganCount;
+          console.log({ count });
+          const mealIngredients = Object.keys(recipes[recipe].ingredients);
+          console.log({ mealIngredients });
+          mealIngredients.forEach((ingredient) => {
+            if (obj[ingredient]) {
+              obj[ingredient] =
+                obj[ingredient] +
+                recipes[recipe].ingredients[ingredient][season] * Number(count);
+            } else {
+              obj[ingredient] =
+                recipes[recipe].ingredients[ingredient][season] * Number(count);
+            }
+          });
+        });
+    });
+    console.log({ obj });
+    return obj;
   };
 
   return (
