@@ -118,6 +118,7 @@ const Homepage = () => {
       localStorage.setItem("veganCount", JSON.stringify(veganCount));
       localStorage.setItem("nonVeganCount", JSON.stringify(nonVeganCount));
       localStorage.setItem("season", JSON.stringify(season));
+      localStorage.setItem("tempRecipes", JSON.stringify(recipes));
       router.push("/meal-plan");
     }
   };
