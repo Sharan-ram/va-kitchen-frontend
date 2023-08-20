@@ -160,33 +160,12 @@ const Mealplan = () => {
           <div style={{ width: "50%" }}>
             {showPurchaseOrder && (
               <div>
-                <h3>Provisions</h3>
-                {Object.keys(purchaseOrder.provisions).map((ingredient) => {
-                  return (
-                    <p>{`${ingredient} - ${purchaseOrder.provisions[
-                      ingredient
-                    ].toFixed(4)} ${ingredients[ingredient].purchaseUnit}`}</p>
-                  );
-                })}
-                <h3>Consumables</h3>
-
-                {Object.keys(purchaseOrder.consumables).map((ingredient) => {
-                  return (
-                    <p>
-                      {`${ingredient} - ${purchaseOrder.consumables[
-                        ingredient
-                      ].toFixed(4)} ${
-                        ingredients[ingredient].purchaseUnit
-                      }`}{" "}
-                    </p>
-                  );
-                })}
-
                 {/* Each ingredient */}
+                <h3>Ingredient list for each recipe of a meal</h3>
                 {filterMealPlanForDateRange(mealPlan).map((meal) => {
                   return (
                     <div>
-                      {mealPlan[meal].map((recipe) => {
+                      {mealPlan[meal].map((recipe, mealIndex) => {
                         const ingredientsArr =
                           Object.keys(recipes[recipe]?.ingredients) || [];
                         return (
@@ -228,6 +207,28 @@ const Mealplan = () => {
                         );
                       })}
                     </div>
+                  );
+                })}
+
+                <h3>Provisions</h3>
+                {Object.keys(purchaseOrder.provisions).map((ingredient) => {
+                  return (
+                    <p>{`${ingredient} - ${purchaseOrder.provisions[
+                      ingredient
+                    ].toFixed(4)} ${ingredients[ingredient].purchaseUnit}`}</p>
+                  );
+                })}
+                <h3>Consumables</h3>
+
+                {Object.keys(purchaseOrder.consumables).map((ingredient) => {
+                  return (
+                    <p>
+                      {`${ingredient} - ${purchaseOrder.consumables[
+                        ingredient
+                      ].toFixed(4)} ${
+                        ingredients[ingredient].purchaseUnit
+                      }`}{" "}
+                    </p>
                   );
                 })}
               </div>
