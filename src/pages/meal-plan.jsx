@@ -165,7 +165,7 @@ const Mealplan = () => {
                 {filterMealPlanForDateRange(mealPlan).map((meal) => {
                   return (
                     <div>
-                      {mealPlan[meal].map((recipe, mealIndex) => {
+                      {mealPlan[meal].map((recipe) => {
                         const ingredientsArr =
                           Object.keys(recipes[recipe]?.ingredients) || [];
                         return (
