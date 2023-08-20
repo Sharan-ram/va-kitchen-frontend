@@ -181,6 +181,55 @@ const Mealplan = () => {
                     </p>
                   );
                 })}
+
+                {/* Each ingredient */}
+                {filterMealPlanForDateRange(mealPlan).map((meal) => {
+                  return (
+                    <div>
+                      {mealPlan[meal].map((recipe) => {
+                        const ingredientsArr =
+                          Object.keys(recipes[recipe]?.ingredients) || [];
+                        return (
+                          <>
+                            <div>
+                              {ingredientsArr.map((ingredient) => {
+                                return (
+                                  <div style={{ display: "flex" }}>
+                                    <div style={{ padding: "0px 20px" }}>{`${
+                                      meal.split("-")[0]
+                                    }`}</div>
+                                    <div style={{ padding: "0px 20px" }}>{`${
+                                      meal.split("-")[1]
+                                    }`}</div>
+                                    <div style={{ padding: "0px 20px" }}>
+                                      {recipe}
+                                    </div>
+                                    <div style={{ padding: "0px 20px" }}>
+                                      {ingredient}
+                                    </div>
+                                    <div style={{ padding: "0px 20px" }}>
+                                      {`${(
+                                        recipes[recipe].ingredients[ingredient][
+                                          season
+                                        ] *
+                                        (recipes[recipe].type === "nonVegan"
+                                          ? nonVeganCount
+                                          : veganCount)
+                                      ).toFixed(2)} ${
+                                        ingredients[ingredient].cookingUnit
+                                      }`}
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                            <div style={{ height: "25px" }} />
+                          </>
+                        );
+                      })}
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
