@@ -3,7 +3,6 @@ import "react-calendar/dist/Calendar.css";
 import { useState, useEffect } from "react";
 import DatePicker from "react-date-picker";
 import { getDate } from "date-fns";
-import recipes from "../recipes.json";
 import ingredients from "../ingredients.json";
 import { generateDaysOfMonth } from "@/helpers/utils";
 
@@ -14,6 +13,7 @@ const Mealplan = () => {
   const [season, setSeason] = useState();
   const [purchaseOrder, setPurchaseOrder] = useState();
   const [showPurchaseOrder, togglePurchaseOrder] = useState(false);
+  const [recipes, setRecipes] = useState();
 
   useEffect(() => {
     if (window) {
@@ -23,6 +23,7 @@ const Mealplan = () => {
         Number(JSON.parse(localStorage.getItem("nonVeganCount")))
       );
       setSeason(JSON.parse(localStorage.getItem("season")));
+      setRecipes(JSON.parse(localStorage.getItem("tempRecipes")));
     }
   }, []);
 
