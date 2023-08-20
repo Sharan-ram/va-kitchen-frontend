@@ -5,6 +5,7 @@ import DatePicker from "react-date-picker";
 import { getDate } from "date-fns";
 import ingredients from "../ingredients.json";
 import { generateDaysOfMonth } from "@/helpers/utils";
+import Modal from "@/components/Modal";
 
 const Mealplan = () => {
   const [mealPlan, setMealPlan] = useState();
@@ -31,6 +32,9 @@ const Mealplan = () => {
   const [endDate, changeEndDate] = useState(new Date());
 
   const [showMealPlan, toggleMealPlan] = useState(false);
+
+  const [showModal, toggleModal] = useState(false);
+  const [activeRecipe, setActiveRecipe] = useState();
 
   const startDateNumber = getDate(startDate);
   const endDateNumber = getDate(endDate);
@@ -89,6 +93,8 @@ const Mealplan = () => {
     togglePurchaseOrder(true);
   };
 
+  console.log({ activeRecipe });
+
   return (
     <div>
       <DatePicker
@@ -108,7 +114,6 @@ const Mealplan = () => {
         }}
       />
       <button onClick={() => toggleMealPlan(true)}>Select date range</button>
-
       {showMealPlan && (
         <>
           <div>
@@ -145,7 +150,17 @@ const Mealplan = () => {
                               {/* {getDropdownsForAMeal({ date, meal })} */}
                               {mealPlan[`${date}-${meal}`]?.map(
                                 (recipe, index) => {
-                                  return <div>{recipe}</div>;
+                                  return (
+                                    <div
+                                      style={{ cursor: "pointer" }}
+                                      onClick={() => {
+                                        setActiveRecipe(recipe);
+                                        toggleModal(true);
+                                      }}
+                                    >
+                                      {recipe}
+                                    </div>
+                                  );
                                 }
                               )}
                             </td>
@@ -236,6 +251,51 @@ const Mealplan = () => {
             )}
           </div>
         </>
+      )}
+      {showModal && (
+        <div>
+          <Modal>
+            <div>
+              <h3>Selected Recipe: {activeRecipe}</h3>
+              {Object.keys(recipes[activeRecipe].ingredients).map(
+                (ingredient) => {
+                  console.log({ ingredient });
+                  return (
+                    <div
+                      key={ingredient}
+                      style={{ display: "flex", alignItems: "center" }}
+                    >
+                      <div>
+                        <h4>{ingredient}</h4>
+                      </div>
+                      <div>
+                        <input
+                          value={(
+                            recipes[activeRecipe].ingredients[ingredient][
+                              season
+                            ] *
+                            (recipes[activeRecipe].type === "nonVegan"
+                              ? nonVeganCount
+                              : veganCount)
+                          ).toFixed(2)}
+                        />
+                        {ingredients[ingredient].cookingUnit}
+                      </div>
+                    </div>
+                  );
+                }
+              )}
+              <button
+                onClick={() => {
+                  setActiveRecipe();
+                  toggleModal(false);
+                }}
+              >
+                Update recipe ingredients
+              </button>
+            </div>
+          </Modal>
+        </div>
       )}
     </div>
   );
