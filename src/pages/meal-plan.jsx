@@ -35,6 +35,9 @@ const Mealplan = () => {
 
   const [showModal, toggleModal] = useState(false);
   const [activeRecipe, setActiveRecipe] = useState();
+  const [addIngredientCount, setIngredientCount] = useState(0);
+  const [dropdownIngredient, setDropdownIngredient] = useState([]);
+  const [ingredientQuantity, setIngredientQuantity] = useState([]);
 
   const startDateNumber = getDate(startDate);
   const endDateNumber = getDate(endDate);
@@ -89,6 +92,43 @@ const Mealplan = () => {
     });
     setPurchaseOrder(obj);
     togglePurchaseOrder(true);
+  };
+
+  console.log({ recipes, dropdownIngredient, ingredientQuantity });
+
+  const renderAddIngredientDropdown = () => {
+    const arr = [];
+    for (let i = 0; i < addIngredientCount; i++) {
+      arr.push(
+        <div>
+          <select
+            onChange={(e) => {
+              const newDropdownIngredient = dropdownIngredient.slice();
+              newDropdownIngredient[i] = e.target.value;
+              setDropdownIngredient(newDropdownIngredient);
+            }}
+            selected={
+              (dropdownIngredient && dropdownIngredient[i]) ||
+              "Select Ingredient"
+            }
+          >
+            <option value="Select Ingredient">Select Ingredient</option>
+            {Object.keys(ingredients).map((ingredient) => {
+              return <option value={ingredient}>{ingredient}</option>;
+            })}
+          </select>
+          <input
+            value={ingredientQuantity[i]}
+            onChange={(e) => {
+              const newIngredientQuantity = ingredientQuantity.slice();
+              newIngredientQuantity[i] = Number(e.target.value);
+              setIngredientQuantity(newIngredientQuantity);
+            }}
+          />
+        </div>
+      );
+    }
+    return arr;
   };
 
   console.log({ recipes });
@@ -297,11 +337,48 @@ const Mealplan = () => {
                   );
                 }
               )}
+              {renderAddIngredientDropdown()}
               <button
                 onClick={() => {
+                  setIngredientCount(addIngredientCount + 1);
+                }}
+              >
+                +
+              </button>
+              <button
+                onClick={() => {
+                  let newRecipes = { ...recipes };
+                  dropdownIngredient.forEach((ingredient, index) => {
+                    console.log({ ingredient });
+                    const updatedRecipe = {
+                      ...newRecipes[activeRecipe],
+                      ingredients: {
+                        ...newRecipes[activeRecipe].ingredients,
+                        [ingredient]: {
+                          ...newRecipes[activeRecipe].ingredients[ingredient],
+                          [season]: ingredientQuantity[index],
+                        },
+                      },
+                    };
+
+                    // Update the newRecipes object with the updated recipe
+                    newRecipes = {
+                      ...newRecipes,
+                      [activeRecipe]: updatedRecipe,
+                    };
+                    console.log({ newRecipes });
+                  });
+                  setRecipes(newRecipes);
+                  setIngredientCount(0);
+                  setDropdownIngredient([]);
+                  setIngredientQuantity([]);
                   setActiveRecipe();
                   toggleModal(false);
-                  localStorage.setItem("tempRecipes", JSON.stringify(recipes));
+                  localStorage.setItem(
+                    "tempRecipes",
+                    JSON.stringify(newRecipes)
+                  );
+                  setIngredientCount(0);
                 }}
               >
                 Update recipe ingredients
