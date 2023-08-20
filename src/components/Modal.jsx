@@ -15,8 +15,14 @@ const Modal = ({ children }) => {
       }}
     >
       <div
-        className="fixed bottom-0 left-0 bg-black-modal w-full"
-        style={{ position: "fixed", bottom: 0, left: 0, width: "100%" }}
+        className="fixed bottom-0 left-0 bg-black-modal w-full "
+        style={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          background: "silver",
+        }}
       >
         {children}
       </div>
