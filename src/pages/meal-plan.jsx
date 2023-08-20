@@ -75,8 +75,6 @@ const Mealplan = () => {
     return obj;
   };
 
-  console.log({ mealPlan });
-
   const generateOrder = () => {
     const purchaseOrder = getPurchaseOrder();
     const obj = { provisions: {}, consumables: {} };
@@ -93,7 +91,7 @@ const Mealplan = () => {
     togglePurchaseOrder(true);
   };
 
-  console.log({ activeRecipe });
+  console.log({ recipes });
 
   return (
     <div>
@@ -259,7 +257,6 @@ const Mealplan = () => {
               <h3>Selected Recipe: {activeRecipe}</h3>
               {Object.keys(recipes[activeRecipe].ingredients).map(
                 (ingredient) => {
-                  console.log({ ingredient });
                   return (
                     <div
                       key={ingredient}
@@ -270,14 +267,29 @@ const Mealplan = () => {
                       </div>
                       <div>
                         <input
-                          value={(
+                          value={
                             recipes[activeRecipe].ingredients[ingredient][
                               season
-                            ] *
-                            (recipes[activeRecipe].type === "nonVegan"
-                              ? nonVeganCount
-                              : veganCount)
-                          ).toFixed(2)}
+                            ]
+                          }
+                          onChange={(e) => {
+                            const newRecipesData = {
+                              ...recipes,
+                              [activeRecipe]: {
+                                ...recipes[activeRecipe],
+                                ingredients: {
+                                  ...recipes[activeRecipe].ingredients,
+                                  [ingredient]: {
+                                    ...recipes[activeRecipe].ingredients[
+                                      ingredient
+                                    ],
+                                    [season]: Number(e.target.value),
+                                  },
+                                },
+                              },
+                            };
+                            setRecipes(newRecipesData);
+                          }}
                         />
                         {ingredients[ingredient].cookingUnit}
                       </div>
@@ -289,6 +301,7 @@ const Mealplan = () => {
                 onClick={() => {
                   setActiveRecipe();
                   toggleModal(false);
+                  localStorage.setItem("tempRecipes", JSON.stringify(recipes));
                 }}
               >
                 Update recipe ingredients
