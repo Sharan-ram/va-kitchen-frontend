@@ -39,37 +39,38 @@ const Mealplan = () => {
   const meals = ["Breakfast", "Lunch", "Dinner"];
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+  const filterMealPlanForDateRange = (mealPlan) => {
+    return Object.keys(mealPlan).filter((meal) => {
+      const mealDateNumber = Number(meal.split("-")[0]);
+      if (mealDateNumber >= startDateNumber && mealDateNumber <= endDateNumber)
+        return true;
+      return false;
+    });
+  };
+
   const getPurchaseOrder = () => {
     const obj = {};
-    Object.keys(mealPlan)
-      .filter((meal) => {
-        const mealDateNumber = Number(meal.split("-")[0]);
-        if (
-          mealDateNumber >= startDateNumber &&
-          mealDateNumber <= endDateNumber
-        )
-          return true;
-        return false;
-      })
-      .forEach((meal) => {
-        mealPlan[meal].forEach((recipe) => {
-          const count =
-            recipes[recipe].type === "vegan" ? veganCount : nonVeganCount;
-          const mealIngredients = Object.keys(recipes[recipe].ingredients);
-          mealIngredients.forEach((ingredient) => {
-            if (obj[ingredient]) {
-              obj[ingredient] =
-                obj[ingredient] +
-                recipes[recipe].ingredients[ingredient][season] * Number(count);
-            } else {
-              obj[ingredient] =
-                recipes[recipe].ingredients[ingredient][season] * Number(count);
-            }
-          });
+    filterMealPlanForDateRange(mealPlan).forEach((meal) => {
+      mealPlan[meal].forEach((recipe) => {
+        const count =
+          recipes[recipe].type === "vegan" ? veganCount : nonVeganCount;
+        const mealIngredients = Object.keys(recipes[recipe].ingredients);
+        mealIngredients.forEach((ingredient) => {
+          if (obj[ingredient]) {
+            obj[ingredient] =
+              obj[ingredient] +
+              recipes[recipe].ingredients[ingredient][season] * Number(count);
+          } else {
+            obj[ingredient] =
+              recipes[recipe].ingredients[ingredient][season] * Number(count);
+          }
         });
       });
+    });
     return obj;
   };
+
+  console.log({ mealPlan });
 
   const generateOrder = () => {
     const purchaseOrder = getPurchaseOrder();
