@@ -128,7 +128,7 @@ const Homepage = () => {
   return (
     <div>
       <div>
-        <div className="flex justify-between w-9/12">
+        <div className="flex justify-between w-9/12 items-start">
           <div>
             <div>Vegan Count</div>
             <Input
@@ -200,7 +200,7 @@ const Homepage = () => {
                 const dayName = day.getDay();
                 return (
                   <tr className="border border-black" key={day}>
-                    <td className="border-r border-r-black font-semi-bold text-lg p-4">{`${date}, ${weekDays[dayName]}`}</td>
+                    <td className="border-r border-r-black font-bold text-lg p-4">{`${date}, ${weekDays[dayName]}`}</td>
                     {meals.map((meal) => {
                       return (
                         <td
@@ -223,7 +223,7 @@ const Homepage = () => {
                                 });
                               }
                             }}
-                            className="bg-[#999999] text-white w-10"
+                            className="bg-[#999999] text-white w-10 rounded"
                           >
                             +
                           </button>

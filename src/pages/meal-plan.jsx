@@ -135,29 +135,42 @@ const Mealplan = () => {
 
   return (
     <div>
-      <DatePicker
-        value={startDate}
-        onChange={(date) => {
-          toggleMealPlan(false);
-          togglePurchaseOrder(false);
-          changeStartDate(date);
-        }}
-      />
-      <DatePicker
-        value={endDate}
-        onChange={(date) => {
-          toggleMealPlan(false);
-          togglePurchaseOrder(false);
-          changeEndDate(date);
-        }}
-      />
-      <button onClick={() => toggleMealPlan(true)}>Select date range</button>
+      <div className="flex justify-between w-9/12 items-center">
+        <div>
+          <DatePicker
+            value={startDate}
+            onChange={(date) => {
+              toggleMealPlan(false);
+              togglePurchaseOrder(false);
+              changeStartDate(date);
+            }}
+          />
+        </div>
+        <div>
+          <DatePicker
+            value={endDate}
+            onChange={(date) => {
+              toggleMealPlan(false);
+              togglePurchaseOrder(false);
+              changeEndDate(date);
+            }}
+          />
+        </div>
+        <div>
+          <button
+            onClick={() => toggleMealPlan(true)}
+            className="bg-[#666666] text-white px-4 py-2 rounded-[5px]"
+          >
+            Select date range
+          </button>
+        </div>
+      </div>
       {showMealPlan && (
         <>
-          <div>
-            <table>
-              <thead>
-                <tr className="border border-black">
+          <div className="mt-6 w-full">
+            <table className="border-2 border-black w-full">
+              <thead className="border-b-2 border-b-black">
+                <tr>
                   <th>Day</th>
                   {meals.map((meal) => (
                     <th key={meal}>{meal}</th>
@@ -181,16 +194,19 @@ const Mealplan = () => {
                     const dayName = day.getDay();
                     return (
                       <tr className="border border-black" key={day}>
-                        <td>{`${date}, ${weekDays[dayName]}`}</td>
+                        <td className="border-r border-r-black font-bold text-lg p-4">{`${date}, ${weekDays[dayName]}`}</td>
                         {meals.map((meal) => {
                           return (
-                            <td key={`${date}-${meal}`}>
+                            <td
+                              className="border-r border-r-black p-4"
+                              key={`${date}-${meal}`}
+                            >
                               {/* {getDropdownsForAMeal({ date, meal })} */}
                               {mealPlan[`${date}-${meal}`]?.map(
                                 (recipe, index) => {
                                   return (
                                     <div
-                                      style={{ cursor: "pointer" }}
+                                      className="cursor-pointer rounded p-2 mb-2 bg-[#E8E3E4]"
                                       onClick={() => {
                                         setActiveRecipe(recipe);
                                         toggleModal(true);
@@ -209,7 +225,12 @@ const Mealplan = () => {
                   })}
               </tbody>
             </table>
-            <button onClick={generateOrder}>Generate order</button>
+            <button
+              className="bg-[#999999] text-white rounded px-4 py-2 mt-6"
+              onClick={generateOrder}
+            >
+              Generate order
+            </button>
           </div>
           <div style={{ width: "50%" }}>
             {showPurchaseOrder && (
