@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 const Layout = () => {
   const router = useRouter();
   return (
-    <div className="fixed w-full py-4 bg-[#8e7576]">
+    <div className="fixed w-full py-4 bg-[#8e7576] z-[999]">
       <div className="max-w-[1500px] mx-auto">
         <div
           className="cursor-pointer w-[240px] h-[70px] relative"

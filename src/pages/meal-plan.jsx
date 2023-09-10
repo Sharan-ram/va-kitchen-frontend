@@ -319,7 +319,7 @@ const Mealplan = () => {
       )}
       {showModal && (
         <div>
-          <Modal>
+          <Modal closeModal={() => toggleModal(false)}>
             <div>
               <p className="font-bold text-xl mb-6">{activeRecipe}</p>
               {Object.keys(recipes[activeRecipe].ingredients).map(
