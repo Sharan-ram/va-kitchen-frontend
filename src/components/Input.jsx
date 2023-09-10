@@ -4,7 +4,7 @@ const Input = ({ type = "text", textInputProps, selectProps }) => {
       <input
         type="text"
         {...textInputProps}
-        className="rounded-md border border-black pl-2"
+        className="rounded-md border border-black pl-2 w-full"
       />
     );
   } else if (type === "select") {
@@ -15,7 +15,7 @@ const Input = ({ type = "text", textInputProps, selectProps }) => {
         selected={selected}
         onChange={onChange}
         defaultValue={defaultValue}
-        className="rounded-md border border-black pl-2"
+        className="rounded-md border border-black pl-2 w-full"
       >
         {options.map((option) => {
           return <option value={option}>{option}</option>;

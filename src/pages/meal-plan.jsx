@@ -6,6 +6,7 @@ import { getDate } from "date-fns";
 import ingredients from "../ingredients.json";
 import { generateDaysOfMonth } from "@/helpers/utils";
 import Modal from "@/components/Modal";
+import Input from "@/components/Input";
 
 const Mealplan = () => {
   const [mealPlan, setMealPlan] = useState();
@@ -100,31 +101,36 @@ const Mealplan = () => {
     const arr = [];
     for (let i = 0; i < addIngredientCount; i++) {
       arr.push(
-        <div>
-          <select
-            onChange={(e) => {
-              const newDropdownIngredient = dropdownIngredient.slice();
-              newDropdownIngredient[i] = e.target.value;
-              setDropdownIngredient(newDropdownIngredient);
-            }}
-            selected={
-              (dropdownIngredient && dropdownIngredient[i]) ||
-              "Select Ingredient"
-            }
-          >
-            <option value="Select Ingredient">Select Ingredient</option>
-            {Object.keys(ingredients).map((ingredient) => {
-              return <option value={ingredient}>{ingredient}</option>;
-            })}
-          </select>
-          <input
-            value={ingredientQuantity[i]}
-            onChange={(e) => {
-              const newIngredientQuantity = ingredientQuantity.slice();
-              newIngredientQuantity[i] = Number(e.target.value);
-              setIngredientQuantity(newIngredientQuantity);
-            }}
-          />
+        <div className="w-full flex items-center mb-2">
+          <div className="w-[40%]">
+            <select
+              onChange={(e) => {
+                const newDropdownIngredient = dropdownIngredient.slice();
+                newDropdownIngredient[i] = e.target.value;
+                setDropdownIngredient(newDropdownIngredient);
+              }}
+              selected={
+                (dropdownIngredient && dropdownIngredient[i]) ||
+                "Select Ingredient"
+              }
+              className="rounded-md border border-black pl-2 w-full"
+            >
+              <option value="Select Ingredient">Select Ingredient</option>
+              {Object.keys(ingredients).map((ingredient) => {
+                return <option value={ingredient}>{ingredient}</option>;
+              })}
+            </select>
+          </div>
+          <div className="w-[40%] pl-2">
+            <Input
+              value={ingredientQuantity[i]}
+              onChange={(e) => {
+                const newIngredientQuantity = ingredientQuantity.slice();
+                newIngredientQuantity[i] = Number(e.target.value);
+                setIngredientQuantity(newIngredientQuantity);
+              }}
+            />
+          </div>
         </div>
       );
     }
@@ -315,19 +321,19 @@ const Mealplan = () => {
         <div>
           <Modal>
             <div>
-              <h3>Selected Recipe: {activeRecipe}</h3>
+              <p className="font-bold text-xl mb-6">{activeRecipe}</p>
               {Object.keys(recipes[activeRecipe].ingredients).map(
                 (ingredient) => {
                   return (
                     <div
                       key={ingredient}
-                      style={{ display: "flex", alignItems: "center" }}
+                      className="flex items-center mb-2 w-full"
                     >
-                      <div>
-                        <h4>{ingredient}</h4>
+                      <div className="w-[40%]">
+                        <p className="font-semibold">{ingredient}</p>
                       </div>
-                      <div>
-                        <input
+                      <div className="pl-2 w-[40%]">
+                        <Input
                           value={
                             recipes[activeRecipe].ingredients[ingredient][
                               season
@@ -352,6 +358,8 @@ const Mealplan = () => {
                             setRecipes(newRecipesData);
                           }}
                         />
+                      </div>
+                      <div className="pl-1 w-[20%]">
                         {ingredients[ingredient].cookingUnit}
                       </div>
                     </div>
@@ -359,51 +367,57 @@ const Mealplan = () => {
                 }
               )}
               {renderAddIngredientDropdown()}
-              <button
-                onClick={() => {
-                  setIngredientCount(addIngredientCount + 1);
-                }}
-              >
-                +
-              </button>
-              <button
-                onClick={() => {
-                  let newRecipes = { ...recipes };
-                  dropdownIngredient.forEach((ingredient, index) => {
-                    console.log({ ingredient });
-                    const updatedRecipe = {
-                      ...newRecipes[activeRecipe],
-                      ingredients: {
-                        ...newRecipes[activeRecipe].ingredients,
-                        [ingredient]: {
-                          ...newRecipes[activeRecipe].ingredients[ingredient],
-                          [season]: ingredientQuantity[index],
+              <div>
+                <button
+                  onClick={() => {
+                    setIngredientCount(addIngredientCount + 1);
+                  }}
+                  className="bg-[#999999] text-white w-10 rounded mt-4"
+                >
+                  +
+                </button>
+              </div>
+              <div className="w-full text-center mt-6">
+                <button
+                  className="bg-[#999999] text-white px-4 py-2 rounded"
+                  onClick={() => {
+                    let newRecipes = { ...recipes };
+                    dropdownIngredient.forEach((ingredient, index) => {
+                      console.log({ ingredient });
+                      const updatedRecipe = {
+                        ...newRecipes[activeRecipe],
+                        ingredients: {
+                          ...newRecipes[activeRecipe].ingredients,
+                          [ingredient]: {
+                            ...newRecipes[activeRecipe].ingredients[ingredient],
+                            [season]: ingredientQuantity[index],
+                          },
                         },
-                      },
-                    };
+                      };
 
-                    // Update the newRecipes object with the updated recipe
-                    newRecipes = {
-                      ...newRecipes,
-                      [activeRecipe]: updatedRecipe,
-                    };
-                    console.log({ newRecipes });
-                  });
-                  setRecipes(newRecipes);
-                  setIngredientCount(0);
-                  setDropdownIngredient([]);
-                  setIngredientQuantity([]);
-                  setActiveRecipe();
-                  toggleModal(false);
-                  localStorage.setItem(
-                    "tempRecipes",
-                    JSON.stringify(newRecipes)
-                  );
-                  setIngredientCount(0);
-                }}
-              >
-                Update recipe ingredients
-              </button>
+                      // Update the newRecipes object with the updated recipe
+                      newRecipes = {
+                        ...newRecipes,
+                        [activeRecipe]: updatedRecipe,
+                      };
+                      console.log({ newRecipes });
+                    });
+                    setRecipes(newRecipes);
+                    setIngredientCount(0);
+                    setDropdownIngredient([]);
+                    setIngredientQuantity([]);
+                    setActiveRecipe();
+                    toggleModal(false);
+                    localStorage.setItem(
+                      "tempRecipes",
+                      JSON.stringify(newRecipes)
+                    );
+                    setIngredientCount(0);
+                  }}
+                >
+                  Update recipe ingredients
+                </button>
+              </div>
             </div>
           </Modal>
         </div>
