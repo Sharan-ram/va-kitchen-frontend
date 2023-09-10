@@ -372,7 +372,7 @@ const Mealplan = () => {
                   onClick={() => {
                     setIngredientCount(addIngredientCount + 1);
                   }}
-                  className="bg-[#999999] text-white w-10 rounded mt-4"
+                  className="bg-[#999999] text-white w-10 rounded mt-2"
                 >
                   +
                 </button>
