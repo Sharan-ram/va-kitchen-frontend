@@ -324,6 +324,10 @@ const Mealplan = () => {
               <p className="font-bold text-xl mb-6">{activeRecipe}</p>
               {Object.keys(recipes[activeRecipe].ingredients).map(
                 (ingredient) => {
+                  console.log(
+                    "val",
+                    recipes[activeRecipe].ingredients[ingredient][season]
+                  );
                   return (
                     <div
                       key={ingredient}
@@ -334,28 +338,29 @@ const Mealplan = () => {
                       </div>
                       <div className="pl-2 w-[40%]">
                         <Input
-                          value={
-                            recipes[activeRecipe].ingredients[ingredient][
-                              season
-                            ]
-                          }
-                          onChange={(e) => {
-                            const newRecipesData = {
-                              ...recipes,
-                              [activeRecipe]: {
-                                ...recipes[activeRecipe],
-                                ingredients: {
-                                  ...recipes[activeRecipe].ingredients,
-                                  [ingredient]: {
-                                    ...recipes[activeRecipe].ingredients[
-                                      ingredient
-                                    ],
-                                    [season]: Number(e.target.value),
+                          textInputProps={{
+                            value:
+                              recipes[activeRecipe].ingredients[ingredient][
+                                season
+                              ],
+                            onChange: (e) => {
+                              const newRecipesData = {
+                                ...recipes,
+                                [activeRecipe]: {
+                                  ...recipes[activeRecipe],
+                                  ingredients: {
+                                    ...recipes[activeRecipe].ingredients,
+                                    [ingredient]: {
+                                      ...recipes[activeRecipe].ingredients[
+                                        ingredient
+                                      ],
+                                      [season]: Number(e.target.value),
+                                    },
                                   },
                                 },
-                              },
-                            };
-                            setRecipes(newRecipesData);
+                              };
+                              setRecipes(newRecipesData);
+                            },
                           }}
                         />
                       </div>
