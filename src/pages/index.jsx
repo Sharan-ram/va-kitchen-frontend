@@ -188,9 +188,11 @@ const Homepage = () => {
           <table className="border-2 border-black w-full">
             <thead className="border-b-2 border-b-black">
               <tr>
-                <th>Day</th>
+                <th className="border-r border-r-black">Day</th>
                 {meals.map((meal) => (
-                  <th key={meal}>{meal}</th>
+                  <th className="border-r border-r-black" key={meal}>
+                    {meal}
+                  </th>
                 ))}
               </tr>
             </thead>

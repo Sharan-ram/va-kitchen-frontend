@@ -177,9 +177,11 @@ const Mealplan = () => {
             <table className="border-2 border-black w-full">
               <thead className="border-b-2 border-b-black">
                 <tr>
-                  <th>Day</th>
+                  <th className="border-r border-r-black">Day</th>
                   {meals.map((meal) => (
-                    <th key={meal}>{meal}</th>
+                    <th className="border-r border-r-black" key={meal}>
+                      {meal}
+                    </th>
                   ))}
                 </tr>
               </thead>
@@ -238,58 +240,65 @@ const Mealplan = () => {
               Generate order
             </button>
           </div>
-          <div style={{ width: "50%" }}>
+          <div className="w-full">
             {showPurchaseOrder && (
               <div>
                 {/* Each ingredient */}
                 <h3>Ingredient list for each recipe of a meal</h3>
-                {filterMealPlanForDateRange(mealPlan).map((meal) => {
-                  return (
-                    <div>
-                      {mealPlan[meal].map((recipe) => {
-                        const ingredientsArr =
-                          Object.keys(recipes[recipe]?.ingredients) || [];
-                        return (
-                          <>
-                            <div>
-                              {ingredientsArr.map((ingredient) => {
-                                return (
-                                  <div style={{ display: "flex" }}>
-                                    <div style={{ padding: "0px 20px" }}>{`${
-                                      meal.split("-")[0]
-                                    }`}</div>
-                                    <div style={{ padding: "0px 20px" }}>{`${
-                                      meal.split("-")[1]
-                                    }`}</div>
-                                    <div style={{ padding: "0px 20px" }}>
-                                      {recipe}
-                                    </div>
-                                    <div style={{ padding: "0px 20px" }}>
-                                      {ingredient}
-                                    </div>
-                                    <div style={{ padding: "0px 20px" }}>
-                                      {`${(
-                                        recipes[recipe].ingredients[ingredient][
-                                          season
-                                        ] *
-                                        (recipes[recipe].type === "nonVegan"
-                                          ? nonVeganCount
-                                          : veganCount)
-                                      ).toFixed(2)} ${
-                                        ingredients[ingredient].cookingUnit
-                                      }`}
-                                    </div>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                            <div style={{ height: "25px" }} />
-                          </>
-                        );
-                      })}
-                    </div>
-                  );
-                })}
+                <table className="text-center border-2 border-black w-full">
+                  <thead className="border-b-2 border-b-black">
+                    <tr>
+                      <th className="border-r border-r-black">Date</th>
+                      <th className="border-r border-r-black">Meal</th>
+                      <th className="border-r border-r-black">Recipe</th>
+                      <th className="border-r border-r-black">Ingredient</th>
+                      <th className="border-r border-r-black">Quantity</th>
+                    </tr>
+                  </thead>
+                  {filterMealPlanForDateRange(mealPlan).map((meal) => {
+                    return (
+                      <>
+                        <div className="mb-10" />
+                        <tbody>
+                          {mealPlan[meal].map((recipe) => {
+                            const ingredientsArr =
+                              Object.keys(recipes[recipe]?.ingredients) || [];
+                            return ingredientsArr.map((ingredient) => {
+                              return (
+                                <tr className="border border-black">
+                                  <td className="border-r border-r-black p-4">{`${
+                                    meal.split("-")[0]
+                                  }`}</td>
+                                  <td className="border-r border-r-black p-4">{`${
+                                    meal.split("-")[1]
+                                  }`}</td>
+                                  <td className="border-r border-r-black p-4">
+                                    {recipe}
+                                  </td>
+                                  <td className="border-r border-r-black p-4">
+                                    {ingredient}
+                                  </td>
+                                  <td className="border-r border-r-black p-4">
+                                    {`${(
+                                      recipes[recipe].ingredients[ingredient][
+                                        season
+                                      ] *
+                                      (recipes[recipe].type === "nonVegan"
+                                        ? nonVeganCount
+                                        : veganCount)
+                                    ).toFixed(2)} ${
+                                      ingredients[ingredient].cookingUnit
+                                    }`}
+                                  </td>
+                                </tr>
+                              );
+                            });
+                          })}
+                        </tbody>
+                      </>
+                    );
+                  })}
+                </table>
 
                 <h3>Provisions</h3>
                 {Object.keys(purchaseOrder.provisions).map((ingredient) => {
