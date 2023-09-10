@@ -16,6 +16,7 @@ const Homepage = () => {
   const [season, setSeason] = useState();
   const [dropdowns, setDropdowns] = useState({});
   const [mounted, setMounted] = useState(false);
+  const [showMealPlan, setShowMealPlan] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -128,9 +129,11 @@ const Homepage = () => {
   return (
     <div>
       <div>
-        <div className="flex justify-between w-9/12 items-start">
+        <div className="flex justify-between w-9/12 items-center">
           <div>
-            <div>Vegan Count</div>
+            <div>
+              <p className="font-semibold">Vegan Count</p>
+            </div>
             <Input
               type="text"
               textInputProps={{
@@ -141,7 +144,9 @@ const Homepage = () => {
             />
           </div>
           <div>
-            <div>Non-vegan count</div>
+            <div>
+              <p className="font-semibold">Non-vegan Count</p>
+            </div>
             <Input
               type="text"
               textInputProps={{
@@ -152,7 +157,9 @@ const Homepage = () => {
             />
           </div>
           <div>
-            <div>Season</div>
+            <div>
+              <p className="font-semibold">Season</p>
+            </div>
             <select
               selected={season}
               onChange={(e) => setSeason(e.target.value)}
@@ -183,68 +190,80 @@ const Homepage = () => {
               }}
             /> */}
           </div>
+          <div>
+            <button
+              onClick={() => setShowMealPlan(true)}
+              className="bg-[#666666] text-white px-4 py-2 rounded-[5px] mt-6"
+            >
+              Show Meal plan
+            </button>
+          </div>
         </div>
-        <div className="mt-6 w-full">
-          <table className="border-2 border-black w-full">
-            <thead className="border-b-2 border-b-black">
-              <tr>
-                <th className="border-r border-r-black">Day</th>
-                {meals.map((meal) => (
-                  <th className="border-r border-r-black" key={meal}>
-                    {meal}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {daysOfMonth.map((day, index) => {
-                const date = day.getDate();
-                const dayName = day.getDay();
-                return (
-                  <tr className="border border-black" key={day}>
-                    <td className="border-r border-r-black font-bold text-lg p-4">{`${date}, ${weekDays[dayName]}`}</td>
-                    {meals.map((meal) => {
-                      return (
-                        <td
-                          className="border-r border-r-black p-4"
-                          key={`${date}-${meal}`}
-                        >
-                          {getDropdownsForAMeal({ date, meal })}
-                          <button
-                            onClick={() => {
-                              if (dropdowns[`${date}-${meal}`]) {
-                                setDropdowns({
-                                  ...dropdowns,
-                                  [`${date}-${meal}`]:
-                                    dropdowns[`${date}-${meal}`] + 1,
-                                });
-                              } else {
-                                setDropdowns({
-                                  ...dropdowns,
-                                  [`${date}-${meal}`]: 2,
-                                });
-                              }
-                            }}
-                            className="bg-[#999999] text-white w-10 rounded"
+        {showMealPlan && (
+          <div className="mt-6 w-full">
+            <table className="border-2 border-black w-full">
+              <thead className="border-b-2 border-b-black">
+                <tr>
+                  <th className="border-r border-r-black py-2">Day</th>
+                  {meals.map((meal) => (
+                    <th className="border-r border-r-black py-2" key={meal}>
+                      {meal}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {daysOfMonth.map((day, index) => {
+                  const date = day.getDate();
+                  const dayName = day.getDay();
+                  return (
+                    <tr className="border border-black" key={day}>
+                      <td className="border-r border-r-black font-bold text-lg p-4">{`${date}, ${weekDays[dayName]}`}</td>
+                      {meals.map((meal) => {
+                        return (
+                          <td
+                            className="border-r border-r-black p-4"
+                            key={`${date}-${meal}`}
                           >
-                            +
-                          </button>
-                        </td>
-                      );
-                    })}
-                  </tr>
-                );
-              })}
-              {daysOfMonth.some(isSunday) && <tr style={{ height: "30px" }} />}
-            </tbody>
-          </table>
-          <button
-            onClick={submitMealPlan}
-            className="bg-[#666666] text-white px-4 py-2 rounded-[5px] mt-6"
-          >
-            Create Meal plan
-          </button>
-        </div>
+                            {getDropdownsForAMeal({ date, meal })}
+                            <button
+                              onClick={() => {
+                                if (dropdowns[`${date}-${meal}`]) {
+                                  setDropdowns({
+                                    ...dropdowns,
+                                    [`${date}-${meal}`]:
+                                      dropdowns[`${date}-${meal}`] + 1,
+                                  });
+                                } else {
+                                  setDropdowns({
+                                    ...dropdowns,
+                                    [`${date}-${meal}`]: 2,
+                                  });
+                                }
+                              }}
+                              className="bg-[#999999] text-white w-10 rounded"
+                            >
+                              +
+                            </button>
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
+                })}
+                {daysOfMonth.some(isSunday) && (
+                  <tr style={{ height: "30px" }} />
+                )}
+              </tbody>
+            </table>
+            <button
+              onClick={submitMealPlan}
+              className="bg-[#666666] text-white px-4 py-2 rounded-[5px] mt-6"
+            >
+              Create Meal plan
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
