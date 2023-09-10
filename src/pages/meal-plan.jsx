@@ -39,6 +39,7 @@ const Mealplan = () => {
   const [addIngredientCount, setIngredientCount] = useState(0);
   const [dropdownIngredient, setDropdownIngredient] = useState([]);
   const [ingredientQuantity, setIngredientQuantity] = useState([]);
+  const [showIngredientList, setShowIngredientList] = useState(false);
 
   const startDateNumber = getDate(startDate);
   const endDateNumber = getDate(endDate);
@@ -233,19 +234,33 @@ const Mealplan = () => {
                   })}
               </tbody>
             </table>
-            <button
-              className="bg-[#999999] text-white rounded px-4 py-2 mt-6"
-              onClick={generateOrder}
-            >
-              Generate order
-            </button>
+            <div className="flex mt-6">
+              <div>
+                <button
+                  className="bg-[#666666] text-white px-4 py-2 rounded-[5px]"
+                  onClick={() => setShowIngredientList(true)}
+                >
+                  Show ingredient list
+                </button>
+              </div>
+              <div className="ml-4">
+                <button
+                  className="bg-[#666666] text-white px-4 py-2 rounded-[5px]"
+                  onClick={generateOrder}
+                >
+                  Generate Purchase order
+                </button>
+              </div>
+            </div>
           </div>
           <div className="w-full">
-            {showPurchaseOrder && (
-              <div>
+            {showIngredientList && (
+              <div className="mt-6">
                 {/* Each ingredient */}
-                <h3>Ingredient list for each recipe of a meal</h3>
-                <table className="text-center border-2 border-black w-full">
+                <p className="font-bold text-xl">
+                  Ingredient list for each recipe of a meal
+                </p>
+                <table className="mt-2 text-center border-2 border-black w-full">
                   <thead className="border-b-2 border-b-black">
                     <tr>
                       <th className="border-r border-r-black">Date</th>
@@ -299,7 +314,11 @@ const Mealplan = () => {
                     );
                   })}
                 </table>
+              </div>
+            )}
 
+            {showPurchaseOrder && (
+              <div>
                 <h3>Provisions</h3>
                 {Object.keys(purchaseOrder.provisions).map((ingredient) => {
                   return (
