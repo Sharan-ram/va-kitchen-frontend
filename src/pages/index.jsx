@@ -79,7 +79,7 @@ const Homepage = () => {
 
     for (let i = 0; i < getExitStrategy(); i++) {
       cell.push(
-        <div>
+        <div className="mb-2">
           <select
             key={mealPlan ? mealPlan[`${date}-${meal}`]?.[i] : i}
             selected={
@@ -98,6 +98,7 @@ const Homepage = () => {
               }
               setMealPlan(newMealPlan);
             }}
+            className="rounded-md border border-black pl-2"
           >
             <option value="Select Recipe">Select Recipe</option>
             {Object.keys(recipes).map((option) => {
@@ -183,10 +184,10 @@ const Homepage = () => {
             /> */}
           </div>
         </div>
-        <div className="mt-6">
-          <table>
-            <thead>
-              <tr className="border border-black">
+        <div className="mt-6 w-full">
+          <table className="border-2 border-black w-full">
+            <thead className="border-b-2 border-b-black">
+              <tr>
                 <th>Day</th>
                 {meals.map((meal) => (
                   <th key={meal}>{meal}</th>
@@ -199,10 +200,13 @@ const Homepage = () => {
                 const dayName = day.getDay();
                 return (
                   <tr className="border border-black" key={day}>
-                    <td>{`${date}, ${weekDays[dayName]}`}</td>
+                    <td className="border-r border-r-black font-semi-bold text-lg p-4">{`${date}, ${weekDays[dayName]}`}</td>
                     {meals.map((meal) => {
                       return (
-                        <td key={`${date}-${meal}`}>
+                        <td
+                          className="border-r border-r-black p-4"
+                          key={`${date}-${meal}`}
+                        >
                           {getDropdownsForAMeal({ date, meal })}
                           <button
                             onClick={() => {
@@ -219,6 +223,7 @@ const Homepage = () => {
                                 });
                               }
                             }}
+                            className="bg-[#999999] text-white w-10"
                           >
                             +
                           </button>
@@ -231,7 +236,12 @@ const Homepage = () => {
               {daysOfMonth.some(isSunday) && <tr style={{ height: "30px" }} />}
             </tbody>
           </table>
-          <button onClick={submitMealPlan}>Submit</button>
+          <button
+            onClick={submitMealPlan}
+            className="bg-[#666666] text-white px-4 py-2 rounded-[5px] mt-6"
+          >
+            Create Meal plan
+          </button>
         </div>
       </div>
     </div>
