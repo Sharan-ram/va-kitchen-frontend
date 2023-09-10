@@ -124,9 +124,9 @@ const Homepage = () => {
   };
 
   return (
-    <div style={{ display: "flex" }}>
-      <div style={{ width: "50%" }}>
-        <div className="flex">
+    <div>
+      <div>
+        <div className="flex bg-black">
           <div>
             <input
               type="text"
