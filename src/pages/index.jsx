@@ -4,6 +4,7 @@ import recipes from "../recipes.json";
 import ingredients from "../ingredients.json";
 import { useRouter } from "next/router";
 import { generateDaysOfMonth } from "@/helpers/utils";
+import Input from "@/components/Input";
 
 const Homepage = () => {
   const meals = ["Breakfast", "Lunch", "Dinner"];
@@ -126,37 +127,37 @@ const Homepage = () => {
   return (
     <div>
       <div>
-        <div className="flex bg-black">
+        <div className="flex justify-between w-9/12">
           <div>
-            <input
+            <div>Vegan Count</div>
+            <Input
               type="text"
-              placeholder="Select head count"
-              value={headcount}
-              onChange={(e) => setHeadcount(e.target.value)}
+              textInputProps={{
+                placeholder: "Select Vegan Count",
+                value: veganCount,
+                onChange: (e) => setVeganCount(e.target.value),
+              }}
             />
           </div>
           <div>
-            <input
+            <div>Non-vegan count</div>
+            <Input
               type="text"
-              placeholder="Select Vegan Count"
-              value={veganCount}
-              onChange={(e) => setVeganCount(e.target.value)}
+              textInputProps={{
+                placeholder: "Select Non Vegan Count",
+                value: nonVeganCount,
+                onChange: (e) => setNonVeganCount(e.target.value),
+              }}
             />
           </div>
           <div>
-            <input
-              type="text"
-              placeholder="Select Non Vegan"
-              value={nonVeganCount}
-              onChange={(e) => setNonVeganCount(e.target.value)}
-            />
-          </div>
-          <div>
+            <div>Season</div>
             <select
               selected={season}
               onChange={(e) => setSeason(e.target.value)}
               key={season}
               defaultValue={season}
+              className="rounded-md border border-black pl-2"
             >
               <option value="Select Seaon">Select Season</option>
               <option value="summerQuantity">Summer</option>
@@ -164,9 +165,25 @@ const Homepage = () => {
               <option value="winterQuantity">Winter</option>
               <option value="retreatQuantity">Retreat</option>
             </select>
+            {/* <Input
+              type="select"
+              selectProps={{
+                selected: season,
+                onChange: (e) => setSeason(e.target.value),
+                key: season,
+                defaultValue: season,
+                options: [
+                  "Select Season",
+                  "summerQuantity",
+                  "monsoonQuantity",
+                  "winterQuantity",
+                  "reatreatQuantity",
+                ]
+              }}
+            /> */}
           </div>
         </div>
-        <div>
+        <div className="mt-6">
           <table>
             <thead>
               <tr className="border border-black">
