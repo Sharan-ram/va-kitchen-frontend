@@ -10,6 +10,7 @@ import Input from "@/components/Input";
 import { usePDF } from "react-to-pdf";
 import UpdateRecipeModal from "@/components/UpdateRecipeModal";
 import PurchaseOrderModal from "@/components/PurchaseOrderModal";
+import IngredientsPerRecipePerMeal from "@/components/IngredientsPerRecipePerMeal";
 
 const Mealplan = () => {
   const [mealPlan, setMealPlan] = useState();
@@ -51,7 +52,7 @@ const Mealplan = () => {
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   const filterMealPlanForDateRange = (mealPlan) => {
-    return Object.keys(mealPlan).filter((meal) => {
+    return Object.keys(mealPlan || []).filter((meal) => {
       const mealDateNumber = Number(meal.split("-")[0]);
       if (mealDateNumber >= startDateNumber && mealDateNumber <= endDateNumber)
         return true;
@@ -59,9 +60,11 @@ const Mealplan = () => {
     });
   };
 
+  const filteredMealPlan = filterMealPlanForDateRange(mealPlan);
+
   const getPurchaseOrder = () => {
     const obj = {};
-    filterMealPlanForDateRange(mealPlan).forEach((meal) => {
+    filteredMealPlan.forEach((meal) => {
       mealPlan[meal].forEach((recipe) => {
         const count =
           recipes[recipe].type === "vegan" ? veganCount : nonVeganCount;
@@ -248,79 +251,16 @@ const Mealplan = () => {
           <div className="w-full">
             {showIngredientList && (
               <div className="mt-6">
-                {/* Each ingredient */}
-                <p className="font-bold text-xl">
-                  Ingredient list for each recipe of a meal
-                </p>
-                <table className="mt-2 text-center border-2 border-black w-full">
-                  <thead className="border-b-2 border-b-black">
-                    <tr>
-                      <th className="border-r border-r-black py-2">Date</th>
-                      <th className="border-r border-r-black py-2">Meal</th>
-                      <th className="border-r border-r-black py-2">Recipe</th>
-                      <th className="border-r border-r-black py-2">
-                        Ingredient
-                      </th>
-                      <th className="border-r border-r-black py-2">Quantity</th>
-                    </tr>
-                  </thead>
-                  {filterMealPlanForDateRange(mealPlan).map((meal) => {
-                    return (
-                      <>
-                        <div className="mb-10" />
-                        <tbody>
-                          {mealPlan[meal].map((recipe) => {
-                            const ingredientsArr =
-                              Object.keys(recipes[recipe]?.ingredients) || [];
-                            return ingredientsArr.map((ingredient) => {
-                              return (
-                                <tr className="border border-black">
-                                  <td className="border-r border-r-black p-4">{`${
-                                    meal.split("-")[0]
-                                  }`}</td>
-                                  <td className="border-r border-r-black p-4">{`${
-                                    meal.split("-")[1]
-                                  }`}</td>
-                                  <td className="border-r border-r-black p-4">
-                                    {recipe}
-                                  </td>
-                                  <td className="border-r border-r-black p-4">
-                                    {ingredient}
-                                  </td>
-                                  <td className="border-r border-r-black p-4">
-                                    {`${(
-                                      Number(
-                                        recipes[recipe].ingredients[ingredient][
-                                          season
-                                        ]
-                                      ) *
-                                      (recipes[recipe].type === "nonVegan"
-                                        ? nonVeganCount
-                                        : veganCount)
-                                    ).toFixed(2)} ${
-                                      ingredients[ingredient].cookingUnit
-                                    }`}
-                                  </td>
-                                </tr>
-                              );
-                            });
-                          })}
-                        </tbody>
-                      </>
-                    );
-                  })}
-                </table>
+                <IngredientsPerRecipePerMeal
+                  mealPlan={mealPlan}
+                  filteredMealPlan={filteredMealPlan}
+                  recipes={recipes}
+                  ingredients={ingredients}
+                  season={season}
+                  veganCount={veganCount}
+                  nonVeganCount={nonVeganCount}
+                />
               </div>
-            )}
-
-            {showPurchaseOrder && (
-              <PurchaseOrderModal
-                targetRef={targetRef}
-                togglePurchaseOrder={togglePurchaseOrder}
-                purchaseOrder={purchaseOrder}
-                ingredients={ingredients}
-                toPDF={toPDF}
-              />
             )}
           </div>
         </>
@@ -337,6 +277,15 @@ const Mealplan = () => {
             ingredients={ingredients}
           />
         </div>
+      )}
+      {showPurchaseOrder && (
+        <PurchaseOrderModal
+          targetRef={targetRef}
+          togglePurchaseOrder={togglePurchaseOrder}
+          purchaseOrder={purchaseOrder}
+          ingredients={ingredients}
+          toPDF={toPDF}
+        />
       )}
     </div>
   );
