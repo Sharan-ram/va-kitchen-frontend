@@ -9,7 +9,6 @@ const Input = ({ type = "text", textInputProps, selectProps }) => {
     );
   } else if (type === "select") {
     const { selected, onChange, defaultValue, options } = selectProps;
-    console.log({ defaultValue, selected });
     return (
       <select
         selected={selected}
