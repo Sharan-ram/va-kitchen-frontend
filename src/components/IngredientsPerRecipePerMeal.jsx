@@ -1,13 +1,13 @@
 const IngredientsPerRecipePerMeal = ({
   mealPlan,
   recipes,
-  ingredients = { ingredients },
+  ingredients,
   filteredMealPlan,
   season,
   veganCount,
   nonVeganCount,
 }) => {
-  console.log({ mealPlan });
+  // console.log({ filteredMealPlan });
   return (
     <div>
       {/* Each ingredient */}
