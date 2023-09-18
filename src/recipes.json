@@ -1,0 +1,420 @@
+{
+    "Cocoa pancakes": {
+        "type": "nonVegan",
+        "ingredients": {
+            "Maida": {
+                "summerQuantity": 0.0765,
+                "monsoonQuantity": 0.0765,
+                "winterQuantity": 0.0765,
+                "retreatQuantity": 0.0765
+            },
+            "Cocoa Powder": {
+                "summerQuantity": 0.0079,
+                "monsoonQuantity": 0.0079,
+                "winterQuantity": 0.0079,
+                "retreatQuantity": 0.0079
+            },
+            "Sugar": {
+                "summerQuantity": 0.0153,
+                "monsoonQuantity": 0.0153,
+                "winterQuantity": 0.0153,
+                "retreatQuantity": 0.0153
+            },
+            "Baking Soda": {
+                "summerQuantity": 0.0007,
+                "monsoonQuantity": 0.0007,
+                "winterQuantity": 0.0007,
+                "retreatQuantity": 0.0007
+            },
+            "Baking Powder": {
+                "summerQuantity": 0.0015,
+                "monsoonQuantity": 0.0015,
+                "winterQuantity": 0.0015,
+                "retreatQuantity": 0.0015
+            },
+            "Sunflower Oil": {
+                "summerQuantity": 0.0088,
+                "monsoonQuantity": 0.0088,
+                "winterQuantity": 0.0088,
+                "retreatQuantity": 0.0088
+            },
+            "Vanilla Essence": {
+                "summerQuantity": 0.0007,
+                "monsoonQuantity": 0.0007,
+                "winterQuantity": 0.0007,
+                "retreatQuantity": 0.0007
+            },
+            "Milk": {
+                "summerQuantity": 0.1350,
+                "monsoonQuantity": 0.1350,
+                "winterQuantity": 0.1350,
+                "retreatQuantity": 0.1350
+            },
+            "White Vinegar": {
+                "summerQuantity": 0.0015,
+                "monsoonQuantity": 0.0015,
+                "winterQuantity": 0.0015,
+                "retreatQuantity": 0.0015
+            }
+        }
+    },
+    "Cocoa pancakes - Vegan": {
+        "type": "vegan",
+        "ingredients": {
+            "Maida": {
+                "summerQuantity": 0.0765,
+                "monsoonQuantity": 0.0666,
+                "winterQuantity": 0.0850,
+                "retreatQuantity": 0.0850
+            },
+            "Cocoa Powder": {
+                "summerQuantity": 0.0079,
+                "monsoonQuantity": 0.0069,
+                "winterQuantity": 0.0088,
+                "retreatQuantity": 0.0088
+            },
+            "Sugar": {
+                "summerQuantity": 0.0153,
+                "monsoonQuantity": 0.0133,
+                "winterQuantity": 0.0170,
+                "retreatQuantity": 0.0170
+            },
+            "Baking Soda": {
+                "summerQuantity": 0.0007,
+                "monsoonQuantity": 0.0006,
+                "winterQuantity": 0.0008,
+                "retreatQuantity": 0.0008
+            },
+            "Baking Powder": {
+                "summerQuantity": 0.0015,
+                "monsoonQuantity": 0.0013,
+                "winterQuantity": 0.0016,
+                "retreatQuantity": 0.0016
+            },
+            "Sunflower Oil": {
+                "summerQuantity": 0.0088,
+                "monsoonQuantity": 0.0077,
+                "winterQuantity": 0.0098,
+                "retreatQuantity": 0.0098
+            },
+            "Vanilla Essence": {
+                "summerQuantity": 0.0007,
+                "monsoonQuantity": 0.0006,
+                "winterQuantity": 0.0008,
+                "retreatQuantity": 0.0008
+            },
+            "Vegan Milk (Plant Based)": {
+                "summerQuantity": 0.1260,
+                "monsoonQuantity": 0.1096,
+                "winterQuantity": 0.1400,
+                "retreatQuantity": 0.1400
+            },
+            "White Vinegar": {
+                "summerQuantity": 0.0015,
+                "monsoonQuantity": 0.0015,
+                "winterQuantity": 0.0015,
+                "retreatQuantity": 0.0015
+            }
+        }
+    },
+    "Overnight Oatmeal - Dairy": {
+        "type": "nonVegan",
+        "ingredients": {
+            "Oats": {
+                "summerQuantity": 0.0444,
+                "monsoonQuantity": 0.0444,
+                "winterQuantity": 0.0381,
+                "retreatQuantity": 0.0444
+            },
+            "Flaxseeds": {
+                "summerQuantity": 0.0024,
+                "monsoonQuantity": 0.0024,
+                "winterQuantity": 0.0024,
+                "retreatQuantity": 0.0024
+            },
+            "Peanuts (Dry)": {
+                "summerQuantity": 0.0095,
+                "monsoonQuantity": 0.0095,
+                "winterQuantity": 0.0095,
+                "retreatQuantity": 0.0095
+            },
+            "Sunflower Seeds": {
+                "summerQuantity": 0.0024,
+                "monsoonQuantity": 0.0024,
+                "winterQuantity": 0.0024,
+                "retreatQuantity": 0.0024
+            },
+            "Dates (Seedless)": {
+                "summerQuantity": 0.0100,
+                "monsoonQuantity": 0.0100,
+                "winterQuantity": 0.0100,
+                "retreatQuantity": 0.0100
+            },
+            "Milk": {
+                "summerQuantity": 0.1111,
+                "monsoonQuantity": 0.0150,
+                "winterQuantity": 0.0968,
+                "retreatQuantity": 0.1111
+            },
+            "Chia Seeds": {
+                "summerQuantity": "",
+                "monsoonQuantity": "",
+                "winterQuantity": "",
+                "retreatQuantity": ""
+            },
+            "Banana (Ripe)": {
+                "summerQuantity": 0.1500,
+                "monsoonQuantity": 0.1500,
+                "winterQuantity": 0.1500,
+                "retreatQuantity": 0.1500
+            }
+        }
+    },
+    "Overnight Oatmeal - Vegan": {
+        "type": "vegan",
+        "ingredients": {
+            "Oats": {
+                "summerQuantity": 0.0652,
+                "monsoonQuantity": 0.0652,
+                "winterQuantity": 0.0381,
+                "retreatQuantity": 0.0652
+            },
+            "Flaxseeds": {
+                "summerQuantity": 0.0024,
+                "monsoonQuantity": 0.0024,
+                "winterQuantity": 0.0024,
+                "retreatQuantity": 0.0024
+            },
+            "Peanuts (Dry)": {
+                "summerQuantity": 0.0096,
+                "monsoonQuantity": 0.0096,
+                "winterQuantity": 0.0095,
+                "retreatQuantity": 0.0096
+            },
+            "Sunflower Seeds": {
+                "summerQuantity": 0.0024,
+                "monsoonQuantity": 0.0024,
+                "winterQuantity": 0.0024,
+                "retreatQuantity": 0.0024
+            },
+            "Dates (Seedless)": {
+                "summerQuantity": 0.0100,
+                "monsoonQuantity": 0.0100,
+                "winterQuantity": 0.0100,
+                "retreatQuantity": 0.0100
+            },
+            "Vegan Milk (Plant Based)": {
+                "summerQuantity": 0.1087,
+                "monsoonQuantity": 0.1209,
+                "winterQuantity": 0.0581,
+                "retreatQuantity": 0.1087
+            },
+            "Chia Seeds": {
+                "summerQuantity": "",
+                "monsoonQuantity": "",
+                "winterQuantity": "",
+                "retreatQuantity": ""
+            }
+        }
+    },
+    "Overnight Multigrain Porridge - Dairy": {
+        "type": "nonVegan",
+        "ingredients": {
+            "Flaxseeds": {
+                "summerQuantity": 0.0024,
+                "monsoonQuantity": 0.0024,
+                "winterQuantity": 0.0024,
+                "retreatQuantity": 0.0024
+            },
+            "Peanuts (Dry)": {
+                "summerQuantity": 0.0095,
+                "monsoonQuantity": 0.0095,
+                "winterQuantity": 0.0095,
+                "retreatQuantity": 0.0095
+            },
+            "Sunflower Seeds": {
+                "summerQuantity": 0.0024,
+                "monsoonQuantity": 0.0024,
+                "winterQuantity": 0.0024,
+                "retreatQuantity": 0.0024
+            },
+            "Milk": {
+                "summerQuantity": 0.1111,
+                "monsoonQuantity": 0.1111,
+                "winterQuantity": 0.1111,
+                "retreatQuantity": 0.1111
+            },
+            "Bajra Grain": {
+                "summerQuantity": 0.0050,
+                "monsoonQuantity": 0.0050,
+                "winterQuantity": 0.0050,
+                "retreatQuantity": 0.0050
+            },
+            "Jowar Grain": {
+                "summerQuantity": 0.0050,
+                "monsoonQuantity": 0.0050,
+                "winterQuantity": 0.0050,
+                "retreatQuantity": 0.0050
+            },
+            "Nachni": {
+                "summerQuantity": 0.0050,
+                "monsoonQuantity": 0.0050,
+                "winterQuantity": 0.0050,
+                "retreatQuantity": 0.0050
+            },
+            "Oats": {
+                "summerQuantity": 0.0250,
+                "monsoonQuantity": 0.0250,
+                "winterQuantity": 0.0250,
+                "retreatQuantity": 0.0250
+            },
+            "Banana (Ripe)": {
+                "summerQuantity": 0.1500,
+                "monsoonQuantity": 0.1500,
+                "winterQuantity": 0.1500,
+                "retreatQuantity": 0.1500
+            }
+        }
+    },
+    "Overnight Multigrain Porridge - Vegan": {
+        "type": "vegan",
+        "ingredients": {
+            "Flaxseeds": {
+                "summerQuantity": 0.0024,
+                "monsoonQuantity": 0.0024,
+                "winterQuantity": 0.0024,
+                "retreatQuantity": 0.0024
+            },
+            "Peanuts (Dry)": {
+                "summerQuantity": 0.0095,
+                "monsoonQuantity": 0.0129,
+                "winterQuantity": 0.0095,
+                "retreatQuantity": 0.0095
+            },
+            "Sunflower Seeds": {
+                "summerQuantity": 0.0024,
+                "monsoonQuantity": 0.0032,
+                "winterQuantity": 0.0024,
+                "retreatQuantity": 0.0024
+            },
+            "Vegan Milk (Plant Based)": {
+                "summerQuantity": 0.1080,
+                "monsoonQuantity": 0.1458,
+                "winterQuantity": 0.1080,
+                "retreatQuantity": 0.1080
+            },
+            "Bajra Grain": {
+                "summerQuantity": 0.0050,
+                "monsoonQuantity": 0.0068,
+                "winterQuantity": 0.0050,
+                "retreatQuantity": 0.0050
+            },
+            "Jowar Grain": {
+                "summerQuantity": 0.0050,
+                "monsoonQuantity": 0.0068,
+                "winterQuantity": 0.0050,
+                "retreatQuantity": 0.0050
+            },
+            "Nachni": {
+                "summerQuantity": 0.0050,
+                "monsoonQuantity": 0.0068,
+                "winterQuantity": 0.0050,
+                "retreatQuantity": 0.0050
+            },
+            "Oats": {
+                "summerQuantity": 0.0250,
+                "monsoonQuantity": 0.0250,
+                "winterQuantity": 0.0250,
+                "retreatQuantity": 0.0250
+            },
+            "Banana (Ripe)": {
+                "summerQuantity": 0.1500,
+                "monsoonQuantity": 0.1500,
+                "winterQuantity": 0.1500,
+                "retreatQuantity": 0.1500
+            }
+        }
+    },
+    "Chia Pudding - Dairy": {
+        "type": "nonVegan",
+        "ingredients": {
+            "Flaxseeds": {
+                "summerQuantity": 0.0024,
+                "monsoonQuantity": 0.0024,
+                "winterQuantity": 0.0024,
+                "retreatQuantity": 0.0024
+            },
+            "Peanuts (Dry)": {
+                "summerQuantity": 0.0095,
+                "monsoonQuantity": 0.0129,
+                "winterQuantity": 0.0095,
+                "retreatQuantity": 0.0095
+            },
+            "Sunflower Seeds": {
+                "summerQuantity": 0.0024,
+                "monsoonQuantity": 0.0024,
+                "winterQuantity": 0.0024,
+                "retreatQuantity": 0.0024
+            },
+            "Milk": {
+                "summerQuantity": 0.1111,
+                "monsoonQuantity": 0.1111,
+                "winterQuantity": 0.1111,
+                "retreatQuantity": 0.1111
+            },
+            "Chia Seeds": {
+                "summerQuantity": 0.0120,
+                "monsoonQuantity": 0.0120,
+                "winterQuantity": 0.0120,
+                "retreatQuantity": 0.0120
+            },
+            "Oats": {
+                "summerQuantity": 0.0250,
+                "monsoonQuantity": 0.0250,
+                "winterQuantity": 0.0250,
+                "retreatQuantity": 0.0250
+            }
+        }
+    },
+    "Chia Pudding - Vegan": {
+        "type": "vegan",
+        "ingredients": {
+            "Flaxseeds": {
+                "summerQuantity": 0.0024,
+                "monsoonQuantity": 0.0024,
+                "winterQuantity": 0.0024,
+                "retreatQuantity": 0.0024
+            },
+            "Peanuts (Dry)": {
+                "summerQuantity": 0.0095,
+                "monsoonQuantity": 0.0129,
+                "winterQuantity": 0.0095,
+                "retreatQuantity": 0.0095
+            },
+            "Sunflower Seeds": {
+                "summerQuantity": 0.0024,
+                "monsoonQuantity": 0.0024,
+                "winterQuantity": 0.0024,
+                "retreatQuantity": 0.0024
+            },
+            "Vegan Milk (Plant Based)": {
+                "summerQuantity": 0.1080,
+                "monsoonQuantity": 0.1080,
+                "winterQuantity": 0.1080,
+                "retreatQuantity": 0.1080
+            },
+            "Chia Seeds": {
+                "summerQuantity": 0.0120,
+                "monsoonQuantity": 0.0120,
+                "winterQuantity": 0.0120,
+                "retreatQuantity": 0.0120
+            },
+            "Oats": {
+                "summerQuantity": 0.0250,
+                "monsoonQuantity": 0.0250,
+                "winterQuantity": 0.0250,
+                "retreatQuantity": 0.0250
+            }
+        }
+    }
+}
