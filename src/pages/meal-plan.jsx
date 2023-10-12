@@ -210,6 +210,7 @@ const Mealplan = () => {
                                 (recipe, index) => {
                                   return (
                                     <div
+                                      key={index}
                                       className="cursor-pointer rounded p-2 mb-2 bg-[#E8E3E4]"
                                       onClick={() => {
                                         setActiveRecipe(recipe);
