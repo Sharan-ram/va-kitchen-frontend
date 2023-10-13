@@ -1,5 +1,7 @@
 {
-    "Maida": {
+    "1": {
+        "id":"1",
+        "name": "Maida",
         "ingredientType": "Cereals",
         "storageType": "Provisions",
         "vendor": "Jainam",
@@ -11,7 +13,9 @@
         "dairy": false,
         "gluten": false
     },
-    "Cocoa Powder": {
+    "2": {
+        "id":"2",
+        "name": "Cocoa Powder",
         "ingredientType": "Special Provisions",
         "storageType": "Special Provisions",
         "vendor": "Weikfield",
@@ -23,7 +27,9 @@
         "dairy": false,
         "gluten": false
     },
-    "Sugar": {
+    "3": {
+        "id":"3",
+        "name": "Sugar",
         "ingredientType": "Seasoning/Sweetening",
         "storageType": "Bulk Provisions",
         "vendor": "Jainam",
@@ -35,7 +41,9 @@
         "dairy": false,
         "gluten": false
     },
-    "Baking Soda": {
+    "4": {
+        "id":"4",
+        "name": "Baking Soda",
         "ingredientType": "Provisions",
         "storageType": "Provisions",
         "vendor": "Jainam",
@@ -47,7 +55,9 @@
         "dairy": false,
         "gluten": false
     },
-    "Baking Powder": {
+    "5": {
+        "id":"5",
+        "name": "Baking Powder",
         "ingredientType": "Provisions",
         "storageType": "Provisions",
         "vendor": "Weikfield",
@@ -59,7 +69,9 @@
         "dairy": false,
         "gluten": false
     },
-    "Sunflower Oil": {
+    "6": {
+        "id":"6",
+        "name": "Sunflower Oil",
         "ingredientType": "Seasoning/Sweetening",
         "storageType": "Bulk Provisions",
         "vendor": "Jainam",
@@ -71,7 +83,9 @@
         "dairy": false,
         "gluten": false
     },
-    "Vanilla Essence": {
+    "7": {
+        "id":"7",
+        "name": "Vanilla Essence",
         "ingredientType": "Special Provisions",
         "storageType": "Special Provisions",
         "vendor": "Jainam/Locally",
@@ -83,7 +97,9 @@
         "dairy": false,
         "gluten": false
     },
-    "Milk": {
+    "8": {
+        "id":"8",
+        "name": "Milk",
         "ingredientType": "Dairy",
         "storageType": "Milk",
         "vendor": "Keitan",
@@ -95,7 +111,9 @@
         "dairy": true,
         "gluten": false
     },
-    "White Vinegar": {
+    "9": {
+        "id":"9",
+        "name": "White Vinegar",
         "ingredientType": "Seasoning/Sweetening",
         "storageType": "Provisions",
         "vendor": "Jainam",
@@ -107,7 +125,9 @@
         "dairy": false,
         "gluten": false
     },
-    "Vegan Milk (Plant Based)": {
+    "10": {
+        "id":"10",
+        "name": "Vegan Milk (Plant Based)",
         "ingredientType": "Vegan Milk",
         "storageType": "Vegan Milk",
         "vendor": "SAP Agrotech Pvt Ltd",
@@ -119,7 +139,9 @@
         "dairy": false,
         "gluten": false
     },
-    "Oats": {
+    "11": {
+        "id":"11",
+        "name": "Oats",
         "ingredientType": "Cereals",
         "storageType": "Special Provisions",
         "vendor": "Weikfield",
@@ -131,7 +153,9 @@
         "dairy": false,
         "gluten": false
     },
-    "Flaxseeds": {
+    "12": {
+        "id":"12",
+        "name": "Flaxseeds",
         "ingredientType": "Seeds",
         "storageType": "Provisions",
         "vendor": "Jainam",
@@ -143,7 +167,9 @@
         "dairy": false,
         "gluten": false
     },
-    "Peanuts (Dry)": {
+    "13": {
+        "id":"13",
+        "name": "Peanuts (Dry)",
         "ingredientType": "Pulses",
         "storageType": "Provisions",
         "vendor": "Jainam",
@@ -155,7 +181,9 @@
         "dairy": false,
         "gluten": false
     },
-    "Sunflower Seeds": {
+    "14": {
+        "id":"14",
+        "name": "Sunflower Seeds",
         "ingredientType": "Seeds",
         "storageType": "Provisions",
         "vendor": "Mansookhlal",
@@ -167,7 +195,9 @@
         "dairy": false,
         "gluten": false
     },
-    "Dates (Seedless)": {
+    "15": {
+        "id":"15",
+        "name": "Dates (Seedless)",
         "ingredientType": "Special Provisions",
         "storageType": "Special Provisions",
         "vendor": "Mansookhlal",
@@ -179,7 +209,9 @@
         "dairy": false,
         "gluten": false
     },
-    "Chia Seeds": {
+    "16": {
+        "id":"16",
+        "name": "Chia Seeds",
         "ingredientType": "Special Provisions",
         "storageType": "Special Provisions",
         "vendor": "Mansookhlal",
@@ -191,7 +223,9 @@
         "dairy": false,
         "gluten": false
     },
-    "Banana (Ripe)": {
+    "17": {
+        "id":"17",
+        "name": "Banana (Ripe)",
         "ingredientType": "Fruit",
         "storageType": "Veg and Fruit",
         "vendor": "K.V.M. / Locally",
@@ -203,7 +237,9 @@
         "dairy": false,
         "gluten": false
     },
-    "Bajra Grain": {
+    "18": {
+        "id":"18",
+        "name": "Bajra Grain",
         "ingredientType": "Cereals",
         "storageType": "Provisions",
         "vendor": "Jainam",
@@ -215,7 +251,9 @@
         "dairy": false,
         "gluten": false
     },
-    "Jowar Grain": {
+    "19": {
+        "id":"19",
+        "name": "Jowar Grain",
         "ingredientType": "Cereals",
         "storageType": "Provisions",
         "vendor": "Jainam",
@@ -227,7 +265,9 @@
         "dairy": false,
         "gluten": false
     },
-    "Nachni": {
+    "20": {
+        "id":"20",
+        "name": "Nachni",
         "ingredientType": "Cereals",
         "storageType": "Provisions",
         "vendor": "Jainam",
