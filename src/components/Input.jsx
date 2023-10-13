@@ -14,10 +14,14 @@ const Input = ({ type = "text", textInputProps, selectProps }) => {
         selected={selected}
         onChange={onChange}
         defaultValue={defaultValue}
-        className="rounded-md border border-black pl-2 w-full"
+        className="rounded-md border border-black pl-2 w-full cursor-pointer"
       >
-        {options.map((option) => {
-          return <option value={option}>{option}</option>;
+        {options.map((option, index) => {
+          return (
+            <option key={index} value={option.value}>
+              {option.text}
+            </option>
+          );
         })}
       </select>
     );

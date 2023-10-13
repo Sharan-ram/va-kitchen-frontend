@@ -7,13 +7,15 @@ import { generateDaysOfMonth } from "@/helpers/utils";
 import Input from "@/components/Input";
 
 const Homepage = () => {
-  const meals = ["Breakfast", "Lunch", "Dinner"];
+  const meals = ["breakfast", "lunch", "dinner"];
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const [headcount, setHeadcount] = useState();
   const [veganCount, setVeganCount] = useState();
   const [nonVeganCount, setNonVeganCount] = useState();
   const [mealPlan, setMealPlan] = useState({});
   const [season, setSeason] = useState();
+  const [month, setMonth] = useState();
+  const [year, setYear] = useState();
   const [dropdowns, setDropdowns] = useState({});
   const [mounted, setMounted] = useState(false);
   const [showMealPlan, setShowMealPlan] = useState(false);
@@ -31,34 +33,10 @@ const Homepage = () => {
     }
   }, []);
 
-  // Function to check if a date is Sunday
-  const isSunday = (date) => date.getDay() === 0;
+  // const isSunday = (date) => date.getDay() === 0;
+  const daysOfMonth = generateDaysOfMonth(year, Number(month) - 1);
 
-  console.log({ mealPlan, mounted });
-
-  // function generateDaysOfMonth() {
-  //   const currentDate = new Date();
-  //   const currentYear = currentDate.getFullYear();
-  //   const currentMonth = currentDate.getMonth();
-  //   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate(); // Get the last day of the current month
-
-  //   const days = [];
-  //   for (let day = 1; day <= daysInMonth; day++) {
-  //     days.push(new Date(currentYear, currentMonth, day));
-  //   }
-
-  //   return days;
-  // }
-
-  const currentDate = new Date(); // Use the current date or any other date
-  const daysOfMonth = generateDaysOfMonth(currentDate);
-
-  //   const days = daysOfMonth.map((day) => {
-  //     console.log({day})
-  //     const dayOfMonth = day.getDate(); // Get the day of the month (1 to 31)
-  //     // Render each day of the month in your tabular column
-  //     return dayOfMonth
-  //   });
+  console.log({ daysOfMonth, year, month: Number(month) - 1 });
 
   const getDropdownsForAMeal = ({ date, meal }) => {
     const cell = [];
@@ -102,8 +80,12 @@ const Homepage = () => {
             className="rounded-md border border-black pl-2"
           >
             <option value="Select Recipe">Select Recipe</option>
-            {Object.keys(recipes).map((option) => {
-              return <option value={option}>{option}</option>;
+            {Object.keys(recipes).map((option, index) => {
+              return (
+                <option value={option} key={index}>
+                  {recipes[option].name}
+                </option>
+              );
             })}
           </select>
         </div>
@@ -160,35 +142,67 @@ const Homepage = () => {
             <div>
               <p className="font-semibold">Season</p>
             </div>
-            <select
-              selected={season}
-              onChange={(e) => setSeason(e.target.value)}
-              key={season}
-              defaultValue={season}
-              className="rounded-md border border-black pl-2"
-            >
-              <option value="Select Seaon">Select Season</option>
-              <option value="summerQuantity">Summer</option>
-              <option value="monsoonQuantity">Monsoon</option>
-              <option value="winterQuantity">Winter</option>
-              <option value="retreatQuantity">Retreat</option>
-            </select>
-            {/* <Input
+            <Input
               type="select"
+              key={season}
               selectProps={{
                 selected: season,
                 onChange: (e) => setSeason(e.target.value),
-                key: season,
                 defaultValue: season,
                 options: [
-                  "Select Season",
-                  "summerQuantity",
-                  "monsoonQuantity",
-                  "winterQuantity",
-                  "reatreatQuantity",
-                ]
+                  { text: "Summer", value: "summerQuantity" },
+                  { text: "Monsoon", value: "monsoonQuantity" },
+                  { text: "Winter", value: "winterQuantity" },
+                  { text: "Retreat", value: "retreatQuantity" },
+                ],
               }}
-            /> */}
+            />
+          </div>
+          <div>
+            <div>
+              <p className="font-semibold">Month</p>
+            </div>
+            <Input
+              type="select"
+              key={month}
+              selectProps={{
+                selected: month,
+                onChange: (e) => setMonth(e.target.value),
+                defaultValue: month,
+                options: [
+                  { text: "January", value: "01" },
+                  { text: "February", value: "02" },
+                  { text: "March", value: "03" },
+                  { text: "April", value: "04" },
+                  { text: "May", value: "05" },
+                  { text: "June", value: "06" },
+                  { text: "July", value: "07" },
+                  { text: "August", value: "08" },
+                  { text: "September", value: "09" },
+                  { text: "October", value: "10" },
+                  { text: "November", value: "11" },
+                  { text: "December", value: "12" },
+                ],
+              }}
+            />
+          </div>
+          <div>
+            <div>
+              <p className="font-semibold">Year</p>
+            </div>
+            <Input
+              type="select"
+              key={year}
+              selectProps={{
+                selected: year,
+                onChange: (e) => setYear(e.target.value),
+                defaultValue: year,
+                options: [
+                  { text: "2023", value: "2023" },
+                  { text: "2024", value: "2024" },
+                ],
+              }}
+            />
           </div>
           <div>
             <button
@@ -251,9 +265,9 @@ const Homepage = () => {
                     </tr>
                   );
                 })}
-                {daysOfMonth.some(isSunday) && (
+                {/* {daysOfMonth.some(isSunday) && (
                   <tr style={{ height: "30px" }} />
-                )}
+                )} */}
               </tbody>
             </table>
             <button
