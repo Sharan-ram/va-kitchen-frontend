@@ -8,3 +8,19 @@ export function generateDaysOfMonth(year, month) {
 
   return days;
 }
+
+export const getRecipesForMeal = ({ date, meal, year, month, mealPlan }) => {
+  if (!date || !meal || !year || !month || !mealPlan) return;
+  const monthlyMealPlan = mealPlan?.[`${month}-${year}`];
+  if (monthlyMealPlan) {
+    const dailyMealPlan = monthlyMealPlan[`${date}`];
+    if (dailyMealPlan) {
+      if (dailyMealPlan?.[meal]) {
+        return dailyMealPlan?.[meal].recipes;
+      }
+      return;
+    }
+    return;
+  }
+  return;
+};
