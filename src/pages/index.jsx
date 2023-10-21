@@ -57,7 +57,7 @@ const Homepage = () => {
                           ? [
                               ...recipesForMeal.slice(0, i),
                               recipes[e.target.value],
-                              ...recipesForMeal.slice(i),
+                              ...recipesForMeal.slice(i + 1),
                             ]
                           : [recipes[e.target.value]],
                       },
