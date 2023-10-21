@@ -3,77 +3,85 @@ import { useState, useEffect } from "react";
 import recipes from "../recipes.json";
 import ingredients from "../ingredients.json";
 import { useRouter } from "next/router";
-import { generateDaysOfMonth } from "@/helpers/utils";
+import { generateDaysOfMonth, getRecipesForMeal } from "@/helpers/utils";
 import Input from "@/components/Input";
 
 const Homepage = () => {
   const meals = ["breakfast", "lunch", "dinner"];
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const [headcount, setHeadcount] = useState();
   const [veganCount, setVeganCount] = useState();
   const [nonVeganCount, setNonVeganCount] = useState();
   const [mealPlan, setMealPlan] = useState({});
   const [season, setSeason] = useState();
   const [month, setMonth] = useState();
   const [year, setYear] = useState();
-  const [dropdowns, setDropdowns] = useState({});
-  const [mounted, setMounted] = useState(false);
   const [showMealPlan, setShowMealPlan] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    if (window) {
-      setMealPlan(JSON.parse(localStorage.getItem("mealPlan")));
-      setVeganCount(Number(JSON.parse(localStorage.getItem("veganCount"))));
-      setNonVeganCount(
-        Number(JSON.parse(localStorage.getItem("nonVeganCount")))
-      );
-      setSeason(JSON.parse(localStorage.getItem("season")));
-      setMounted(true);
-    }
-  }, []);
-
-  // const isSunday = (date) => date.getDay() === 0;
   const daysOfMonth = generateDaysOfMonth(year, Number(month) - 1);
-
-  console.log({ daysOfMonth, year, month: Number(month) - 1 });
 
   const getDropdownsForAMeal = ({ date, meal }) => {
     const cell = [];
+    const recipesForMeal = getRecipesForMeal({
+      date,
+      meal,
+      year,
+      month,
+      mealPlan,
+    });
+    const recipeMealLength = recipesForMeal?.length || 0;
 
-    const getExitStrategy = () => {
-      const recipes = mealPlan ? mealPlan[`${date}-${meal}`] : undefined;
-      const mealDropdownsLength = dropdowns[`${date}-${meal}`];
-      if (recipes) {
-        if (mealDropdownsLength) {
-          return recipes.length > mealDropdownsLength
-            ? recipes.length
-            : mealDropdownsLength;
-        }
-        return recipes.length;
-      }
-      if (mealDropdownsLength) return mealDropdownsLength;
-      return 1;
-    };
-
-    for (let i = 0; i < getExitStrategy(); i++) {
+    for (let i = 0; i <= recipeMealLength; i++) {
+      const singleRecipeForMeal = recipesForMeal?.[i];
+      const singleMealId = singleRecipeForMeal?.id;
       cell.push(
         <div className="mb-2">
           <select
-            key={mealPlan ? mealPlan[`${date}-${meal}`]?.[i] : i}
-            selected={
-              mealPlan ? mealPlan[`${date}-${meal}`]?.[i] : "Select Recipe"
-            }
-            defaultValue={
-              mealPlan ? mealPlan[`${date}-${meal}`]?.[i] : "Select Recipe"
-            }
+            key={singleMealId}
+            selected={singleMealId || "Select Recipe"}
+            defaultValue={singleMealId || "Select Recipe"}
             onChange={(e) => {
               let newMealPlan = Object.assign(mealPlan || {});
-              if (newMealPlan[`${date}-${meal}`]) {
-                newMealPlan[`${date}-${meal}`][i] = e.target.value;
+              if (newMealPlan[`${month}-${year}`]) {
+                newMealPlan = {
+                  ...newMealPlan,
+                  [`${month}-${year}`]: {
+                    ...newMealPlan[`${month}-${year}`],
+                    [`${date}`]: {
+                      ...newMealPlan[`${month}-${year}`]?.[`${date}`],
+                      [meal]: {
+                        ...newMealPlan?.[`${month}-${year}`]?.[`${date}`]?.[
+                          meal
+                        ],
+                        recipes: recipesForMeal
+                          ? [
+                              ...recipesForMeal.slice(0, i),
+                              recipes[e.target.value],
+                              ...recipesForMeal.slice(i),
+                            ]
+                          : [recipes[e.target.value]],
+                      },
+                    },
+                  },
+                };
               } else {
-                newMealPlan[`${date}-${meal}`] = [];
-                newMealPlan[`${date}-${meal}`][i] = e.target.value;
+                newMealPlan = {
+                  ...newMealPlan,
+                  [`${month}-${year}`]: {
+                    [`${date}`]: {
+                      [meal]: {
+                        recipes: [],
+                        veganCount,
+                        nonVeganCount,
+                      },
+                    },
+                    season,
+                    veganCount,
+                    nonVeganCount,
+                  },
+                };
+                newMealPlan[`${month}-${year}`][`${date}`][meal].recipes[i] =
+                  recipes[e.target.value];
               }
               setMealPlan(newMealPlan);
             }}
@@ -96,14 +104,13 @@ const Homepage = () => {
   };
 
   const submitMealPlan = () => {
-    if (veganCount !== undefined && nonVeganCount !== undefined && season) {
-      //   togglePurchaseOrder(true);
-      //   setPurchaseOrder(getPurchaseOrder());
+    if (
+      veganCount !== undefined &&
+      nonVeganCount !== undefined &&
+      season !== undefined &&
+      year !== undefined
+    ) {
       localStorage.setItem("mealPlan", JSON.stringify(mealPlan));
-      localStorage.setItem("veganCount", JSON.stringify(veganCount));
-      localStorage.setItem("nonVeganCount", JSON.stringify(nonVeganCount));
-      localStorage.setItem("season", JSON.stringify(season));
-      localStorage.setItem("tempRecipes", JSON.stringify(recipes));
       router.push("/meal-plan");
     }
   };
@@ -206,7 +213,11 @@ const Homepage = () => {
           </div>
           <div>
             <button
-              onClick={() => setShowMealPlan(true)}
+              onClick={() => {
+                const mealPlan = JSON.parse(localStorage.getItem("mealPlan"));
+                setShowMealPlan(true);
+                setMealPlan(mealPlan);
+              }}
               className="bg-[#666666] text-white px-4 py-2 rounded-[5px] mt-6"
             >
               Show Meal plan
@@ -240,34 +251,12 @@ const Homepage = () => {
                             key={`${date}-${meal}`}
                           >
                             {getDropdownsForAMeal({ date, meal })}
-                            <button
-                              onClick={() => {
-                                if (dropdowns[`${date}-${meal}`]) {
-                                  setDropdowns({
-                                    ...dropdowns,
-                                    [`${date}-${meal}`]:
-                                      dropdowns[`${date}-${meal}`] + 1,
-                                  });
-                                } else {
-                                  setDropdowns({
-                                    ...dropdowns,
-                                    [`${date}-${meal}`]: 2,
-                                  });
-                                }
-                              }}
-                              className="bg-[#999999] text-white w-10 rounded"
-                            >
-                              +
-                            </button>
                           </td>
                         );
                       })}
                     </tr>
                   );
                 })}
-                {/* {daysOfMonth.some(isSunday) && (
-                  <tr style={{ height: "30px" }} />
-                )} */}
               </tbody>
             </table>
             <button
