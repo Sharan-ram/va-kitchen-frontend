@@ -132,7 +132,7 @@ const Mealplan = () => {
             }}
           />
         </div>
-        <div>
+        {/* <div>
           <div>
             <p className="font-semibold">Vegan Count</p>
           </div>
@@ -157,7 +157,7 @@ const Mealplan = () => {
               disabled: true,
             }}
           />
-        </div>
+        </div> */}
         <div>
           <button
             onClick={() => toggleMealPlan(true)}
