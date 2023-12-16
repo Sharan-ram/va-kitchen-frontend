@@ -50,7 +50,7 @@ const Mealplan = () => {
 
   const { toPDF, targetRef } = usePDF({ filename: "purchase-order.pdf" });
 
-  const meals = ["Breakfast", "Lunch", "Dinner"];
+  const meals = ["breakfast", "lunch", "dinner"];
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   const daysOfMonth = useMemo(() => {
@@ -277,40 +277,44 @@ const Mealplan = () => {
                       Number(date.date) >= Number(startDate) &&
                       Number(date.date) <= Number(endDate)
                     ) {
-                      console.log("these dates will be returned", date);
                       return true;
                     }
                     return false;
                   })
                   .map((day, index) => {
                     const { date, day: dayName } = day;
-                    console.log({ day });
                     return (
                       <tr className="border border-black" key={date}>
                         <td className="border-r border-r-black font-bold text-lg p-4">{`${date}, ${weekDays[dayName]}`}</td>
                         {meals.map((meal) => {
+                          console.log(
+                            "recipes",
+                            mealPlan[`${month}-${year}`][`${date}`]?.[meal]
+                              ?.recipes,
+                            date
+                          );
                           return (
                             <td
                               className="border-r border-r-black p-4"
                               key={`${date}-${meal}`}
                             >
                               {/* {getDropdownsForAMeal({ date, meal })} */}
-                              {mealPlan[`${date}-${meal}`]?.map(
-                                (recipe, index) => {
-                                  return (
-                                    <div
-                                      key={index}
-                                      className="cursor-pointer rounded p-2 mb-2 bg-[#E8E3E4]"
-                                      onClick={() => {
-                                        setActiveRecipe(recipe);
-                                        toggleModal(true);
-                                      }}
-                                    >
-                                      {recipe}
-                                    </div>
-                                  );
-                                }
-                              )}
+                              {mealPlan[`${month}-${year}`][`${date}`]?.[
+                                meal
+                              ]?.recipes?.map((recipe, index) => {
+                                return (
+                                  <div
+                                    key={index}
+                                    className="cursor-pointer rounded p-2 mb-2 bg-[#E8E3E4]"
+                                    onClick={() => {
+                                      setActiveRecipe(recipe);
+                                      toggleModal(true);
+                                    }}
+                                  >
+                                    {recipe.name}
+                                  </div>
+                                );
+                              })}
                             </td>
                           );
                         })}
