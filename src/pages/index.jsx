@@ -104,6 +104,8 @@ const Homepage = () => {
     return cell;
   };
 
+  console.log({ mealPlan });
+
   const submitMealPlan = () => {
     if (
       veganCount !== undefined &&
