@@ -85,7 +85,8 @@ const Mealplan = () => {
     });
   };
 
-  const filteredMealPlan = filterMealPlanForDateRange(mealPlan);
+  // const filteredMealPlan = filterMealPlanForDateRange(mealPlan);
+  const filteredMealPlan = [];
 
   const getPurchaseOrder = () => {
     const obj = {};
@@ -276,12 +277,14 @@ const Mealplan = () => {
                       Number(date.date) >= Number(startDate) &&
                       Number(date.date) <= Number(endDate)
                     ) {
+                      console.log("these dates will be returned", date);
                       return true;
                     }
                     return false;
                   })
                   .map((day, index) => {
-                    const { date, dayName } = day;
+                    const { date, day: dayName } = day;
+                    console.log({ day });
                     return (
                       <tr className="border border-black" key={date}>
                         <td className="border-r border-r-black font-bold text-lg p-4">{`${date}, ${weekDays[dayName]}`}</td>
