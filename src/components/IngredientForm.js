@@ -1,6 +1,11 @@
 import { useState } from "react";
 import axios from "axios";
-import { purchaseUnits } from "@/helpers/constants";
+import {
+  purchaseUnits,
+  ingredientType,
+  storageType,
+  vendors,
+} from "@/helpers/constants";
 import Input from "./Input";
 
 const IngredientForm = () => {
@@ -83,13 +88,18 @@ const IngredientForm = () => {
           >
             Ingredient Type
           </label>
-          <input
-            type="text"
-            id="ingredientType"
-            name="ingredientType"
-            value={formData.ingredientType}
-            onChange={handleChange}
-            className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+          <Input
+            type="select" // Set type to "select" for dropdown
+            selectProps={{
+              selected: formData.ingredientType,
+              onChange: handleChange,
+              defaultValue: "", // Default value if needed
+              options: [
+                { value: "", text: "Select ingredient type" },
+                ...ingredientType,
+              ],
+            }}
+            classes={{ wrapper: "mt-1" }}
           />
         </div>
         <div className="mb-4">
@@ -99,13 +109,18 @@ const IngredientForm = () => {
           >
             Storage Type
           </label>
-          <input
-            type="text"
-            id="storageType"
-            name="storageType"
-            value={formData.storageType}
-            onChange={handleChange}
-            className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+          <Input
+            type="select" // Set type to "select" for dropdown
+            selectProps={{
+              selected: formData.storageType,
+              onChange: handleChange,
+              defaultValue: "", // Default value if needed
+              options: [
+                { value: "", text: "Select storage type" },
+                ...storageType,
+              ],
+            }}
+            classes={{ wrapper: "mt-1" }}
           />
         </div>
         <div className="mb-4">
@@ -115,13 +130,15 @@ const IngredientForm = () => {
           >
             Vendor
           </label>
-          <input
-            type="text"
-            id="vendor"
-            name="vendor"
-            value={formData.vendor}
-            onChange={handleChange}
-            className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+          <Input
+            type="select" // Set type to "select" for dropdown
+            selectProps={{
+              selected: formData.vendor,
+              onChange: handleChange,
+              defaultValue: "", // Default value if needed
+              options: [{ value: "", text: "Select Vendor" }, ...vendors],
+            }}
+            classes={{ wrapper: "mt-1" }}
           />
         </div>
         <div className="mb-4">
@@ -151,7 +168,7 @@ const IngredientForm = () => {
               onChange: handleChange,
               defaultValue: "", // Default value if needed
               options: [
-                { value: "", text: "Select an option" },
+                { value: "", text: "Select purchase unit" },
                 ...purchaseUnits,
               ],
             }}
@@ -172,7 +189,7 @@ const IngredientForm = () => {
               onChange: handleChange,
               defaultValue: "", // Default value if needed
               options: [
-                { value: "", text: "Select an option" },
+                { value: "", text: "Select cooking unit" },
                 ...purchaseUnits,
               ],
             }}
