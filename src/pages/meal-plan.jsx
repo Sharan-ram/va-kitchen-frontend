@@ -1,6 +1,6 @@
 import "react-date-picker/dist/DatePicker.css";
 import "react-calendar/dist/Calendar.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import DatePicker from "react-date-picker";
 import { getDate } from "date-fns";
 import ingredients from "../ingredients.json";
@@ -11,6 +11,7 @@ import { usePDF } from "react-to-pdf";
 import UpdateRecipeModal from "@/components/UpdateRecipeModal";
 import PurchaseOrderModal from "@/components/PurchaseOrderModal";
 import IngredientsPerRecipePerMeal from "@/components/IngredientsPerRecipePerMeal";
+import { MONTHS } from "@/helpers/constants";
 
 const Mealplan = () => {
   const [mealPlan, setMealPlan] = useState();
@@ -20,8 +21,10 @@ const Mealplan = () => {
   const [purchaseOrder, setPurchaseOrder] = useState();
   const [showPurchaseOrder, togglePurchaseOrder] = useState(false);
   const [recipes, setRecipes] = useState();
-  const [startDate, changeStartDate] = useState(new Date());
-  const [endDate, changeEndDate] = useState(new Date());
+  const [startDate, changeStartDate] = useState();
+  const [endDate, changeEndDate] = useState();
+  const [month, setMonth] = useState();
+  const [year, setYear] = useState();
 
   const [showMealPlan, toggleMealPlan] = useState(false);
 
@@ -41,15 +44,37 @@ const Mealplan = () => {
     }
   }, []);
 
-  const startDateNumber = getDate(startDate);
-  const endDateNumber = getDate(endDate);
-  const currentDate = new Date(); // Use the current date or any other date
-  const daysOfMonth = generateDaysOfMonth(currentDate);
+  // const startDateNumber = getDate(startDate);
+  // const endDateNumber = getDate(endDate);
+  // const currentDate = new Date();
 
   const { toPDF, targetRef } = usePDF({ filename: "purchase-order.pdf" });
 
-  const meals = ["Breakfast", "Lunch", "Dinner"];
+  const meals = ["breakfast", "lunch", "dinner"];
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  const daysOfMonth = useMemo(() => {
+    if (!year || !month) {
+      return [];
+    }
+    return generateDaysOfMonth(year, Number(month) - 1).map((val) => {
+      return {
+        date: val.getDate(),
+        day: val.getDay(),
+      };
+    });
+  }, [month, year]);
+
+  const datesDropdownOptions = useMemo(() => {
+    return daysOfMonth.map((date) => {
+      return {
+        text: date.date,
+        value: date.date,
+      };
+    });
+  }, [daysOfMonth]);
+
+  console.log({ mealPlan, daysOfMonth });
 
   const filterMealPlanForDateRange = (mealPlan) => {
     return Object.keys(mealPlan || []).filter((meal) => {
@@ -60,7 +85,8 @@ const Mealplan = () => {
     });
   };
 
-  const filteredMealPlan = filterMealPlanForDateRange(mealPlan);
+  // const filteredMealPlan = filterMealPlanForDateRange(mealPlan);
+  const filteredMealPlan = [];
 
   const getPurchaseOrder = () => {
     const obj = {};
@@ -106,7 +132,7 @@ const Mealplan = () => {
   return (
     <div>
       <div className="flex justify-between w-9/12 items-center">
-        <div>
+        {/* <div>
           <div>
             <p className="font-semibold">Select Start Date</p>
           </div>
@@ -131,8 +157,71 @@ const Mealplan = () => {
               changeEndDate(date);
             }}
           />
+        </div> */}
+        <div>
+          <div>
+            <p className="font-semibold">Month</p>
+          </div>
+          <Input
+            type="select"
+            key={month}
+            selectProps={{
+              selected: month,
+              onChange: (e) => setMonth(e.target.value),
+              defaultValue: month,
+              options: MONTHS,
+            }}
+          />
         </div>
         <div>
+          <div>
+            <p className="font-semibold">Year</p>
+          </div>
+          <Input
+            type="select"
+            key={year}
+            selectProps={{
+              selected: year,
+              onChange: (e) => setYear(e.target.value),
+              defaultValue: year,
+              options: [
+                { text: "2023", value: "2023" },
+                { text: "2024", value: "2024" },
+              ],
+            }}
+          />
+        </div>
+        <div>
+          <div>
+            <p className="font-semibold">Start Date</p>
+          </div>
+          <Input
+            type="select"
+            key={startDate}
+            selectProps={{
+              selected: startDate,
+              onChange: (e) => changeStartDate(e.target.value),
+              defaultValue: startDate,
+              options: datesDropdownOptions,
+            }}
+          />
+        </div>
+        <div>
+          <div>
+            <p className="font-semibold">End Date</p>
+          </div>
+          <Input
+            type="select"
+            key={endDate}
+            selectProps={{
+              selected: endDate,
+              onChange: (e) => changeEndDate(e.target.value),
+              defaultValue: endDate,
+              options: datesDropdownOptions,
+            }}
+          />
+        </div>
+        {/* <div>
           <div>
             <p className="font-semibold">Vegan Count</p>
           </div>
@@ -157,7 +246,7 @@ const Mealplan = () => {
               disabled: true,
             }}
           />
-        </div>
+        </div> */}
         <div>
           <button
             onClick={() => toggleMealPlan(true)}
@@ -183,21 +272,19 @@ const Mealplan = () => {
               </thead>
               <tbody>
                 {daysOfMonth
-                  .filter((day) => {
-                    const dateNumber = Number(day.getDate());
+                  .filter((date) => {
                     if (
-                      Number(dateNumber) >= startDateNumber &&
-                      Number(dateNumber) <= endDateNumber
+                      Number(date.date) >= Number(startDate) &&
+                      Number(date.date) <= Number(endDate)
                     ) {
                       return true;
                     }
                     return false;
                   })
                   .map((day, index) => {
-                    const date = day.getDate();
-                    const dayName = day.getDay();
+                    const { date, day: dayName } = day;
                     return (
-                      <tr className="border border-black" key={day}>
+                      <tr className="border border-black" key={date}>
                         <td className="border-r border-r-black font-bold text-lg p-4">{`${date}, ${weekDays[dayName]}`}</td>
                         {meals.map((meal) => {
                           return (
@@ -206,21 +293,22 @@ const Mealplan = () => {
                               key={`${date}-${meal}`}
                             >
                               {/* {getDropdownsForAMeal({ date, meal })} */}
-                              {mealPlan[`${date}-${meal}`]?.map(
-                                (recipe, index) => {
-                                  return (
-                                    <div
-                                      className="cursor-pointer rounded p-2 mb-2 bg-[#E8E3E4]"
-                                      onClick={() => {
-                                        setActiveRecipe(recipe);
-                                        toggleModal(true);
-                                      }}
-                                    >
-                                      {recipe}
-                                    </div>
-                                  );
-                                }
-                              )}
+                              {mealPlan[`${month}-${year}`][`${date}`]?.[
+                                meal
+                              ]?.recipes?.map((recipe, index) => {
+                                return (
+                                  <div
+                                    key={index}
+                                    className="cursor-pointer rounded p-2 mb-2 bg-[#E8E3E4]"
+                                    onClick={() => {
+                                      setActiveRecipe(recipe);
+                                      toggleModal(true);
+                                    }}
+                                  >
+                                    {recipe.name}
+                                  </div>
+                                );
+                              })}
                             </td>
                           );
                         })}
