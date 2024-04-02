@@ -26,6 +26,7 @@ export const purchaseUnits = [
 export const ingredientType = [
   { text: "Spices", value: "spices" },
   { text: "Cereals", value: "cereals" },
+  { text: "Provisions", value: "provisions" },
   { text: "Special Provisions", value: "special provisions" },
   { text: "Veg", value: "veg" },
   { text: "Fruit", value: "fruit" },

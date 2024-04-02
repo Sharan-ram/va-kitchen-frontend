@@ -8,19 +8,21 @@ import {
 } from "@/helpers/constants";
 import Input from "./Input";
 
+const initialFormState = {
+  name: "",
+  englishEquivalent: "",
+  ingredientType: "",
+  storageType: "",
+  vendor: "",
+  sponsored: false,
+  purchaseUnit: "",
+  cookingUnit: "",
+  purchaseUnitPerCookingUnit: "",
+  price: "",
+};
+
 const IngredientForm = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    englishEquivalent: "",
-    ingredientType: "",
-    storageType: "",
-    vendor: "",
-    sponsored: false,
-    purchaseUnit: "",
-    cookingUnit: "",
-    purchaseUnitPerCookingUnit: "",
-    price: "",
-  });
+  const [formData, setFormData] = useState(initialFormState);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -34,12 +36,16 @@ const IngredientForm = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `${process.env.BACKEND_URL}/ingredient`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient`,
         {
           ...formData,
+          purchaseUnitPerCookingUnit: Number(
+            formData.purchaseUnitPerCookingUnit
+          ),
         }
       );
       console.log({ response });
+      setFormData(initialFormState);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -98,6 +104,7 @@ const IngredientForm = () => {
                 { value: "", text: "Select ingredient type" },
                 ...ingredientType,
               ],
+              name: "ingredientType",
             }}
             classes={{ wrapper: "mt-1" }}
           />
@@ -119,6 +126,7 @@ const IngredientForm = () => {
                 { value: "", text: "Select storage type" },
                 ...storageType,
               ],
+              name: "storageType",
             }}
             classes={{ wrapper: "mt-1" }}
           />
@@ -137,6 +145,7 @@ const IngredientForm = () => {
               onChange: handleChange,
               defaultValue: "", // Default value if needed
               options: [{ value: "", text: "Select Vendor" }, ...vendors],
+              name: "vendor",
             }}
             classes={{ wrapper: "mt-1" }}
           />
@@ -171,6 +180,7 @@ const IngredientForm = () => {
                 { value: "", text: "Select purchase unit" },
                 ...purchaseUnits,
               ],
+              name: "purchaseUnit",
             }}
             classes={{ wrapper: "mt-1" }}
           />
@@ -192,6 +202,7 @@ const IngredientForm = () => {
                 { value: "", text: "Select cooking unit" },
                 ...purchaseUnits,
               ],
+              name: "cookingUnit",
             }}
             classes={{ wrapper: "mt-1" }}
           />
