@@ -1,6 +1,6 @@
 import IngredientForm from "@/components/IngredientForm";
 
-const IngredientsPage = () => {
+const CreateIngredientPage = () => {
   return (
     <div>
       <IngredientForm />
@@ -8,4 +8,4 @@ const IngredientsPage = () => {
   );
 };
 
-export default IngredientsPage;
+export default CreateIngredientPage;
