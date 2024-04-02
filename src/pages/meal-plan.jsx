@@ -287,12 +287,6 @@ const Mealplan = () => {
                       <tr className="border border-black" key={date}>
                         <td className="border-r border-r-black font-bold text-lg p-4">{`${date}, ${weekDays[dayName]}`}</td>
                         {meals.map((meal) => {
-                          console.log(
-                            "recipes",
-                            mealPlan[`${month}-${year}`][`${date}`]?.[meal]
-                              ?.recipes,
-                            date
-                          );
                           return (
                             <td
                               className="border-r border-r-black p-4"
