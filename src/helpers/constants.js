@@ -12,3 +12,13 @@ export const MONTHS = [
   { text: "November", value: "11" },
   { text: "December", value: "12" },
 ];
+
+export const purchaseUnits = [
+  { text: "KG", value: "kg" },
+  { text: "L", value: "l" },
+  { text: "B", value: "b" },
+  { text: "Nos", value: "nos" },
+  { text: "BTLS", value: "btls" },
+  { text: "Packs", value: "packs" },
+  { text: "Tins", value: "tins" },
+];
