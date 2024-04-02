@@ -1,5 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
+import { purchaseUnits } from "@/helpers/constants";
+import Input from "./Input";
 
 const IngredientForm = () => {
   const [formData, setFormData] = useState({
@@ -142,13 +144,18 @@ const IngredientForm = () => {
           >
             Purchase Unit
           </label>
-          <input
-            type="text"
-            id="purchaseUnit"
-            name="purchaseUnit"
-            value={formData.purchaseUnit}
-            onChange={handleChange}
-            className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+          <Input
+            type="select" // Set type to "select" for dropdown
+            selectProps={{
+              selected: formData.purchaseUnit,
+              onChange: handleChange,
+              defaultValue: "", // Default value if needed
+              options: [
+                { value: "", text: "Select an option" },
+                ...purchaseUnits,
+              ],
+            }}
+            classes={{ wrapper: "mt-1" }}
           />
         </div>
         <div className="mb-4">
@@ -158,13 +165,18 @@ const IngredientForm = () => {
           >
             Cooking Unit
           </label>
-          <input
-            type="text"
-            id="cookingUnit"
-            name="cookingUnit"
-            value={formData.cookingUnit}
-            onChange={handleChange}
-            className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+          <Input
+            type="select" // Set type to "select" for dropdown
+            selectProps={{
+              selected: formData.cookingUnit,
+              onChange: handleChange,
+              defaultValue: "", // Default value if needed
+              options: [
+                { value: "", text: "Select an option" },
+                ...purchaseUnits,
+              ],
+            }}
+            classes={{ wrapper: "mt-1" }}
           />
         </div>
         <div className="mb-4">
