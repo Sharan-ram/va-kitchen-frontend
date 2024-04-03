@@ -312,13 +312,27 @@ const RecipeForm = () => {
                   />
                 </div>
               </div>
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded-md cursor-pointer"
+                onClick={() => {
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    ingredients: formData.ingredients.filter(
+                      (_, i) => i !== index
+                    ),
+                  }));
+                  setSearchText(searchText.filter((_, i) => i !== index));
+                }}
+              >
+                Delete ingredient
+              </button>
             </div>
           );
         })}
         <button
           type="button"
           onClick={handleAddIngredient}
-          className={`px-4 py-2 rounded-md ${
+          className={`px-4 py-2 rounded-md mt-5 ${
             isFormFilled()
               ? "bg-blue-500 text-white"
               : "bg-gray-300 text-gray-600 cursor-not-allowed"
