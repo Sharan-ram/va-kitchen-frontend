@@ -1,20 +1,13 @@
 import { useState } from "react";
 import axios from "axios";
 import Input from "./Input"; // Assuming you have an Input component for text and select fields
+import classNames from "classnames";
 
 const RecipeForm = () => {
   const [formData, setFormData] = useState({
     name: "",
     type: "",
-    ingredients: [
-      {
-        name: "",
-        summerQuantity: "",
-        winterQuantity: "",
-        monsoonQuantity: "",
-        retreatQuantity: "",
-      },
-    ],
+    ingredients: [],
   });
 
   const [searchText, setSearchText] = useState([]);
@@ -319,27 +312,31 @@ const RecipeForm = () => {
                   />
                 </div>
               </div>
-              {index === formData.ingredients.length - 1 && (
-                <button
-                  type="button"
-                  onClick={handleAddIngredient}
-                  className={`px-4 py-2 rounded-md ${
-                    isFormFilled()
-                      ? "bg-blue-500 text-white"
-                      : "bg-gray-300 text-gray-600 cursor-not-allowed"
-                  }`}
-                  disabled={!isFormFilled()}
-                >
-                  Add Ingredient
-                </button>
-              )}
             </div>
           );
         })}
+        <button
+          type="button"
+          onClick={handleAddIngredient}
+          className={`px-4 py-2 rounded-md ${
+            isFormFilled()
+              ? "bg-blue-500 text-white"
+              : "bg-gray-300 text-gray-600 cursor-not-allowed"
+          }`}
+          disabled={!isFormFilled()}
+        >
+          Add Ingredient
+        </button>
         <div className="mt-6">
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            className={classNames(
+              "px-4 py-2 bg-blue-500 text-white rounded-md",
+              !isFormFilled() || formData.ingredients.length === 0
+                ? "hover:bg-blue-200 cursor-not-allowed"
+                : "hover:bg-blue-600"
+            )}
+            disabled={!isFormFilled() || formData.ingredients.length === 0}
           >
             Submit
           </button>
