@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 import Input from "./Input"; // Assuming you have an Input component for text and select fields
 
 const RecipeForm = () => {
@@ -33,7 +34,7 @@ const RecipeForm = () => {
     }));
   };
 
-  console.log({ formData });
+  // console.log({ formData });
 
   const handleAddIngredient = () => {
     setFormData((prevData) => ({
@@ -51,9 +52,11 @@ const RecipeForm = () => {
     }));
   };
 
+  console.log({ showSearchResults });
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log({ formData });
+    // console.log({ formData });
   };
 
   const isIngredientFilled = (ingredient) => {
@@ -61,8 +64,6 @@ const RecipeForm = () => {
   };
 
   const isFormFilled = () => {
-    if (formData.name.trim() === "" || formData.type.trim() === "")
-      return false;
     return formData.ingredients.every((ingredient) =>
       isIngredientFilled(ingredient)
     );
@@ -73,18 +74,15 @@ const RecipeForm = () => {
   const handleIngredientSearch = (e) => {
     const { value } = e.target;
     try {
-      setSearchText((prevData) => ({
-        ...prevData,
-        searchText: value,
-      }));
+      setSearchText(value);
       if (value.length >= 3) {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(async () => {
           const res = await axios.get(
-            `${process.env.BACKEND_URL}/ingredient?search=${searchText}`
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient?search=${value}`
           );
           console.log({ res });
-          setSearchResults();
+          setSearchResults(res.data.data);
           setShowSearchResults(true);
         }, 300);
       } else {
@@ -95,6 +93,26 @@ const RecipeForm = () => {
       console.error(e);
     }
   };
+
+  const selectIngredient = (ingredient, index) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      ingredients: [
+        ...prevData.ingredients.slice(0, index),
+        {
+          ...formData.ingredients[index],
+          name: ingredient.name,
+          _id: ingredient._id,
+        },
+        ...prevData.ingredients.slice(index + 1),
+      ],
+    }));
+    setSearchText("");
+    setShowSearchResults(false);
+    setSearchResults([]);
+  };
+
+  console.log({ formData });
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-md shadow-md">
@@ -154,131 +172,147 @@ const RecipeForm = () => {
             }}
           />
         </div>
-        {formData.ingredients.map((ingredient, index) => (
-          <div key={index} className="mt-4">
-            <div className="mb-4">
-              <label
-                htmlFor={`actualIngredient${index}`}
-                className="block text-base font-bold text-gray-700"
-              >
-                Ingredient
-              </label>
-              <Input
-                type="text"
-                textInputProps={{
-                  id: `id-${index}`,
-                  name: ingredient.name || `name-${index}`,
-                  value: ingredient.name || searchText,
-                  onChange: handleIngredientSearch,
-                }}
-                classes={{
-                  wrapper: "mt-1 p-2 border border-gray-300 rounded-md w-full",
-                }}
-              />
+        {formData.ingredients.map((ingredient, index) => {
+          console.log({ ingredient, searchText });
+          return (
+            <div key={index} className="mt-4 relative">
+              <div className="mb-4">
+                <label
+                  htmlFor={`actualIngredient${index}`}
+                  className="block text-base font-bold text-gray-700"
+                >
+                  Ingredient
+                </label>
+                <Input
+                  type="text"
+                  textInputProps={{
+                    id: `id-${index}`,
+                    name: ingredient.name || `name-${index}`,
+                    value: ingredient.name || searchText,
+                    onChange: handleIngredientSearch,
+                  }}
+                  classes={{
+                    wrapper:
+                      "mt-1 p-2 border border-gray-300 rounded-md w-full",
+                  }}
+                />
+                {showSearchResults && (
+                  <div className="absolute left-0 right-0 mt-2 bg-white border border-gray-300 rounded-md shadow-md">
+                    {searchResults.map((result, index) => (
+                      <div
+                        key={index}
+                        className="p-2 hover:bg-gray-100 cursor-pointer"
+                        onClick={() => selectIngredient(result, index)}
+                      >
+                        {result.name}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="mb-4">
+                  <label
+                    htmlFor={`summerQuantity${index}`}
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Summer Quantity
+                  </label>
+                  <Input
+                    type="text"
+                    textInputProps={{
+                      id: `summerQuantity${index}`,
+                      name: "summerQuantity",
+                      value: ingredient.summerQuantity,
+                      onChange: (e) => handleChange(e, index),
+                    }}
+                    classes={{
+                      wrapper:
+                        "mt-1 p-2 border border-gray-300 rounded-md w-full",
+                    }}
+                  />
+                </div>
+                <div className="mb-4">
+                  <label
+                    htmlFor={`winterQuantity${index}`}
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Winter Quantity
+                  </label>
+                  <Input
+                    type="text"
+                    textInputProps={{
+                      id: `winterQuantity${index}`,
+                      name: "winterQuantity",
+                      value: ingredient.winterQuantity,
+                      onChange: (e) => handleChange(e, index),
+                    }}
+                    classes={{
+                      wrapper:
+                        "mt-1 p-2 border border-gray-300 rounded-md w-full",
+                    }}
+                  />
+                </div>
+                <div className="mb-4">
+                  <label
+                    htmlFor={`monsoonQuantity${index}`}
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Monsoon Quantity
+                  </label>
+                  <Input
+                    type="text"
+                    textInputProps={{
+                      id: `monsoonQuantity${index}`,
+                      name: "monsoonQuantity",
+                      value: ingredient.monsoonQuantity,
+                      onChange: (e) => handleChange(e, index),
+                    }}
+                    classes={{
+                      wrapper:
+                        "mt-1 p-2 border border-gray-300 rounded-md w-full",
+                    }}
+                  />
+                </div>
+                <div className="mb-4">
+                  <label
+                    htmlFor={`retreatQuantity${index}`}
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Retreat Quantity
+                  </label>
+                  <Input
+                    type="text"
+                    textInputProps={{
+                      id: `retreatQuantity${index}`,
+                      name: "retreatQuantity",
+                      value: ingredient.retreatQuantity,
+                      onChange: (e) => handleChange(e, index),
+                    }}
+                    classes={{
+                      wrapper:
+                        "mt-1 p-2 border border-gray-300 rounded-md w-full",
+                    }}
+                  />
+                </div>
+              </div>
+              {index === formData.ingredients.length - 1 && (
+                <button
+                  type="button"
+                  onClick={handleAddIngredient}
+                  className={`px-4 py-2 rounded-md ${
+                    isFormFilled()
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-300 text-gray-600 cursor-not-allowed"
+                  }`}
+                  disabled={!isFormFilled()}
+                >
+                  Add Ingredient
+                </button>
+              )}
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="mb-4">
-                <label
-                  htmlFor={`summerQuantity${index}`}
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Summer Quantity
-                </label>
-                <Input
-                  type="text"
-                  textInputProps={{
-                    id: `searchText`,
-                    name: "searchText",
-                    value: searchText,
-                    onChange: (e) => setSearchText(e.target.value),
-                  }}
-                  classes={{
-                    wrapper:
-                      "mt-1 p-2 border border-gray-300 rounded-md w-full",
-                  }}
-                />
-              </div>
-              <div className="mb-4">
-                <label
-                  htmlFor={`winterQuantity${index}`}
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Winter Quantity
-                </label>
-                <Input
-                  type="text"
-                  textInputProps={{
-                    id: `winterQuantity${index}`,
-                    name: "winterQuantity",
-                    value: ingredient.winterQuantity,
-                    onChange: (e) => handleChange(e, index),
-                  }}
-                  classes={{
-                    wrapper:
-                      "mt-1 p-2 border border-gray-300 rounded-md w-full",
-                  }}
-                />
-              </div>
-              <div className="mb-4">
-                <label
-                  htmlFor={`monsoonQuantity${index}`}
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Monsoon Quantity
-                </label>
-                <Input
-                  type="text"
-                  textInputProps={{
-                    id: `monsoonQuantity${index}`,
-                    name: "monsoonQuantity",
-                    value: ingredient.monsoonQuantity,
-                    onChange: (e) => handleChange(e, index),
-                  }}
-                  classes={{
-                    wrapper:
-                      "mt-1 p-2 border border-gray-300 rounded-md w-full",
-                  }}
-                />
-              </div>
-              <div className="mb-4">
-                <label
-                  htmlFor={`retreatQuantity${index}`}
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Retreat Quantity
-                </label>
-                <Input
-                  type="text"
-                  textInputProps={{
-                    id: `retreatQuantity${index}`,
-                    name: "retreatQuantity",
-                    value: ingredient.retreatQuantity,
-                    onChange: (e) => handleChange(e, index),
-                  }}
-                  classes={{
-                    wrapper:
-                      "mt-1 p-2 border border-gray-300 rounded-md w-full",
-                  }}
-                />
-              </div>
-            </div>
-            {index === formData.ingredients.length - 1 && (
-              <button
-                type="button"
-                onClick={handleAddIngredient}
-                className={`px-4 py-2 rounded-md ${
-                  isFormFilled()
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-300 text-gray-600 cursor-not-allowed"
-                }`}
-                disabled={!isFormFilled()}
-              >
-                Add Ingredient
-              </button>
-            )}
-            <hr className="mt-4" />
-          </div>
-        ))}
+          );
+        })}
         <div className="mt-6">
           <button
             type="submit"
