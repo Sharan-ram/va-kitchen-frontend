@@ -17,7 +17,7 @@ const RecipeForm = () => {
     ],
   });
 
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState([]);
   const [searchResults, setSearchResults] = useState();
   const [showSearchResults, setShowSearchResults] = useState();
 
@@ -86,10 +86,16 @@ const RecipeForm = () => {
 
   let debounceTimer;
 
-  const handleIngredientSearch = (e) => {
+  console.log({ searchText });
+
+  const handleIngredientSearch = (e, index) => {
     const { value } = e.target;
     try {
-      setSearchText(value);
+      setSearchText([
+        ...searchText.slice(0, index),
+        value,
+        ...searchText.slice(index + 1),
+      ]);
       if (value.length >= 3) {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(async () => {
@@ -121,7 +127,7 @@ const RecipeForm = () => {
         ...prevData.ingredients.slice(index + 1),
       ],
     }));
-    setSearchText("");
+    // setSearchText("");
     setShowSearchResults(false);
     setSearchResults([]);
   };
@@ -199,8 +205,8 @@ const RecipeForm = () => {
                   textInputProps={{
                     id: `id-${index}`,
                     name: ingredient.name || `name-${index}`,
-                    value: ingredient.name || searchText,
-                    onChange: handleIngredientSearch,
+                    value: ingredient.name || searchText[index],
+                    onChange: (e) => handleIngredientSearch(e, index),
                   }}
                   classes={{
                     wrapper:
