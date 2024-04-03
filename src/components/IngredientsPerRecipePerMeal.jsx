@@ -31,9 +31,9 @@ const IngredientsPerRecipePerMeal = ({
                 {mealPlan[meal].map((recipe) => {
                   const ingredientsArr =
                     Object.keys(recipes[recipe]?.ingredients) || [];
-                  return ingredientsArr.map((ingredient) => {
+                  return ingredientsArr.map((ingredient, index) => {
                     return (
-                      <tr className="border border-black">
+                      <tr className="border border-black" key={index}>
                         <td className="border-r border-r-black p-4">{`${
                           meal.split("-")[0]
                         }`}</td>
