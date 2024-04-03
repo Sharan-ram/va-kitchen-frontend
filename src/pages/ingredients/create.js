@@ -1,6 +1,7 @@
 import IngredientForm from "@/components/IngredientForm";
 
-const CreateIngredientPage = () => {
+
+const CreateIngredientPage = () => 
   return (
     <div>
       <IngredientForm />
