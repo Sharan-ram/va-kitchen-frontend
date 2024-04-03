@@ -52,11 +52,26 @@ const RecipeForm = () => {
     }));
   };
 
-  console.log({ showSearchResults });
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log({ formData });
+    const { ingredients } = formData;
+    const newIngredients = ingredients.map((ingredient) => {
+      return {
+        ...ingredient,
+        summerQuantity: Number(ingredient.summerQuantity),
+        winterQuantity: Number(ingredient.winterQuantity),
+        monsoonQuantity: Number(ingredient.monsoonQuantity),
+        retreatQuantity: Number(ingredient.retreatQuantity),
+      };
+    });
+    const res = await axios.post(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/recipe`,
+      {
+        ...formData,
+        ingredients: newIngredients,
+      }
+    );
+    console.log({ res });
   };
 
   const isIngredientFilled = (ingredient) => {
@@ -81,7 +96,6 @@ const RecipeForm = () => {
           const res = await axios.get(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient?search=${value}`
           );
-          console.log({ res });
           setSearchResults(res.data.data);
           setShowSearchResults(true);
         }, 300);
@@ -111,8 +125,6 @@ const RecipeForm = () => {
     setShowSearchResults(false);
     setSearchResults([]);
   };
-
-  console.log({ formData });
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-md shadow-md">
@@ -173,7 +185,6 @@ const RecipeForm = () => {
           />
         </div>
         {formData.ingredients.map((ingredient, index) => {
-          console.log({ ingredient, searchText });
           return (
             <div key={index} className="mt-4 relative">
               <div className="mb-4">
