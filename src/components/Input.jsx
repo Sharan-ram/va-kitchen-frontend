@@ -8,7 +8,7 @@ const Input = ({ type = "text", textInputProps, selectProps, classes }) => {
         {...textInputProps}
         className={classNames(
           "rounded-md border border-black pl-2 w-full",
-          classes.wrapper
+          classes?.wrapper
         )}
       />
     );
