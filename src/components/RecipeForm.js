@@ -42,7 +42,7 @@ const RecipeForm = () => {
       ingredients: [
         ...prevData.ingredients,
         {
-          actualIngredient: "",
+          name: "",
           summerQuantity: "",
           winterQuantity: "",
           monsoonQuantity: "",
@@ -103,7 +103,7 @@ const RecipeForm = () => {
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient?search=${value}`
           );
           setSearchResults(res.data.data);
-          setShowSearchResults(true);
+          setShowSearchResults(index);
         }, 300);
       } else {
         setSearchResults([]);
@@ -114,7 +114,10 @@ const RecipeForm = () => {
     }
   };
 
+  console.log({ formData });
+
   const selectIngredient = (ingredient, index) => {
+    console.log({ index });
     setFormData((prevData) => ({
       ...prevData,
       ingredients: [
@@ -191,6 +194,7 @@ const RecipeForm = () => {
           />
         </div>
         {formData.ingredients.map((ingredient, index) => {
+          // console.log({ showSearchResults, index, ingredient });
           return (
             <div key={index} className="mt-4 relative">
               <div className="mb-4">
@@ -213,17 +217,19 @@ const RecipeForm = () => {
                       "mt-1 p-2 border border-gray-300 rounded-md w-full",
                   }}
                 />
-                {showSearchResults && (
+                {showSearchResults === index && (
                   <div className="absolute left-0 right-0 mt-2 bg-white border border-gray-300 rounded-md shadow-md">
-                    {searchResults.map((result, index) => (
-                      <div
-                        key={index}
-                        className="p-2 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => selectIngredient(result, index)}
-                      >
-                        {result.name}
-                      </div>
-                    ))}
+                    {searchResults.map((result, i) => {
+                      return (
+                        <div
+                          key={i}
+                          className="p-2 hover:bg-gray-100 cursor-pointer"
+                          onClick={() => selectIngredient(result, index)}
+                        >
+                          {result.name}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>
