@@ -75,18 +75,18 @@ export const years = Array.from({ length: 7 }, (_, i) => ({
 }));
 
 export const months = [
-  { text: "January", value: "January" },
-  { text: "February", value: "February" },
-  { text: "March", value: "March" },
-  { text: "April", value: "April" },
-  { text: "May", value: "May" },
-  { text: "June", value: "June" },
-  { text: "July", value: "July" },
-  { text: "August", value: "August" },
-  { text: "September", value: "September" },
-  { text: "October", value: "October" },
-  { text: "November", value: "November" },
-  { text: "December", value: "December" },
+  { text: "January", value: 1 },
+  { text: "February", value: 2 },
+  { text: "March", value: 3 },
+  { text: "April", value: 4 },
+  { text: "May", value: 5 },
+  { text: "June", value: 6 },
+  { text: "July", value: 7 },
+  { text: "August", value: 8 },
+  { text: "September", value: 9 },
+  { text: "October", value: 10 },
+  { text: "November", value: 11 },
+  { text: "December", value: 12 },
 ];
 
 export const seasons = [
@@ -95,3 +95,7 @@ export const seasons = [
   { text: "Winter", value: "winterQuantity" },
   { text: "Retreat", value: "retreatQuantity" },
 ];
+
+export const meals = ["breakfast", "lunch", "dinner"];
+
+export const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];

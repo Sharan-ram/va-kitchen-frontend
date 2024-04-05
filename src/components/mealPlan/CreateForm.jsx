@@ -2,25 +2,18 @@ import React, { useState } from "react";
 import Input from "@/components/Input";
 import { years, months, seasons } from "@/helpers/constants";
 
-const MealPlanForm = () => {
-  const [formData, setFormData] = useState({
-    year: "",
-    month: "",
-    season: "",
-    veganCount: 0,
-    nonVeganCount: 0,
-    glutenFreeCount: 0,
-  });
+const MealPlanForm = ({ showTable, formData, setFormData }) => {
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     [name]: value,
+  //   }));
+  // };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+  const handleShowMealPlan = () => {
+    showTable(true);
   };
-
-  const handleShowMealPlan = () => {};
 
   return (
     <div className="flex flex-wrap justify-between">
