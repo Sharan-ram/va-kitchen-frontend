@@ -14,16 +14,16 @@ const MealPlanTable = ({ month, year }) => {
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr className="bg-gray-200">
-            <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
               Day
             </th>
-            <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
               Breakfast
             </th>
-            <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
               Lunch
             </th>
-            <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
               Dinner
             </th>
           </tr>
@@ -34,16 +34,16 @@ const MealPlanTable = ({ month, year }) => {
             const dayName = day.getDay();
             return (
               <tr key={day} className="border-b">
-                <td className="px-6 py-4 whitespace-nowrap">{`${date}, ${weekDays[dayName]}`}</td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-3 py-2 whitespace-nowrap">{`${date}, ${weekDays[dayName]}`}</td>
+                <td className="px-3 py-2 whitespace-nowrap">
                   <RecipeSearchInput placeholder="Search for breakfast recipe" />
                   <MealCountInput />
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-3 py-2 whitespace-nowrap">
                   <RecipeSearchInput placeholder="Search for lunch recipe" />
                   <MealCountInput />
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-3 py-2 whitespace-nowrap">
                   <RecipeSearchInput placeholder="Search for dinner recipe" />
                   <MealCountInput />
                 </td>
