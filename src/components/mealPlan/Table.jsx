@@ -7,12 +7,12 @@ import { weekDays, meals } from "@/helpers/constants";
 const MealPlanTable = ({ month, year }) => {
   const daysInMonth = generateDaysOfMonth(year, Number(month) - 1);
   return (
-    <div className="meal-plan-table mt-8">
+    <div className="meal-plan-table mt-8 max-w-[100%]">
       <h2 className="text-lg font-semibold mb-4">
         Meal Plan for {month} {year}
       </h2>
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
+      <table className="min-w-full divide-y divide-gray-200 max-w-[100%]">
+        <thead className="bg-gray-50 max-w-[100%]">
           <tr className="bg-gray-200">
             <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
               Day
@@ -28,12 +28,12 @@ const MealPlanTable = ({ month, year }) => {
             </th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="bg-white divide-y divide-gray-200 max-w-[100%]">
           {daysInMonth.map((day) => {
             const date = day.getDate();
             const dayName = day.getDay();
             return (
-              <tr key={day} className="border-b">
+              <tr key={day} className="border-b max-w-[100%]">
                 <td className="px-3 py-2 whitespace-nowrap">{`${date}, ${weekDays[dayName]}`}</td>
                 <td className="px-3 py-2 whitespace-nowrap">
                   <RecipeSearchInput placeholder="Search for breakfast recipe" />
