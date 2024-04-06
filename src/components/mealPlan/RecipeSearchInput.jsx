@@ -102,6 +102,7 @@ const RecipeSearchInput = ({
     }
     // console.log({ newMealPlan });
     setMealPlan(newMealPlan);
+    setShowSearchResults(false);
     setRecipeSelected(true);
   };
 
