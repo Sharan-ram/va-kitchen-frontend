@@ -3,9 +3,11 @@ import RecipeSearchInput from "./RecipeSearchInput";
 import MealCountInput from "./MealCountInput";
 import { generateDaysOfMonth } from "@/helpers/utils";
 import { weekDays, meals } from "@/helpers/constants";
+import { useState } from "react";
 
 const MealPlanTable = ({ month, year }) => {
   const daysInMonth = generateDaysOfMonth(year, Number(month) - 1);
+  const [mealPlan, setMealPlan] = useState({});
   return (
     <div className="meal-plan-table mt-8 max-w-[100%]">
       <h2 className="text-lg font-semibold mb-4">
@@ -35,18 +37,25 @@ const MealPlanTable = ({ month, year }) => {
             return (
               <tr key={day} className="border-b max-w-[100%]">
                 <td className="px-3 py-2 whitespace-nowrap">{`${date}, ${weekDays[dayName]}`}</td>
-                <td className="px-3 py-2 whitespace-nowrap">
-                  <RecipeSearchInput placeholder="Search for breakfast recipe" />
-                  <MealCountInput />
-                </td>
-                <td className="px-3 py-2 whitespace-nowrap">
-                  <RecipeSearchInput placeholder="Search for lunch recipe" />
-                  <MealCountInput />
-                </td>
-                <td className="px-3 py-2 whitespace-nowrap">
-                  <RecipeSearchInput placeholder="Search for dinner recipe" />
-                  <MealCountInput />
-                </td>
+                {meals.map((meal) => {
+                  return (
+                    <td
+                      key={meal}
+                      className="px-3 py-2 whitespace-nowrap capitalize"
+                    >
+                      <RecipeSearchInput
+                        placeholder={`Search for ${meal} recipe`}
+                        mealPlan={mealPlan}
+                        setMealPlan={setMealPlan}
+                        date={day}
+                        meal={meal}
+                        month={month}
+                        year={year}
+                      />
+                      <MealCountInput />
+                    </td>
+                  );
+                })}
               </tr>
             );
           })}
