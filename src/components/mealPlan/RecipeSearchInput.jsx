@@ -53,13 +53,14 @@ const RecipeSearchInput = ({
           newMealPlan.days[selectedDateObjIndex][meal].recipes.push(recipe);
         } else {
           newMealPlan.days[selectedDateObjIndex] = {
+            ...newMealPlan.days[selectedDateObjIndex],
             [meal]: {
               mealCounts: {
                 nonVeganCount: 2, // to be changed
                 veganCount: 1, // to be changed
                 glutenFreeCount: 1, // to be changed
-                recipes: [recipe],
               },
+              recipes: [recipe],
             },
           };
         }
@@ -71,8 +72,8 @@ const RecipeSearchInput = ({
               nonVeganCount: 2, // to be changed
               veganCount: 1, // to be changed
               glutenFreeCount: 1, // to be changed
-              recipes: [recipe],
             },
+            recipes: [recipe],
           },
         });
       }
