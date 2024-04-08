@@ -8,12 +8,12 @@ const MealPlanForm = ({
   setMealPlan,
   entireMonthCounts,
   mealPlan,
+  setIsNew,
 }) => {
   const [year, setYear] = useState("");
   const [month, setMonth] = useState("");
 
   const [season, setSeason] = useState("");
-
   const [monthCounts, setMonthCounts] = useState(entireMonthCounts);
 
   const [step, setStep] = useState(1);
@@ -39,8 +39,10 @@ const MealPlanForm = ({
           year: Number(year),
           month: Number(month),
         });
+        setIsNew(true);
       } else {
         setMealPlan(res.data.data[0]);
+        setIsNew(false);
       }
       setLoadingMealPlan(false);
       setStep(2);

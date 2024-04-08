@@ -47,7 +47,7 @@ const RecipeSearchInput = ({
     const formattedDate = format(date, "dd-MM-yyyy");
     let newMealPlan = JSON.parse(JSON.stringify(mealPlan));
     if (newMealPlan && Object.keys(newMealPlan).length > 0) {
-      const selectedDateObjIndex = newMealPlan.days.findIndex((obj) => {
+      const selectedDateObjIndex = newMealPlan.days?.findIndex((obj) => {
         return obj.date === formattedDate;
       });
       if (selectedDateObjIndex >= 0) {
@@ -59,20 +59,31 @@ const RecipeSearchInput = ({
             [meal]: {
               mealCounts: {
                 ...newMealPlan.entireMonthCounts,
-                ...newMealPlan.days[selectedDateObjIndex][meal].mealCounts,
               },
               recipes: [recipe],
             },
           };
         }
       } else {
-        newMealPlan.days.push({
-          date: formattedDate,
-          [meal]: {
-            mealCounts: newMealPlan.entireMonthCounts,
-            recipes: [recipe],
-          },
-        });
+        if (newMealPlan.days) {
+          newMealPlan.days.push({
+            date: formattedDate,
+            [meal]: {
+              mealCounts: newMealPlan.entireMonthCounts,
+              recipes: [recipe],
+            },
+          });
+        } else {
+          newMealPlan.days = [
+            {
+              date: formattedDate,
+              [meal]: {
+                mealCounts: newMealPlan.entireMonthCounts,
+                recipes: [recipe],
+              },
+            },
+          ];
+        }
       }
     } else {
       newMealPlan = {
