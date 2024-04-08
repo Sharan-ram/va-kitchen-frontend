@@ -13,17 +13,19 @@ const RecipeSearchInput = ({
   year,
   month,
 }) => {
-  const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [recipeSelected, setRecipeSelected] = useState(false);
   const [selectedRecipes, setSelectedRecipes] = useState([]);
+  const [search, setSearch] = useState(
+    selectedRecipes.length > 0 ? null : { text: "" }
+  );
 
   let debounceTimer;
 
   const handleInputChange = (e) => {
     const { value } = e.target;
-    setSearch(value);
+    setSearch({ text: value });
     try {
       if (value.length >= 3) {
         clearTimeout(debounceTimer);
@@ -111,17 +113,18 @@ const RecipeSearchInput = ({
       ...selectedRecipes,
       { _id: recipe._id, name: recipe.name },
     ]);
+    setSearch(null);
   };
 
-  const getRecipe = () => {
-    if (recipeSelected) {
-      const dateObjIndex = mealPlan?.days?.findIndex(
-        (obj) => obj.date === format(date, "dd-MM-yyyy")
-      );
-      return mealPlan?.days?.[dateObjIndex]?.[meal]?.recipes?.[0].name;
-    }
-    return search;
-  };
+  // const getRecipe = () => {
+  //   if (recipeSelected) {
+  //     const dateObjIndex = mealPlan?.days?.findIndex(
+  //       (obj) => obj.date === format(date, "dd-MM-yyyy")
+  //     );
+  //     return mealPlan?.days?.[dateObjIndex]?.[meal]?.recipes?.[0].name;
+  //   }
+  //   return search?.text || "";
+  // };
 
   const handleDeleteRecipe = (recipe) => {
     let newMealPlan = JSON.parse(JSON.stringify(mealPlan));
@@ -134,7 +137,6 @@ const RecipeSearchInput = ({
       ...recipes.slice(0, recipeIndex),
       ...recipes.slice(recipeIndex + 1),
     ];
-    console.log({ newMealPlan });
     setMealPlan(newMealPlan);
     const deletedRecipeIndex = selectedRecipes.findIndex(
       (obj) => obj._id === recipe._id
@@ -154,7 +156,7 @@ const RecipeSearchInput = ({
             type="text"
             placeholder={placeholder}
             onChange={handleInputChange}
-            value={getRecipe()}
+            value={search?.text || ""}
             className="block w-full pl-10 pr-4 py-2 border rounded-md"
           />
         </div>
@@ -163,7 +165,7 @@ const RecipeSearchInput = ({
           <div>
             {selectedRecipes.map((recipe, recipeIndex) => {
               return (
-                <div key={recipeIndex} className="flex items-center">
+                <div key={recipeIndex} className="flex items-center mb-2">
                   <input
                     disabled
                     value={recipe.name}
@@ -180,6 +182,24 @@ const RecipeSearchInput = ({
               );
             })}
           </div>
+          {search ? (
+            <div>
+              <input
+                onChange={handleInputChange}
+                value={search?.text || ""}
+                type="text"
+                className="block w-full pl-10 pr-4 py-2 border rounded-md"
+                placeholder={placeholder}
+              />
+            </div>
+          ) : (
+            <button
+              onClick={() => setSearch({ text: "" })}
+              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            >
+              Add new recipe
+            </button>
+          )}
         </>
       )}
 
