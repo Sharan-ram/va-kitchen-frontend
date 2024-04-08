@@ -116,16 +116,6 @@ const RecipeSearchInput = ({
     setSearch(null);
   };
 
-  // const getRecipe = () => {
-  //   if (recipeSelected) {
-  //     const dateObjIndex = mealPlan?.days?.findIndex(
-  //       (obj) => obj.date === format(date, "dd-MM-yyyy")
-  //     );
-  //     return mealPlan?.days?.[dateObjIndex]?.[meal]?.recipes?.[0].name;
-  //   }
-  //   return search?.text || "";
-  // };
-
   const handleDeleteRecipe = (recipe) => {
     let newMealPlan = JSON.parse(JSON.stringify(mealPlan));
     const selectedDateObjIndex = newMealPlan.days.findIndex(

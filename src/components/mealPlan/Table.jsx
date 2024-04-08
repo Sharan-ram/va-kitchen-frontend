@@ -3,7 +3,6 @@ import RecipeSearchInput from "./RecipeSearchInput";
 import MealCountInput from "./MealCountInput";
 import { generateDaysOfMonth } from "@/helpers/utils";
 import { weekDays, meals } from "@/helpers/constants";
-import { useState } from "react";
 
 const MealPlanTable = ({
   month,
@@ -60,9 +59,15 @@ const MealPlanTable = ({
                         year={year}
                       />
                       <MealCountInput
-                        veganCount={veganCount}
-                        nonVeganCount={nonVeganCount}
-                        glutenFreeCount={glutenFreeCount}
+                        entireMonthCounts={{
+                          veganCount,
+                          nonVeganCount,
+                          glutenFreeCount,
+                        }}
+                        mealPlan={mealPlan}
+                        setMealPlan={setMealPlan}
+                        meal={meal}
+                        date={date}
                       />
                     </td>
                   );

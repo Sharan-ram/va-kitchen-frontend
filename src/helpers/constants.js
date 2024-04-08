@@ -99,3 +99,9 @@ export const seasons = [
 export const meals = ["breakfast", "lunch", "dinner"];
 
 export const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+export const dietTypeCounts = [
+  "veganCount",
+  "nonVeganCount",
+  "glutenFreeCount",
+];

@@ -1,33 +1,40 @@
 import React from "react";
+import { format } from "date-fns";
+import { dietTypeCounts } from "@/helpers/constants";
 
-const MealCountInput = ({ veganCount, nonVeganCount, glutenFreeCount }) => {
-  const handleInputChange = (e) => {
+const MealCountInput = ({
+  entireMonthCounts,
+  mealPlan,
+  meal,
+  date,
+  setMealPlan,
+}) => {
+  const handleInputChange = (e, meal) => {
     // Handle input change logic here
   };
 
+  const mealCounts = mealPlan?.days?.find(
+    (obj) => obj.date === format(date, "dd-MM-yyyy")
+  )?.[meal]?.mealCounts;
+
   return (
     <div className="flex mt-2">
-      <input
-        type="number"
-        placeholder="Vegan"
-        onChange={handleInputChange}
-        className="flex-1 mr-2 pl-2 py-1 border rounded-md"
-        value={veganCount}
-      />
-      <input
-        type="number"
-        placeholder="Non-Vegan"
-        onChange={handleInputChange}
-        className="flex-1 mr-2 pl-2 py-1 border rounded-md"
-        value={nonVeganCount}
-      />
-      <input
-        type="number"
-        placeholder="Gluten-Free"
-        onChange={handleInputChange}
-        className="flex-1 pl-2 py-1 border rounded-md"
-        value={glutenFreeCount}
-      />
+      {dietTypeCounts.map((dietTypeCount) => {
+        return (
+          <input
+            key={dietTypeCount}
+            type="number"
+            placeholder={dietTypeCount}
+            onChange={(e) => handleInputChange(e, dietTypeCount)}
+            className="flex-1 mr-2 pl-2 py-1 border rounded-md"
+            value={
+              mealCounts?.[dietTypeCount] ||
+              entireMonthCounts?.[dietTypeCount] ||
+              ""
+            }
+          />
+        );
+      })}
     </div>
   );
 };
