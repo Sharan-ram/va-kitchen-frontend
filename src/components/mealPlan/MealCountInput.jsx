@@ -9,8 +9,72 @@ const MealCountInput = ({
   date,
   setMealPlan,
 }) => {
-  const handleInputChange = (e, meal) => {
-    // Handle input change logic here
+  const handleInputChange = (e, dietTypeCount) => {
+    const { value } = e.target;
+    let newMealPlan = JSON.parse(JSON.stringify(mealPlan));
+    console.log("newMealPlan before", newMealPlan);
+    if (newMealPlan.days) {
+      const selectedDateObjIndex = newMealPlan.days.findIndex(
+        (obj) => obj.date === format(date, "dd-MM-yyyy")
+      );
+      if (selectedDateObjIndex >= 0) {
+        let mealObj = newMealPlan.days?.[selectedDateObjIndex]?.[meal];
+        if (mealObj) {
+          mealObj = {
+            ...mealObj,
+            mealCounts: {
+              ...entireMonthCounts,
+              ...mealObj.mealCounts,
+              [dietTypeCount]: value,
+            },
+          };
+        } else {
+          newMealPlan.days[selectedDateObjIndex][meal] = {
+            mealCounts: {
+              ...entireMonthCounts,
+              [dietTypeCount]: value,
+            },
+            recipes: [],
+          };
+        }
+      } else {
+        newMealPlan = {
+          ...newMealPlan,
+          days: [
+            ...newMealPlan.days,
+            {
+              date: format(date, "dd-MM-yyyy"),
+              [meal]: {
+                mealCounts: {
+                  ...entireMonthCounts,
+                  [dietTypeCount]: value,
+                },
+                recipes: [],
+              },
+            },
+          ],
+        };
+      }
+    } else {
+      newMealPlan = {
+        ...newMealPlan,
+        days: [
+          {
+            date: format(date, "dd-MM-yyyy"),
+            [meal]: {
+              mealCounts: {
+                ...entireMonthCounts,
+                [dietTypeCount]: value,
+              },
+              recipes: [],
+            },
+          },
+        ],
+      };
+      console.log("inside else for no days", newMealPlan);
+    }
+
+    setMealPlan(newMealPlan);
   };
 
   const mealCounts = mealPlan?.days?.find(
