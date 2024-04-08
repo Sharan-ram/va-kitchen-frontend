@@ -1,23 +1,53 @@
 import React, { useState } from "react";
 import Input from "@/components/Input";
 import { years, months, seasons } from "@/helpers/constants";
+import axios from "axios";
 
-const MealPlanForm = ({ showTable, formData, setFormData, setMealPlan }) => {
+const MealPlanForm = ({
+  showTable,
+  setMealPlan,
+  entireMonthCounts,
+  mealPlan,
+}) => {
   const [year, setYear] = useState("");
   const [month, setMonth] = useState("");
 
   const [season, setSeason] = useState("");
 
-  const [entireMonthCounts, setEntireMonthCounts] = useState({
-    veganCount: 0,
-    nonVeganCount: 0,
-    glutenFreeCount: 0,
-  });
+  const [monthCounts, setMonthCounts] = useState(entireMonthCounts);
 
   const [step, setStep] = useState(1);
 
+  const [loadingMealPlan, setLoadingMealPlan] = useState(false);
+
   const handleShowMealPlan = () => {
+    setMealPlan({
+      ...mealPlan,
+      entireMonthCounts: monthCounts,
+    });
     showTable(true);
+  };
+
+  const fetchMealPlan = async () => {
+    setLoadingMealPlan(true);
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/mealPlan?year=${year}&month=${month}`
+      );
+      if (res.data.data.length === 0) {
+        setMealPlan({
+          year: Number(year),
+          month: Number(month),
+        });
+      } else {
+        setMealPlan(res.data.data[0]);
+      }
+      setLoadingMealPlan(false);
+      setStep(2);
+    } catch (e) {
+      console.error(e);
+      setLoadingMealPlan(false);
+    }
   };
 
   return (
@@ -42,14 +72,14 @@ const MealPlanForm = ({ showTable, formData, setFormData, setMealPlan }) => {
           classes={{ wrapper: "w-1/4 mr-4 mb-4" }}
         />
         <button
-          onClick={() => setStep(2)}
+          onClick={fetchMealPlan}
           className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
         >
           Next
         </button>
       </div>
 
-      {step === 2 && (
+      {!loadingMealPlan && step === 2 && (
         <div className="">
           <Input
             type="select"
@@ -70,9 +100,9 @@ const MealPlanForm = ({ showTable, formData, setFormData, setMealPlan }) => {
             <input
               type="number"
               id="veganCount"
-              value={entireMonthCounts.veganCount}
+              value={monthCounts.veganCount}
               onChange={(e) =>
-                setEntireMonthCounts({ veganCount: e.target.value })
+                setMonthCounts({ ...monthCounts, veganCount: e.target.value })
               }
               placeholder="Vegan Count"
               className="w-full rounded-md border border-gray-300 p-2"
@@ -88,9 +118,12 @@ const MealPlanForm = ({ showTable, formData, setFormData, setMealPlan }) => {
             <input
               type="number"
               id="nonVeganCount"
-              value={entireMonthCounts.nonVeganCount}
+              value={monthCounts.nonVeganCount}
               onChange={(e) =>
-                setEntireMonthCounts({ nonVeganCount: e.target.value })
+                setMonthCounts({
+                  ...monthCounts,
+                  nonVeganCount: e.target.value,
+                })
               }
               placeholder="Non-Vegan Count"
               className="w-full rounded-md border border-gray-300 p-2"
@@ -106,9 +139,12 @@ const MealPlanForm = ({ showTable, formData, setFormData, setMealPlan }) => {
             <input
               type="number"
               id="glutenFreeCount"
-              value={entireMonthCounts.glutenFreeCount}
+              value={monthCounts.glutenFreeCount}
               onChange={(e) =>
-                setEntireMonthCounts({ glutenFreeCount: e.target.value })
+                setMonthCounts({
+                  ...monthCounts,
+                  glutenFreeCount: e.target.value,
+                })
               }
               placeholder="Gluten-Free Count"
               className="w-full rounded-md border border-gray-300 p-2"

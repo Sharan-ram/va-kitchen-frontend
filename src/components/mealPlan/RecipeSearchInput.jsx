@@ -12,9 +12,6 @@ const RecipeSearchInput = ({
   meal,
   year,
   month,
-  veganCount,
-  nonVeganCount,
-  glutenFreeCount,
 }) => {
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
@@ -61,9 +58,8 @@ const RecipeSearchInput = ({
             ...newMealPlan.days[selectedDateObjIndex],
             [meal]: {
               mealCounts: {
-                nonVeganCount,
-                veganCount,
-                glutenFreeCount,
+                ...newMealPlan.entireMonthCounts,
+                ...newMealPlan.days[selectedDateObjIndex][meal].mealCounts,
               },
               recipes: [recipe],
             },
@@ -73,11 +69,7 @@ const RecipeSearchInput = ({
         newMealPlan.days.push({
           date: formattedDate,
           [meal]: {
-            mealCounts: {
-              nonVeganCount,
-              veganCount,
-              glutenFreeCount,
-            },
+            mealCounts: newMealPlan.entireMonthCounts,
             recipes: [recipe],
           },
         });
@@ -86,20 +78,12 @@ const RecipeSearchInput = ({
       newMealPlan = {
         year: Number(year),
         month: Number(month),
-        entireMonthCounts: {
-          nonVeganCount,
-          veganCount,
-          glutenFreeCount,
-        },
+        entireMonthCounts: newMealPlan.entireMonthCounts,
         days: [
           {
             date: formattedDate,
             [meal]: {
-              mealCounts: {
-                nonVeganCount,
-                veganCount,
-                glutenFreeCount,
-              },
+              mealCounts: newMealPlan.entireMonthCounts,
               recipes: [recipe],
             },
           },

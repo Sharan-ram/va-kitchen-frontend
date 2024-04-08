@@ -7,9 +7,9 @@ import { weekDays, meals } from "@/helpers/constants";
 const MealPlanTable = ({
   month,
   year,
-  veganCount,
-  nonVeganCount,
-  glutenFreeCount,
+  // veganCount,
+  // nonVeganCount,
+  // glutenFreeCount,
   mealPlan,
   setMealPlan,
 }) => {
@@ -59,11 +59,7 @@ const MealPlanTable = ({
                         year={year}
                       />
                       <MealCountInput
-                        entireMonthCounts={{
-                          veganCount,
-                          nonVeganCount,
-                          glutenFreeCount,
-                        }}
+                        entireMonthCounts={mealPlan.entireMonthCounts}
                         mealPlan={mealPlan}
                         setMealPlan={setMealPlan}
                         meal={meal}

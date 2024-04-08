@@ -4,32 +4,29 @@ import Table from "@/components/mealPlan/Table";
 
 const CreateMealPlanPage = () => {
   const [showTable, setShowTable] = useState(false);
-  const [formData, setFormData] = useState({
-    year: "",
-    month: "",
-    season: "",
-    veganCount: 0,
-    nonVeganCount: 0,
-    glutenFreeCount: 0,
-  });
 
   const [mealPlan, setMealPlan] = useState({});
+
+  console.log({ mealPlan });
 
   return (
     <div>
       <CreateForm
         showTable={(val) => setShowTable(val)}
-        formData={formData}
-        setFormData={setFormData}
         setMealPlan={setMealPlan}
+        mealPlan={mealPlan}
+        entireMonthCounts={
+          mealPlan.entireMonthCounts || {
+            veganCount: 0,
+            nonVeganCount: 0,
+            glutenFreeCount: 0,
+          }
+        }
       />
       {showTable && (
         <Table
-          year={formData.year}
-          month={formData.month}
-          veganCount={formData.veganCount}
-          nonVeganCount={formData.nonVeganCount}
-          glutenFreeCount={formData.glutenFreeCount}
+          year={mealPlan.year}
+          month={mealPlan.month}
           mealPlan={mealPlan}
           setMealPlan={setMealPlan}
         />
