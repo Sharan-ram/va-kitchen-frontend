@@ -21,6 +21,7 @@ const CreateMealPlanPage = () => {
         showTable={(val) => setShowTable(val)}
         formData={formData}
         setFormData={setFormData}
+        setMealPlan={setMealPlan}
       />
       {showTable && (
         <Table
