@@ -1,4 +1,4 @@
-import React from "react";
+import { useMemo } from "react";
 import { format } from "date-fns";
 import { dietTypeCounts } from "@/helpers/constants";
 
@@ -17,6 +17,16 @@ const MealCountInput = ({
     (obj) => obj.date === format(date, "dd-MM-yyyy")
   )?.[meal]?.mealCounts;
 
+  const getValue = (dietTypeCount) => {
+    if (typeof mealCounts?.[dietTypeCount] === "undefined") {
+      if (typeof entireMonthCounts?.[dietTypeCount] === "undefined") {
+        return "";
+      }
+      return entireMonthCounts?.[dietTypeCount];
+    }
+    return mealCounts?.[dietTypeCount];
+  };
+
   return (
     <div className="flex mt-2">
       {dietTypeCounts.map((dietTypeCount) => {
@@ -27,11 +37,7 @@ const MealCountInput = ({
             placeholder={dietTypeCount}
             onChange={(e) => handleInputChange(e, dietTypeCount)}
             className="flex-1 mr-2 pl-2 py-1 border rounded-md"
-            value={
-              mealCounts?.[dietTypeCount] ||
-              entireMonthCounts?.[dietTypeCount] ||
-              ""
-            }
+            value={getValue(dietTypeCount)}
           />
         );
       })}
