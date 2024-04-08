@@ -12,10 +12,12 @@ const RecipeSearchInput = ({
   meal,
   year,
   month,
+  veganCount,
+  nonVeganCount,
+  glutenFreeCount,
 }) => {
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
-  const [recipeSelected, setRecipeSelected] = useState(false);
   const [selectedRecipes, setSelectedRecipes] = useState([]);
   const [search, setSearch] = useState(
     selectedRecipes.length > 0 ? null : { text: "" }
@@ -41,7 +43,6 @@ const RecipeSearchInput = ({
       console.error(e);
       setSearchResults([]);
       setShowSearchResults(false);
-      setRecipeSelected(false);
     }
   };
 
@@ -60,9 +61,9 @@ const RecipeSearchInput = ({
             ...newMealPlan.days[selectedDateObjIndex],
             [meal]: {
               mealCounts: {
-                nonVeganCount: 2, // to be changed
-                veganCount: 1, // to be changed
-                glutenFreeCount: 1, // to be changed
+                nonVeganCount,
+                veganCount,
+                glutenFreeCount,
               },
               recipes: [recipe],
             },
@@ -73,9 +74,9 @@ const RecipeSearchInput = ({
           date: formattedDate,
           [meal]: {
             mealCounts: {
-              nonVeganCount: 2, // to be changed
-              veganCount: 1, // to be changed
-              glutenFreeCount: 1, // to be changed
+              nonVeganCount,
+              veganCount,
+              glutenFreeCount,
             },
             recipes: [recipe],
           },
@@ -86,18 +87,18 @@ const RecipeSearchInput = ({
         year: Number(year),
         month: Number(month),
         entireMonthCounts: {
-          nonVeganCount: 5, // to be changed
-          veganCount: 3, // to be changed
-          glutenFreeCount: 2, // to be changed
+          nonVeganCount,
+          veganCount,
+          glutenFreeCount,
         },
         days: [
           {
             date: formattedDate,
             [meal]: {
               mealCounts: {
-                nonVeganCount: 2, // to be changed
-                veganCount: 1, // to be changed
-                glutenFreeCount: 1, // to be changed
+                nonVeganCount,
+                veganCount,
+                glutenFreeCount,
               },
               recipes: [recipe],
             },
@@ -108,7 +109,6 @@ const RecipeSearchInput = ({
     // console.log({ newMealPlan });
     setMealPlan(newMealPlan);
     setShowSearchResults(false);
-    setRecipeSelected(true);
     setSelectedRecipes([
       ...selectedRecipes,
       { _id: recipe._id, name: recipe.name },
@@ -145,7 +145,6 @@ const RecipeSearchInput = ({
       ...selectedRecipes.slice(0, deletedRecipeIndex),
       ...selectedRecipes.slice(deletedRecipeIndex + 1),
     ]);
-    setRecipeSelected(false);
   };
 
   return (

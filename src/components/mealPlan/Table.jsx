@@ -5,9 +5,16 @@ import { generateDaysOfMonth } from "@/helpers/utils";
 import { weekDays, meals } from "@/helpers/constants";
 import { useState } from "react";
 
-const MealPlanTable = ({ month, year }) => {
+const MealPlanTable = ({
+  month,
+  year,
+  veganCount,
+  nonVeganCount,
+  glutenFreeCount,
+  mealPlan,
+  setMealPlan,
+}) => {
   const daysInMonth = generateDaysOfMonth(year, Number(month) - 1);
-  const [mealPlan, setMealPlan] = useState({});
   return (
     <div className="meal-plan-table mt-8 max-w-[100%]">
       <h2 className="text-lg font-semibold mb-4">
@@ -52,7 +59,11 @@ const MealPlanTable = ({ month, year }) => {
                         month={month}
                         year={year}
                       />
-                      <MealCountInput />
+                      <MealCountInput
+                        veganCount={veganCount}
+                        nonVeganCount={nonVeganCount}
+                        glutenFreeCount={glutenFreeCount}
+                      />
                     </td>
                   );
                 })}
