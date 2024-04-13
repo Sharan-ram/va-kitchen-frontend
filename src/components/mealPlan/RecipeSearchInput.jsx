@@ -52,7 +52,11 @@ const RecipeSearchInput = ({
       });
       if (selectedDateObjIndex >= 0) {
         if (newMealPlan.days[selectedDateObjIndex][meal]) {
-          newMealPlan.days[selectedDateObjIndex][meal].recipes.push(recipe);
+          if (newMealPlan.days[selectedDateObjIndex][meal].recipes) {
+            newMealPlan.days[selectedDateObjIndex][meal].recipes.push(recipe);
+          } else {
+            newMealPlan.days[selectedDateObjIndex][meal].recipes = [recipe];
+          }
         } else {
           newMealPlan.days[selectedDateObjIndex] = {
             ...newMealPlan.days[selectedDateObjIndex],

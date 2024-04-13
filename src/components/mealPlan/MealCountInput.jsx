@@ -25,14 +25,14 @@ const MealCountInput = ({
             mealCounts: {
               ...entireMonthCounts,
               ...mealObj.mealCounts,
-              [dietTypeCount]: value,
+              [dietTypeCount]: Number(value),
             },
           };
         } else {
           newMealPlan.days[selectedDateObjIndex][meal] = {
             mealCounts: {
               ...entireMonthCounts,
-              [dietTypeCount]: value,
+              [dietTypeCount]: Number(value),
             },
             recipes: [],
           };
@@ -47,7 +47,7 @@ const MealCountInput = ({
               [meal]: {
                 mealCounts: {
                   ...entireMonthCounts,
-                  [dietTypeCount]: value,
+                  [dietTypeCount]: Number(value),
                 },
                 recipes: [],
               },
@@ -64,7 +64,7 @@ const MealCountInput = ({
             [meal]: {
               mealCounts: {
                 ...entireMonthCounts,
-                [dietTypeCount]: value,
+                [dietTypeCount]: Number(value),
               },
               recipes: [],
             },

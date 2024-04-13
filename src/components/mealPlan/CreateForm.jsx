@@ -104,7 +104,10 @@ const MealPlanForm = ({
               id="veganCount"
               value={monthCounts.veganCount}
               onChange={(e) =>
-                setMonthCounts({ ...monthCounts, veganCount: e.target.value })
+                setMonthCounts({
+                  ...monthCounts,
+                  veganCount: Number(e.target.value),
+                })
               }
               placeholder="Vegan Count"
               className="w-full rounded-md border border-gray-300 p-2"
@@ -124,7 +127,7 @@ const MealPlanForm = ({
               onChange={(e) =>
                 setMonthCounts({
                   ...monthCounts,
-                  nonVeganCount: e.target.value,
+                  nonVeganCount: Number(e.target.value),
                 })
               }
               placeholder="Non-Vegan Count"
@@ -145,7 +148,7 @@ const MealPlanForm = ({
               onChange={(e) =>
                 setMonthCounts({
                   ...monthCounts,
-                  glutenFreeCount: e.target.value,
+                  glutenFreeCount: Number(e.target.value),
                 })
               }
               placeholder="Gluten-Free Count"
