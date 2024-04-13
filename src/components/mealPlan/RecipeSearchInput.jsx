@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { format } from "date-fns";
 import { Trash } from "phosphor-react";
@@ -19,6 +19,17 @@ const RecipeSearchInput = ({
   const [search, setSearch] = useState(
     selectedRecipes.length > 0 ? null : { text: "" }
   );
+
+  useEffect(() => {
+    const selectDateObj = mealPlan?.days.find(
+      (dayObj) => dayObj.date === format(date, "dd-MM-yyyy")
+    );
+    if (selectDateObj) {
+      if (selectDateObj[meal] && selectDateObj[meal]?.recipes) {
+        setSelectedRecipes(selectDateObj[meal]?.recipes);
+      }
+    }
+  }, [mealPlan.days, date, meal]);
 
   let debounceTimer;
 

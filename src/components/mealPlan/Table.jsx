@@ -4,15 +4,7 @@ import MealCountInput from "./MealCountInput";
 import { generateDaysOfMonth } from "@/helpers/utils";
 import { weekDays, meals } from "@/helpers/constants";
 
-const MealPlanTable = ({
-  month,
-  year,
-  // veganCount,
-  // nonVeganCount,
-  // glutenFreeCount,
-  mealPlan,
-  setMealPlan,
-}) => {
+const MealPlanTable = ({ month, year, mealPlan, setMealPlan }) => {
   const daysInMonth = generateDaysOfMonth(year, Number(month) - 1);
   return (
     <div className="meal-plan-table mt-8 max-w-[100%]">

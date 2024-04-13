@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Input from "@/components/Input";
 import { years, months, seasons } from "@/helpers/constants";
 import axios from "axios";
@@ -9,12 +9,18 @@ const MealPlanForm = ({
   entireMonthCounts,
   mealPlan,
   setIsNew,
+  isNew,
 }) => {
   const [year, setYear] = useState("");
   const [month, setMonth] = useState("");
 
-  const [season, setSeason] = useState("");
+  const [season, setSeason] = useState(mealPlan.season || "");
   const [monthCounts, setMonthCounts] = useState(entireMonthCounts);
+
+  useEffect(() => {
+    setMonthCounts(entireMonthCounts);
+    setSeason(mealPlan.season);
+  }, [entireMonthCounts, mealPlan]);
 
   const [step, setStep] = useState(1);
 
@@ -23,6 +29,7 @@ const MealPlanForm = ({
   const handleShowMealPlan = () => {
     setMealPlan({
       ...mealPlan,
+      season,
       entireMonthCounts: monthCounts,
     });
     showTable(true);
@@ -85,10 +92,12 @@ const MealPlanForm = ({
         <div className="">
           <Input
             type="select"
+            key={season}
             selectProps={{
               selected: season,
               onChange: (e) => setSeason(e.target.value),
               options: [{ value: "", text: "Select season" }, ...seasons],
+              // value: season,
             }}
             classes={{ wrapper: "w-1/4 mr-4 mb-4" }}
           />
