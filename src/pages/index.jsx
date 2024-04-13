@@ -120,7 +120,7 @@ const Homepage = () => {
 
   return (
     <div>
-      <div>
+      {/* <div>
         <div className="flex justify-between w-9/12 items-center">
           <div>
             <div>
@@ -257,7 +257,8 @@ const Homepage = () => {
             </button>
           </div>
         )}
-      </div>
+      </div> */}
+      Homepage is in progress
     </div>
   );
 };

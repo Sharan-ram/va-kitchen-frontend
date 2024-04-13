@@ -16,9 +16,9 @@ const Input = ({ type = "text", textInputProps, selectProps, classes }) => {
     const { selected, onChange, defaultValue, options, name } = selectProps;
     return (
       <select
-        selected={selected}
+        value={selected}
         onChange={onChange}
-        defaultValue={defaultValue}
+        // defaultValue={defaultValue}
         name={name}
         // className="rounded-md border border-black pl-2 w-full cursor-pointer"
         className={classNames(

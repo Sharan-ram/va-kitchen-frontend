@@ -16,9 +16,6 @@ const RecipeForm = () => {
 
   const handleChange = (e, index) => {
     const { name, value } = e.target;
-    if (name === "actualIngredient") {
-      // Handle autocomplete fetch call here
-    }
     setFormData((prevData) => ({
       ...prevData,
       ingredients: prevData.ingredients.map((ingredient, i) =>
@@ -35,7 +32,9 @@ const RecipeForm = () => {
       ingredients: [
         ...prevData.ingredients,
         {
-          name: "",
+          ingredient: {
+            name: "",
+          },
           summerQuantity: "",
           winterQuantity: "",
           monsoonQuantity: "",
@@ -68,10 +67,23 @@ const RecipeForm = () => {
   };
 
   const isIngredientFilled = (ingredient) => {
-    return Object.values(ingredient).every((value) => value.trim() !== "");
+    // Check if all fields inside the ingredient object are filled
+    return Object.values(ingredient).every((value) => {
+      if (typeof value === "string") {
+        // If the value is a string, check if it's not empty after trimming
+        return value.trim() !== "";
+      } else if (typeof value === "object") {
+        // If the value is an object, recursively check its fields
+        return isIngredientFilled(value);
+      } else {
+        // For other types of values, consider them filled
+        return true;
+      }
+    });
   };
 
   const isFormFilled = () => {
+    // Check if all ingredients in the form data are filled
     return formData.ingredients.every((ingredient) =>
       isIngredientFilled(ingredient)
     );
@@ -117,8 +129,7 @@ const RecipeForm = () => {
         ...prevData.ingredients.slice(0, index),
         {
           ...formData.ingredients[index],
-          name: ingredient.name,
-          _id: ingredient._id,
+          ingredient,
         },
         ...prevData.ingredients.slice(index + 1),
       ],
@@ -201,8 +212,8 @@ const RecipeForm = () => {
                   type="text"
                   textInputProps={{
                     id: `id-${index}`,
-                    name: ingredient.name || `name-${index}`,
-                    value: ingredient.name || searchText[index],
+                    name: ingredient.ingredient?.name || `name-${index}`,
+                    value: ingredient.ingredient?.name || searchText[index],
                     onChange: (e) => handleIngredientSearch(e, index),
                   }}
                   classes={{

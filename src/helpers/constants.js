@@ -1,17 +1,17 @@
-export const MONTHS = [
-  { text: "January", value: "01" },
-  { text: "February", value: "02" },
-  { text: "March", value: "03" },
-  { text: "April", value: "04" },
-  { text: "May", value: "05" },
-  { text: "June", value: "06" },
-  { text: "July", value: "07" },
-  { text: "August", value: "08" },
-  { text: "September", value: "09" },
-  { text: "October", value: "10" },
-  { text: "November", value: "11" },
-  { text: "December", value: "12" },
-];
+// export const MONTHS = [
+//   { text: "January", value: "01" },
+//   { text: "February", value: "02" },
+//   { text: "March", value: "03" },
+//   { text: "April", value: "04" },
+//   { text: "May", value: "05" },
+//   { text: "June", value: "06" },
+//   { text: "July", value: "07" },
+//   { text: "August", value: "08" },
+//   { text: "September", value: "09" },
+//   { text: "October", value: "10" },
+//   { text: "November", value: "11" },
+//   { text: "December", value: "12" },
+// ];
 
 export const purchaseUnits = [
   { text: "KG", value: "kg" },
@@ -67,4 +67,41 @@ export const vendors = [
   { text: "Mill House", value: "Mill House" },
   { text: "Keitan", value: "Keitan" },
   { text: "Chetran", value: "Chetran" },
+];
+
+export const years = Array.from({ length: 7 }, (_, i) => ({
+  text: `${2024 + i}`,
+  value: `${2024 + i}`,
+}));
+
+export const months = [
+  { text: "January", value: 1 },
+  { text: "February", value: 2 },
+  { text: "March", value: 3 },
+  { text: "April", value: 4 },
+  { text: "May", value: 5 },
+  { text: "June", value: 6 },
+  { text: "July", value: 7 },
+  { text: "August", value: 8 },
+  { text: "September", value: 9 },
+  { text: "October", value: 10 },
+  { text: "November", value: 11 },
+  { text: "December", value: 12 },
+];
+
+export const seasons = [
+  { text: "Summer", value: "summerQuantity" },
+  { text: "Monsoon", value: "monsoonQuantity" },
+  { text: "Winter", value: "winterQuantity" },
+  { text: "Retreat", value: "retreatQuantity" },
+];
+
+export const meals = ["breakfast", "lunch", "dinner"];
+
+export const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+export const dietTypeCounts = [
+  "veganCount",
+  "nonVeganCount",
+  "glutenFreeCount",
 ];
