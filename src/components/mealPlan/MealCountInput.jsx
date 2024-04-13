@@ -14,13 +14,27 @@ const MealCountInput = ({
     let newMealPlan = JSON.parse(JSON.stringify(mealPlan));
     console.log("newMealPlan before", newMealPlan);
     if (newMealPlan.days) {
-      const selectedDateObjIndex = newMealPlan.days.findIndex(
-        (obj) => obj.date === format(date, "dd-MM-yyyy")
-      );
+      const selectedDateObjIndex = newMealPlan.days.findIndex((obj) => {
+        console.log({
+          objDate: obj.date,
+          absoluteDate: format(date, "dd-MM-yyyy"),
+        });
+        return obj.date === format(date, "dd-MM-yyyy");
+      });
+
       if (selectedDateObjIndex >= 0) {
         let mealObj = newMealPlan.days?.[selectedDateObjIndex]?.[meal];
         if (mealObj) {
-          mealObj = {
+          // mealObj = {
+          //   ...mealObj,
+          //   mealCounts: {
+          //     ...entireMonthCounts,
+          //     ...mealObj.mealCounts,
+          //     [dietTypeCount]: Number(value),
+          //   },
+          // };
+          console.log("inside here");
+          newMealPlan.days[selectedDateObjIndex][meal] = {
             ...mealObj,
             mealCounts: {
               ...entireMonthCounts,
@@ -28,6 +42,7 @@ const MealCountInput = ({
               [dietTypeCount]: Number(value),
             },
           };
+          console.log({ newMealPlan });
         } else {
           newMealPlan.days[selectedDateObjIndex][meal] = {
             mealCounts: {

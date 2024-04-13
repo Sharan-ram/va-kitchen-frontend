@@ -55,7 +55,7 @@ const MealPlanTable = ({ month, year, mealPlan, setMealPlan }) => {
                         mealPlan={mealPlan}
                         setMealPlan={setMealPlan}
                         meal={meal}
-                        date={date}
+                        date={day}
                       />
                     </td>
                   );
