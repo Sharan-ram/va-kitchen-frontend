@@ -32,7 +32,9 @@ const RenderMealPlanPage = () => {
     <div>
       <Selections onSubmit={fetchMealPlan} />
       {showMealPlan && (
-        <MealPlanTable mealPlan={mealPlan} year={year} month={month} />
+        <div className="mt-10">
+          <MealPlanTable mealPlan={mealPlan} year={year} month={month} />
+        </div>
       )}
     </div>
   );

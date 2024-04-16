@@ -46,7 +46,10 @@ const MealPlanTable = ({ mealPlan, year, month }) => {
                       {dateObj[meal]?.recipes?.map((recipe, index) => {
                         console.log({ recipe });
                         return (
-                          <div key={`${recipe.name}-${index}`}>
+                          <div
+                            key={`${recipe.name}-${index}`}
+                            className="cursor-pointer rounded p-2 mb-2 bg-[#E8E3E4]"
+                          >
                             {recipe.name}
                           </div>
                         );
