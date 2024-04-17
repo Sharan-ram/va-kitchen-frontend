@@ -21,7 +21,7 @@ const RecipeSearchInput = ({
   );
 
   useEffect(() => {
-    const selectDateObj = mealPlan?.days.find(
+    const selectDateObj = mealPlan?.days?.find(
       (dayObj) => dayObj.date === format(date, "dd-MM-yyyy")
     );
     if (selectDateObj) {
