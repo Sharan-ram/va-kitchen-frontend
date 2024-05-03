@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 
 const UpdateRecipe = ({ recipe }) => {
   const [ingredients, setIngredients] = useState([]);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     setIngredients(recipe.ingredients);
