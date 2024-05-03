@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import Selections from "@/components/mealPlan/render/Selections";
 import axios from "axios";
-import MealPlanTable from "@/components/mealPlan/render/MealPlanTable";
 import IngredientsTable from "@/components/mealPlan/render/IngredientsTable";
 import Table from "@/components/mealPlan/Table";
 import { format } from "date-fns";
@@ -26,8 +25,6 @@ const RenderMealPlanPage = () => {
     return ["Meal Plan", "Ingredients Per Meal", "Costing"];
   }, []);
 
-  console.log({ days });
-
   const fetchMealPlan = async ({ startDate, endDate }) => {
     console.log({ startDate, endDate });
     try {
@@ -51,7 +48,7 @@ const RenderMealPlanPage = () => {
     }
   };
 
-  console.log({ mealPlan });
+  console.log({ mealPlan, selectedTab, showMealPlan });
 
   return (
     <div>
@@ -72,19 +69,18 @@ const RenderMealPlanPage = () => {
         </div>
       )}
       {showMealPlan && selectedTab === "Meal Plan" && (
-        <div>
-          <div className="mt-10">
-            <Table
-              page="render"
-              days={days}
-              mealPlan={mealPlan}
-              setMealPlan={setMealPlan}
-            />
-          </div>
-
-          {/* <div className="mt-10">
-            <IngredientsTable mealPlan={mealPlan} year={year} month={month} />
-          </div> */}
+        <div className="mt-10">
+          <Table
+            page="render"
+            days={days}
+            mealPlan={mealPlan}
+            setMealPlan={setMealPlan}
+          />
+        </div>
+      )}
+      {showMealPlan && selectedTab === "Ingredients Per Meal" && (
+        <div className="mt-10">
+          <IngredientsTable mealPlan={mealPlan} />
         </div>
       )}
     </div>
