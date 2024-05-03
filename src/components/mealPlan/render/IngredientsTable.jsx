@@ -15,22 +15,13 @@ const IngredientsTable = ({ mealPlan }) => {
             meal.recipes.forEach((recipe) => {
               recipe.ingredients.forEach((ingredient, index) => {
                 const row = {
-                  Date: {
-                    value: index === 0 ? date : "",
-                    rowspan: recipe.ingredients.length,
-                  },
-                  Meal: {
-                    value: index === 0 ? mealName : "",
-                    rowspan: recipe.ingredients.length,
-                  },
-                  RecipeName: {
-                    value: index === 0 ? recipe.name : "",
-                    rowspan: recipe.ingredients.length,
-                  },
+                  Date: index === 0 ? date : "",
+                  Meal: index === 0 ? mealName : "",
+                  RecipeName: index === 0 ? recipe.name : "",
                   IngredientName: ingredient.ingredient.name,
-                  Quantity: ingredient[mealPlanObj.season], // Assuming this is the quantity
-                  VeganCount: mealCounts.veganCount,
-                  NonVeganCount: mealCounts.nonVeganCount,
+                  Quantity: ingredient[mealPlanObj.season],
+                  VeganCount: index === 0 ? mealCounts.veganCount : "",
+                  NonVeganCount: index === 0 ? mealCounts.nonVeganCount : "",
                 };
                 rows.push(row);
               });
@@ -56,16 +47,16 @@ const IngredientsTable = ({ mealPlan }) => {
             Recipe
           </th>
           <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
-            Ingredient
-          </th>
-          <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
-            Quantity
-          </th>
-          <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
             Vegan Count
           </th>
           <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
             Non Vegan Count
+          </th>
+          <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Ingredient
+          </th>
+          <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Quantity
           </th>
         </thead>
 
@@ -73,25 +64,25 @@ const IngredientsTable = ({ mealPlan }) => {
           {getRows().map((row, index) => (
             <tr key={index} className="border-b max-w-[100%]">
               <td className="px-3 py-2 whitespace-nowrap capitalize">
-                {row.Date && row.Date.value}
+                {row.Date && row.Date}
               </td>
               <td className="px-3 py-2 whitespace-nowrap capitalize">
-                {row.Meal && row.Meal.value}
+                {row.Meal && row.Meal}
               </td>
               <td className="px-3 py-2 whitespace-nowrap capitalize">
-                {row.RecipeName && row.RecipeName.value}
-              </td>
-              <td className="px-3 py-2 whitespace-nowrap capitalize">
-                {row.IngredientName}
-              </td>
-              <td className="px-3 py-2 whitespace-nowrap capitalize">
-                {row.Quantity}
+                {row.RecipeName && row.RecipeName}
               </td>
               <td className="px-3 py-2 whitespace-nowrap capitalize">
                 {row.VeganCount}
               </td>
               <td className="px-3 py-2 whitespace-nowrap capitalize">
                 {row.NonVeganCount}
+              </td>
+              <td className="px-3 py-2 whitespace-nowrap capitalize">
+                {row.IngredientName}
+              </td>
+              <td className="px-3 py-2 whitespace-nowrap capitalize">
+                {row.Quantity}
               </td>
             </tr>
           ))}
