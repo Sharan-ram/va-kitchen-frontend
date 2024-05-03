@@ -13,12 +13,18 @@ const IngredientsTable = ({ mealPlan }) => {
               mealType.charAt(0).toUpperCase() + mealType.slice(1);
 
             meal.recipes.forEach((recipe) => {
-              recipe.ingredients.forEach((ingredient) => {
+              recipe.ingredients.forEach((ingredient, index) => {
                 const row = {
-                  Date: { value: date, rowspan: recipe.ingredients.length },
-                  Meal: { value: mealName, rowspan: recipe.ingredients.length },
+                  Date: {
+                    value: index === 0 ? date : "",
+                    rowspan: recipe.ingredients.length,
+                  },
+                  Meal: {
+                    value: index === 0 ? mealName : "",
+                    rowspan: recipe.ingredients.length,
+                  },
                   RecipeName: {
-                    value: recipe.name,
+                    value: index === 0 ? recipe.name : "",
                     rowspan: recipe.ingredients.length,
                   },
                   IngredientName: ingredient.ingredient.name,
