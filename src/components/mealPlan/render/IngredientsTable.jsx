@@ -1,6 +1,6 @@
 const IngredientsTable = ({ mealPlan }) => {
   const getRows = () => {
-    const rows = [];
+    let rows = [];
     mealPlan.forEach((mealPlanObj) => {
       mealPlanObj.days.forEach((day) => {
         const date = day.date;
@@ -17,7 +17,17 @@ const IngredientsTable = ({ mealPlan }) => {
                 recipe.dietType === "vegan"
                   ? mealCounts.veganCount
                   : mealCounts.nonVeganCount;
+
+              let recipePrice = 0;
+
               recipe.ingredients.forEach((ingredient, index) => {
+                const ingredientPrice =
+                  ingredient[mealPlanObj.season] *
+                  count *
+                  ingredient.ingredient.price;
+
+                recipePrice = recipePrice + ingredientPrice;
+
                 const row = {
                   Date: index === 0 ? date : "",
                   Meal: index === 0 ? mealName : "",
@@ -26,11 +36,11 @@ const IngredientsTable = ({ mealPlan }) => {
                   Quantity: (ingredient[mealPlanObj.season] * count).toFixed(3),
                   VeganCount: index === 0 ? mealCounts.veganCount : "",
                   NonVeganCount: index === 0 ? mealCounts.nonVeganCount : "",
-                  ingredientPrice: (
-                    ingredient[mealPlanObj.season] *
-                    count *
-                    ingredient.ingredient.price
-                  ).toFixed(2),
+                  ingredientPrice: ingredientPrice.toFixed(2),
+                  recipePrice:
+                    index === recipe.ingredients.length - 1
+                      ? recipePrice.toFixed(2)
+                      : "",
                 };
                 rows.push(row);
               });
@@ -38,6 +48,14 @@ const IngredientsTable = ({ mealPlan }) => {
           }
         });
       });
+    });
+    let totalPrice = 0;
+    rows = rows.map((row, index) => {
+      totalPrice = totalPrice + Number(row.recipePrice);
+      return {
+        ...row,
+        totalPrice: index === rows.length - 1 ? totalPrice.toFixed(2) : "",
+      };
     });
     return rows;
   };
@@ -70,6 +88,12 @@ const IngredientsTable = ({ mealPlan }) => {
           <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
             Ingredient Price
           </th>
+          <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Recipe Price
+          </th>
+          <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Total Price
+          </th>
         </thead>
 
         <tbody className="bg-white divide-y divide-gray-200 max-w-[100%]">
@@ -98,6 +122,12 @@ const IngredientsTable = ({ mealPlan }) => {
               </td>
               <td className="px-3 py-2 whitespace-nowrap capitalize">
                 {row.ingredientPrice}
+              </td>
+              <td className="px-3 py-2 whitespace-nowrap capitalize">
+                {row.recipePrice}
+              </td>
+              <td className="px-3 py-2 whitespace-nowrap capitalize">
+                {row.totalPrice}
               </td>
             </tr>
           ))}

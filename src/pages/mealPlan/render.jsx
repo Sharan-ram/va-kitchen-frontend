@@ -22,7 +22,7 @@ const RenderMealPlanPage = () => {
   }, [startDate, endDate]);
 
   const tabs = useMemo(() => {
-    return ["Meal Plan", "Ingredients Per Meal", "Costing"];
+    return ["Meal Plan", "Ingredients Per Meal"];
   }, []);
 
   const fetchMealPlan = async ({ startDate, endDate }) => {
