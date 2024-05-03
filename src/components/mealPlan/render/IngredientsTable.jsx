@@ -13,15 +13,24 @@ const IngredientsTable = ({ mealPlan }) => {
               mealType.charAt(0).toUpperCase() + mealType.slice(1);
 
             meal.recipes.forEach((recipe) => {
+              const count =
+                recipe.dietType === "vegan"
+                  ? mealCounts.veganCount
+                  : mealCounts.nonVeganCount;
               recipe.ingredients.forEach((ingredient, index) => {
                 const row = {
                   Date: index === 0 ? date : "",
                   Meal: index === 0 ? mealName : "",
                   RecipeName: index === 0 ? recipe.name : "",
                   IngredientName: ingredient.ingredient.name,
-                  Quantity: ingredient[mealPlanObj.season],
+                  Quantity: (ingredient[mealPlanObj.season] * count).toFixed(3),
                   VeganCount: index === 0 ? mealCounts.veganCount : "",
                   NonVeganCount: index === 0 ? mealCounts.nonVeganCount : "",
+                  ingredientPrice: (
+                    ingredient[mealPlanObj.season] *
+                    count *
+                    ingredient.ingredient.price
+                  ).toFixed(2),
                 };
                 rows.push(row);
               });
@@ -58,6 +67,9 @@ const IngredientsTable = ({ mealPlan }) => {
           <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
             Quantity
           </th>
+          <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Ingredient Price
+          </th>
         </thead>
 
         <tbody className="bg-white divide-y divide-gray-200 max-w-[100%]">
@@ -83,6 +95,9 @@ const IngredientsTable = ({ mealPlan }) => {
               </td>
               <td className="px-3 py-2 whitespace-nowrap capitalize">
                 {row.Quantity}
+              </td>
+              <td className="px-3 py-2 whitespace-nowrap capitalize">
+                {row.ingredientPrice}
               </td>
             </tr>
           ))}
