@@ -12,6 +12,7 @@ const RecipeSearchInput = ({
   meal,
   year,
   month,
+  setActiveRecipe,
 }) => {
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
@@ -166,12 +167,12 @@ const RecipeSearchInput = ({
             {selectedRecipes.map((recipe, recipeIndex) => {
               return (
                 <div key={recipeIndex} className="flex items-center mb-2">
-                  <input
-                    disabled
-                    value={recipe.name}
-                    type="text"
-                    className="block w-full pl-10 pr-4 py-2 border rounded-md"
-                  />
+                  <div
+                    className=" cursor-pointer block w-full pl-10 pr-4 py-2 border rounded-md bg-[#f3f1f1]"
+                    onClick={() => setActiveRecipe({ recipe, month, year })}
+                  >
+                    {recipe.name}
+                  </div>
                   <div
                     className="ml-3 cursor-pointer"
                     onClick={() => handleDeleteRecipe(recipe)}

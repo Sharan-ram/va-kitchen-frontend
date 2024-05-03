@@ -3,7 +3,15 @@ import RecipeSearchInput from "./RecipeSearchInput";
 import MealCountInput from "./MealCountInput";
 import { weekDays, meals } from "@/helpers/constants";
 
-const MealPlanTable = ({ month, year, mealPlan, setMealPlan, days, page }) => {
+const MealPlanTable = ({
+  month,
+  year,
+  mealPlan,
+  setMealPlan,
+  days,
+  page,
+  setActiveRecipe,
+}) => {
   const getMealPlanObj = (year, month) => {
     const mealPlanObj = mealPlan.find(
       (obj) => obj.year === year && obj.month === month
@@ -63,6 +71,7 @@ const MealPlanTable = ({ month, year, mealPlan, setMealPlan, days, page }) => {
                         meal={meal}
                         month={month || monthRenderPage}
                         year={year || yearRenderPage}
+                        setActiveRecipe={setActiveRecipe}
                       />
                       <MealCountInput
                         entireMonthCounts={specificMealPlan.entireMonthCounts}

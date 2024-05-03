@@ -6,12 +6,16 @@ import Table from "@/components/mealPlan/Table";
 import { format } from "date-fns";
 import { generateDaysForDateRange } from "@/helpers/utils";
 import Tabs from "@/components/Tabs";
+import Modal from "@/components/Modal";
+import UpdateRecipe from "@/components/mealPlan/render/UpdateRecipe";
 
 const RenderMealPlanPage = () => {
   const [mealPlan, setMealPlan] = useState();
   const [showMealPlan, toggleMealPlan] = useState(false);
   const [mealPlanLoading, setMealPlanLoading] = useState(false);
   const [selectedTab, setSelectedTab] = useState("Meal Plan");
+  const [activeRecipe, setActiveRecipe] = useState(null);
+  const [activeMealPlan, setActiveMealPlan] = useState(null);
 
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -48,7 +52,7 @@ const RenderMealPlanPage = () => {
     }
   };
 
-  console.log({ mealPlan, selectedTab, showMealPlan });
+  console.log({ activeRecipe, activeMealPlan });
 
   return (
     <div>
@@ -75,6 +79,13 @@ const RenderMealPlanPage = () => {
             days={days}
             mealPlan={mealPlan}
             setMealPlan={setMealPlan}
+            setActiveRecipe={({ recipe, month, year }) => {
+              const selectedMealPlan = mealPlan.find(
+                (obj) => obj.month === month && obj.year === year
+              );
+              setActiveMealPlan(selectedMealPlan);
+              setActiveRecipe(recipe);
+            }}
           />
         </div>
       )}
@@ -82,6 +93,17 @@ const RenderMealPlanPage = () => {
         <div className="mt-10">
           <IngredientsTable mealPlan={mealPlan} />
         </div>
+      )}
+
+      {activeRecipe && (
+        <Modal
+          closeModal={() => {
+            setActiveMealPlan(null);
+            setActiveRecipe(null);
+          }}
+        >
+          <UpdateRecipe recipe={activeRecipe} />
+        </Modal>
       )}
     </div>
   );
