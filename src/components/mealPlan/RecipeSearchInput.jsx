@@ -24,6 +24,7 @@ const RecipeSearchInput = ({
     const selectDateObj = mealPlan?.days?.find(
       (dayObj) => dayObj.date === format(date, "dd-MM-yyyy")
     );
+    // console.log({ date, selectDateObj });
     if (selectDateObj) {
       if (selectDateObj[meal] && selectDateObj[meal]?.recipes) {
         setSelectedRecipes(selectDateObj[meal]?.recipes);

@@ -3,10 +3,13 @@ import "react-date-picker/dist/DatePicker.css";
 import "react-calendar/dist/Calendar.css";
 import DatePicker from "react-date-picker";
 
-const Selections = ({ onSubmit }) => {
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-
+const Selections = ({
+  onSubmit,
+  startDate,
+  endDate,
+  setStartDate,
+  setEndDate,
+}) => {
   return (
     <div className="flex items-center justify-start">
       <div>
