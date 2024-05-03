@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const UpdateRecipe = ({ recipe, closeModal }) => {
-  const [ingredients, setIngredients] = useState(recipe.ingredients);
+const UpdateRecipe = ({ recipe }) => {
+  const [ingredients, setIngredients] = useState([]);
+
+  useEffect(() => {
+    setIngredients(recipe.ingredients);
+  }, [recipe.ingredients]);
 
   const handleUpdateRecipe = () => {
     // Logic to update the recipe with the new ingredient quantities
@@ -13,11 +17,25 @@ const UpdateRecipe = ({ recipe, closeModal }) => {
     console.log("Add new ingredient");
   };
 
+  const handleQuantityChange = (e, ingredient, season) => {
+    const newIngredientsArr = ingredients.map((obj) => {
+      if (obj._id === ingredient._id) {
+        return {
+          ...obj,
+          [season]: e.target.value,
+        };
+      } else return obj;
+    });
+    setIngredients(newIngredientsArr);
+  };
+
+  console.log({ recipe, ingredients });
+
   return (
     <div>
       <h2 className="text-lg font-bold mb-4">{recipe.name}</h2>
       <div className="mb-4">
-        {recipe.ingredients.map((ingredient) => (
+        {ingredients.map((ingredient) => (
           <div key={ingredient._id} className="mb-4">
             <div>
               <h3 className="font-semibold">{ingredient.ingredient.name}</h3>
@@ -28,6 +46,9 @@ const UpdateRecipe = ({ recipe, closeModal }) => {
                 type="text"
                 className="border border-gray-300 px-2 py-1 w-full rounded"
                 value={ingredient.summerQuantity}
+                onChange={(e) =>
+                  handleQuantityChange(e, ingredient, "summerQuantity")
+                }
               />
             </div>
 
@@ -37,6 +58,9 @@ const UpdateRecipe = ({ recipe, closeModal }) => {
                 type="text"
                 className="border border-gray-300 px-2 py-1 w-full rounded"
                 value={ingredient.winterQuantity}
+                onChange={(e) =>
+                  handleQuantityChange(e, ingredient, "winterQuantity")
+                }
               />
             </div>
 
@@ -46,6 +70,9 @@ const UpdateRecipe = ({ recipe, closeModal }) => {
                 type="text"
                 className="border border-gray-300 px-2 py-1 w-full rounded"
                 value={ingredient.monsoonQuantity}
+                onChange={(e) =>
+                  handleQuantityChange(e, ingredient, "monsoonQuantity")
+                }
               />
             </div>
 
@@ -55,6 +82,9 @@ const UpdateRecipe = ({ recipe, closeModal }) => {
                 type="text"
                 className="border border-gray-300 px-2 py-1 w-full rounded"
                 value={ingredient.retreatQuantity}
+                onChange={(e) =>
+                  handleQuantityChange(e, ingredient, "retreatQuantity")
+                }
               />
             </div>
           </div>
@@ -67,7 +97,7 @@ const UpdateRecipe = ({ recipe, closeModal }) => {
         +
       </button>
       <button
-        className="bg-[#8e7576] text-white font-bold py-2 px-4 rounded mr-2"
+        className="bg-[#8e7576] text-white font-semibold py-2 px-4 rounded mr-2"
         onClick={handleUpdateRecipe}
       >
         Update Recipe
