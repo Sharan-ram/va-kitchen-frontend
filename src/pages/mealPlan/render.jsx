@@ -6,11 +6,13 @@ import IngredientsTable from "@/components/mealPlan/render/IngredientsTable";
 import Table from "@/components/mealPlan/Table";
 import { format } from "date-fns";
 import { generateDaysForDateRange } from "@/helpers/utils";
+import Tabs from "@/components/Tabs";
 
 const RenderMealPlanPage = () => {
   const [mealPlan, setMealPlan] = useState();
   const [showMealPlan, toggleMealPlan] = useState(false);
   const [mealPlanLoading, setMealPlanLoading] = useState(false);
+  const [selectedTab, setSelectedTab] = useState("Meal Plan");
 
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -19,6 +21,10 @@ const RenderMealPlanPage = () => {
     if (!startDate || !endDate) return [];
     return generateDaysForDateRange(startDate, endDate);
   }, [startDate, endDate]);
+
+  const tabs = useMemo(() => {
+    return ["Meal Plan", "Ingredients Per Meal", "Costing"];
+  }, []);
 
   console.log({ days });
 
@@ -57,6 +63,15 @@ const RenderMealPlanPage = () => {
         setEndDate={setEndDate}
       />
       {showMealPlan && (
+        <div className="mt-10">
+          <Tabs
+            tabs={tabs}
+            selected={selectedTab}
+            setSelectedTab={setSelectedTab}
+          />
+        </div>
+      )}
+      {showMealPlan && selectedTab === "Meal Plan" && (
         <div>
           <div className="mt-10">
             <Table
