@@ -3,7 +3,7 @@ import axios from "axios";
 import classNames from "classnames";
 import { Trash } from "phosphor-react";
 
-const UpdateRecipe = ({ recipe }) => {
+const UpdateRecipe = ({ recipe, onUpdateRecipe }) => {
   const [ingredients, setIngredients] = useState([]);
   const [search, setSearch] = useState("");
   const [showSearch, toggleSearch] = useState(false);
@@ -12,11 +12,6 @@ const UpdateRecipe = ({ recipe }) => {
   useEffect(() => {
     setIngredients(recipe.ingredients);
   }, [recipe.ingredients]);
-
-  const handleUpdateRecipe = () => {
-    // Logic to update the recipe with the new ingredient quantities
-    console.log("Recipe updated!");
-  };
 
   const handleAddIngredient = () => {
     toggleSearch(true);
@@ -100,6 +95,23 @@ const UpdateRecipe = ({ recipe }) => {
       ...ingredients.slice(index + 1),
     ];
     setIngredients(newIngredients);
+  };
+
+  const handleUpdateRecipe = () => {
+    const newRecipe = {
+      ...recipe,
+      ingredients: ingredients.map((ing) => {
+        return {
+          ...ing,
+          summerQuantity: Number(ing.summerQuantity),
+          winterQuantity: Number(ing.winterQuantity),
+          monsoonQuantity: Number(ing.monsoonQuantity),
+          retreatQuantity: Number(ing.retreatQuantity),
+        };
+      }),
+    };
+    console.log({ newRecipe });
+    onUpdateRecipe(newRecipe);
   };
 
   console.log({ recipe, ingredients });

@@ -30,7 +30,7 @@ const RenderMealPlanPage = () => {
   }, []);
 
   const fetchMealPlan = async ({ startDate, endDate }) => {
-    console.log({ startDate, endDate });
+    // console.log({ startDate, endDate });
     try {
       setMealPlanLoading(true);
       const res = await axios.get(
@@ -41,7 +41,7 @@ const RenderMealPlanPage = () => {
           "dd-MM-yyyy"
         )}&endDate=${format(endDate, "dd-MM-yyyy")}`
       );
-      console.log({ res });
+      // console.log({ res });
       setMealPlan(res.data.data);
       setMealPlanLoading(false);
       toggleMealPlan(true);
@@ -52,7 +52,51 @@ const RenderMealPlanPage = () => {
     }
   };
 
-  console.log({ activeRecipe, activeMealPlan });
+  // console.log({ activeRecipe, activeMealPlan });
+  console.log({ mealPlan });
+  const handleRecipeUpdate = (recipe) => {
+    const newMealPlan = mealPlan.map((mealPlanObj) => {
+      let newMealPlanObj = { ...mealPlanObj };
+      newMealPlanObj.days = newMealPlanObj.days.map((day) => {
+        let newDayObj = { ...day };
+        if (day.breakfast && day.breakfast.recipes) {
+          newDayObj.breakfast.recipes = newDayObj.breakfast.recipes.map((r) => {
+            if (r._id === recipe._id) {
+              return recipe;
+            } else {
+              return r;
+            }
+          });
+        }
+
+        if (day.lunch && day.lunch.recipes) {
+          newDayObj.lunch.recipes = newDayObj.lunch.recipes.map((r) => {
+            if (r._id === recipe._id) {
+              return recipe;
+            } else {
+              return r;
+            }
+          });
+        }
+
+        if (day.dinner && day.dinner.recipes) {
+          newDayObj.dinner.recipes = newDayObj.dinner.recipes.map((r) => {
+            if (r._id === recipe._id) {
+              return recipe;
+            } else {
+              return r;
+            }
+          });
+        }
+
+        return newDayObj;
+      });
+
+      return newMealPlanObj;
+    });
+
+    console.log({ newMealPlan });
+  };
 
   return (
     <div>
@@ -102,7 +146,10 @@ const RenderMealPlanPage = () => {
             setActiveRecipe(null);
           }}
         >
-          <UpdateRecipe recipe={activeRecipe} />
+          <UpdateRecipe
+            recipe={activeRecipe}
+            onUpdateRecipe={handleRecipeUpdate}
+          />
         </Modal>
       )}
     </div>
