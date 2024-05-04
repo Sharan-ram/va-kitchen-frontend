@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import classNames from "classnames";
+import { Trash } from "phosphor-react";
 
 const UpdateRecipe = ({ recipe }) => {
   const [ingredients, setIngredients] = useState([]);
@@ -93,6 +94,14 @@ const UpdateRecipe = ({ recipe }) => {
     return ingredients.every((ingredient) => isIngredientFilled(ingredient));
   };
 
+  const handleDeleteIngredient = (index) => {
+    const newIngredients = [
+      ...ingredients.slice(0, index),
+      ...ingredients.slice(index + 1),
+    ];
+    setIngredients(newIngredients);
+  };
+
   console.log({ recipe, ingredients });
 
   return (
@@ -100,9 +109,21 @@ const UpdateRecipe = ({ recipe }) => {
       <h2 className="text-lg font-bold mb-4">{recipe.name}</h2>
       <div className="mb-4">
         {ingredients.map((ingredient, index) => (
-          <div key={ingredient._id} className="mb-4">
+          <div key={ingredient._id} className="mb-6">
             <div>
-              <h3 className="font-semibold">{ingredient.ingredient.name}</h3>
+              <div className="flex justify-between items-center w-full">
+                <div>
+                  <h3 className="font-semibold">
+                    {ingredient.ingredient.name}
+                  </h3>
+                </div>
+                <div
+                  className="cursor-pointer"
+                  onClick={() => handleDeleteIngredient(index)}
+                >
+                  <Trash size={22} color="#bb2124" />
+                </div>
+              </div>
             </div>
             <div>
               <label className="mr-2 text-sm">Summer Quantity:</label>
