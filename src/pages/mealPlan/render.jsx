@@ -54,7 +54,7 @@ const RenderMealPlanPage = () => {
 
   // console.log({ activeRecipe, activeMealPlan });
   console.log({ mealPlan });
-  const updateMealPlans = async (updatedMealPlans) => {
+  const createUpdatedMealPlanPromises = async (updatedMealPlans) => {
     try {
       const updateRequests = updatedMealPlans.map(async (mealPlan) => {
         const response = await axios.put(
@@ -116,7 +116,7 @@ const RenderMealPlanPage = () => {
       return newMealPlanObj;
     });
 
-    updateMealPlans(newMealPlan)
+    createUpdatedMealPlanPromises(newMealPlan)
       .then((updatedResults) => {
         console.log("Meal plans updated successfully:", updatedResults);
         setMealPlan(newMealPlan);
@@ -125,6 +125,8 @@ const RenderMealPlanPage = () => {
         console.error("Error updating meal plans:", error);
       });
   };
+
+  const saveMealPlan = () => {};
 
   return (
     <div>
@@ -150,7 +152,19 @@ const RenderMealPlanPage = () => {
             page="render"
             days={days}
             mealPlan={mealPlan}
-            setMealPlan={setMealPlan}
+            setMealPlan={(newMealPlan) => {
+              const newPlans = mealPlan.map((obj) => {
+                if (
+                  obj.year === newMealPlan.year &&
+                  obj.month === newMealPlan.month
+                ) {
+                  return newMealPlan;
+                } else {
+                  return obj;
+                }
+              });
+              setMealPlan(newPlans);
+            }}
             setActiveRecipe={({ recipe, month, year }) => {
               const selectedMealPlan = mealPlan.find(
                 (obj) => obj.month === month && obj.year === year
@@ -159,6 +173,14 @@ const RenderMealPlanPage = () => {
               setActiveRecipe(recipe);
             }}
           />
+          <div className="mt-6">
+            <button
+              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-5"
+              onClick={saveMealPlan}
+            >
+              Save Meal Plan
+            </button>
+          </div>
         </div>
       )}
       {showMealPlan && selectedTab === "Ingredients Per Meal" && (
