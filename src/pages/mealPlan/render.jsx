@@ -54,6 +54,27 @@ const RenderMealPlanPage = () => {
 
   // console.log({ activeRecipe, activeMealPlan });
   console.log({ mealPlan });
+  const updateMealPlans = async (updatedMealPlans) => {
+    try {
+      const updateRequests = updatedMealPlans.map(async (mealPlan) => {
+        const response = await axios.put(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/mealPlan/${mealPlan._id}`,
+          mealPlan
+        );
+        return response.data;
+      });
+
+      // Wait for all the update requests to finish
+      const updatedResults = await Promise.all(updateRequests);
+
+      // Return the updated results
+      return updatedResults;
+    } catch (error) {
+      console.error("Error updating meal plans:", error);
+      throw error;
+    }
+  };
+
   const handleRecipeUpdate = (recipe) => {
     const newMealPlan = mealPlan.map((mealPlanObj) => {
       let newMealPlanObj = { ...mealPlanObj };
@@ -95,7 +116,14 @@ const RenderMealPlanPage = () => {
       return newMealPlanObj;
     });
 
-    console.log({ newMealPlan });
+    updateMealPlans(newMealPlan)
+      .then((updatedResults) => {
+        console.log("Meal plans updated successfully:", updatedResults);
+        setMealPlan(newMealPlan);
+      })
+      .catch((error) => {
+        console.error("Error updating meal plans:", error);
+      });
   };
 
   return (
