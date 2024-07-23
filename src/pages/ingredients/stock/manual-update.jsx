@@ -15,7 +15,22 @@ const ManualStockUpdate = () => {
     fetchIngredients();
   }, []);
 
-  console.log({ ingredients });
+  //   console.log({ ingredients });
+  const updateStock = async () => {
+    const newIngredients = ingredients.map((ing) => {
+      return {
+        ...ing,
+        stock: Number(ing.stock),
+      };
+    });
+    const res = await axios.post(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient/update-stock`,
+      {
+        ingredients: newIngredients,
+      }
+    );
+    console.log({ res });
+  };
 
   return (
     <div>
@@ -27,24 +42,31 @@ const ManualStockUpdate = () => {
               <div className="w-1/2">
                 <p>{ingredient.name}</p>
               </div>
-              <div className="w-1/2">
-                <input
-                  type="text"
-                  onChange={(e) => {
-                    const updatedIngredients = ingredients.map((ing) => {
-                      if (ing._id === ingredient._id) {
-                        return {
-                          ...ingredient,
-                          stock: e.target.value,
-                        };
-                      }
-                      return ingredient;
-                    });
-                    setIngredients(updatedIngredients);
-                  }}
-                  value={ingredient.stock}
-                  className="pl-10 pr-4 py-2 border rounded-md"
-                />
+              <div className="w-1/2 flex items-center">
+                <div>
+                  <input
+                    type="text"
+                    onChange={(e) => {
+                      const updatedIngredients = ingredients.map((ing) => {
+                        // console.log({ ingredient, ing });
+                        if (ing._id === ingredient._id) {
+                          return {
+                            ...ingredient,
+                            stock: e.target.value,
+                          };
+                        }
+                        return ing;
+                      });
+                      setIngredients(updatedIngredients);
+                    }}
+                    value={ingredient.stock}
+                    className="pl-10 pr-4 py-2 border rounded-md"
+                  />
+                </div>
+
+                <div className="ml-2">
+                  <p>{ingredient.purchaseUnit}</p>
+                </div>
               </div>
             </div>
           );
@@ -53,6 +75,7 @@ const ManualStockUpdate = () => {
         <button
           type="submit"
           className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+          onClick={updateStock}
         >
           Update Stock
         </button>
