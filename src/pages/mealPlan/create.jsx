@@ -1,7 +1,8 @@
 import CreateForm from "@/components/mealPlan/CreateForm";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Table from "@/components/mealPlan/Table";
 import axios from "axios";
+import { generateDaysOfMonth } from "@/helpers/utils";
 
 const CreateMealPlanPage = () => {
   const [showTable, setShowTable] = useState(false);
@@ -38,6 +39,11 @@ const CreateMealPlanPage = () => {
     }
   };
 
+  const days = useMemo(() => {
+    if (!mealPlan.year || !mealPlan.month) return [];
+    return generateDaysOfMonth(mealPlan.year, mealPlan.month - 1);
+  }, [mealPlan.year, mealPlan.month]);
+
   return (
     <div>
       <CreateForm
@@ -59,6 +65,8 @@ const CreateMealPlanPage = () => {
           month={mealPlan.month}
           mealPlan={mealPlan}
           setMealPlan={setMealPlan}
+          days={days}
+          page="create"
         />
       )}
       {showTable && (

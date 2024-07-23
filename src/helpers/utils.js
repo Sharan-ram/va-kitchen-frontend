@@ -9,6 +9,18 @@ export function generateDaysOfMonth(year, month) {
   return days;
 }
 
+export function generateDaysForDateRange(start, end) {
+  const days = [];
+  for (
+    let date = new Date(start);
+    date <= end;
+    date.setDate(date.getDate() + 1)
+  ) {
+    days.push(new Date(date)); // Push a new copy of the date object to avoid mutation
+  }
+  return days;
+}
+
 export const getRecipesForMeal = ({ date, meal, year, month, mealPlan }) => {
   if (!date || !meal || !year || !month || !mealPlan) return;
   const monthlyMealPlan = mealPlan?.[`${month}-${year}`];
