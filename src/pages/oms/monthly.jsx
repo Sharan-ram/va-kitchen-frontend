@@ -70,7 +70,24 @@ const MonthlyOrder = () => {
                     </td>
                     <td className="border-r border-r-black p-4">{bulkOrder}</td>
                     <td className="border-r border-r-black p-4">
-                      {adjustment}
+                      <input
+                        type="text"
+                        onChange={(e) => {
+                          const updatedIngredients = ingredients.map((ing) => {
+                            // console.log({ ingredient, ing });
+                            if (ing._id === ingredient._id) {
+                              return {
+                                ...ingredient,
+                                adjustment: e.target.value,
+                              };
+                            }
+                            return ing;
+                          });
+                          setIngredients(updatedIngredients);
+                        }}
+                        value={adjustment}
+                        className="pl-10 pr-4 py-2 border rounded-md"
+                      />
                     </td>
                     <td className="border-r border-r-black p-4">
                       {purchaseUnit}
