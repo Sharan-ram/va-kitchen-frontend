@@ -136,6 +136,7 @@ const RenderMealPlanPage = () => {
         endDate={endDate}
         setStartDate={setStartDate}
         setEndDate={setEndDate}
+        buttonText={"Show meal plan"}
       />
       {showMealPlan && (
         <div className="mt-10">
