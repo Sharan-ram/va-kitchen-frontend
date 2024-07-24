@@ -6,10 +6,14 @@ const ManualStockUpdate = () => {
 
   useEffect(() => {
     const fetchIngredients = async () => {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient/stock-summary`
-      );
-      setIngredients(res.data.data);
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient/stock-summary`
+        );
+        setIngredients(res.data.data);
+      } catch (e) {
+        console.error(e);
+      }
     };
 
     fetchIngredients();
@@ -17,19 +21,23 @@ const ManualStockUpdate = () => {
 
   //   console.log({ ingredients });
   const updateStock = async () => {
-    const newIngredients = ingredients.map((ing) => {
-      return {
-        ...ing,
-        stock: Number(ing.stock),
-      };
-    });
-    const res = await axios.post(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient/update-stock`,
-      {
-        ingredients: newIngredients,
-      }
-    );
-    console.log({ res });
+    try {
+      const newIngredients = ingredients.map((ing) => {
+        return {
+          ...ing,
+          stock: Number(ing.stock),
+        };
+      });
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient/update-stock`,
+        {
+          ingredients: newIngredients,
+        }
+      );
+      console.log({ res });
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (

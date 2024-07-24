@@ -6,16 +6,72 @@ const MonthlyOrder = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/order/monthly-order`
-      );
-      console.log({ res });
-      setIngredients(res.data.data);
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/order/monthly-order`
+        );
+        console.log({ res });
+        setIngredients(res.data.data);
+      } catch (e) {
+        console.error(e);
+      }
     };
 
     fetchData();
   }, []);
-  console.log({ ingredients });
+
+  const generatePurchaseOrder = async () => {
+    const tableData = [
+      [
+        "Ingredient",
+        "Requirement (Next Month)",
+        "Requirement (Rest)",
+        "Current Stock",
+        "Closing Stock (as on 31st)",
+        "Bulk order",
+        "Adjustment",
+        "Purchase Unit",
+      ], // Headers
+      ...ingredients.map(
+        ({
+          name,
+          bulkOrder,
+          monthlyMealPlan,
+          remainingMealPlan,
+          currentStock,
+          adjustment,
+          purchaseUnit,
+          closingStock,
+        }) => [
+          name,
+          monthlyMealPlan,
+          remainingMealPlan,
+          currentStock,
+          closingStock,
+          bulkOrder,
+          adjustment,
+          purchaseUnit,
+        ]
+      ),
+    ];
+
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/order/generate-monthly-purchase-order`,
+        {
+          data: tableData,
+        }
+      );
+      if (res.data.success) {
+        // Open the Google Sheet in a new tab
+        window.open(res.data.sheetUrl, "_blank");
+      }
+    } catch (error) {
+      console.error("Error generating purchase order:", error);
+      // alert("Failed to generate purchase order.");
+    }
+  };
+
   return (
     <div>
       <h2 className="text-xl font-semibold mb-4">Monthly Order Generation</h2>
@@ -97,6 +153,16 @@ const MonthlyOrder = () => {
               })}
           </tbody>
         </table>
+      </div>
+
+      <div className="mt-10">
+        <button
+          type="submit"
+          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+          onClick={generatePurchaseOrder}
+        >
+          Generate Purchase order
+        </button>
       </div>
     </div>
   );
