@@ -9,6 +9,7 @@ const Selections = ({
   endDate,
   setStartDate,
   setEndDate,
+  buttonText,
 }) => {
   return (
     <div className="flex items-center justify-start">
@@ -37,7 +38,7 @@ const Selections = ({
         disabled={!startDate || !endDate}
         onClick={() => onSubmit({ startDate, endDate })}
       >
-        Show meal plan
+        {buttonText}
       </button>
     </div>
   );
