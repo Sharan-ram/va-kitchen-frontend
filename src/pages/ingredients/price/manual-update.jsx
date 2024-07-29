@@ -1,0 +1,95 @@
+import axios from "axios";
+import { useState, useEffect } from "react";
+
+const ManualPriceUpdate = () => {
+  const [ingredients, setIngredients] = useState();
+
+  useEffect(() => {
+    const fetchIngredients = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient/price-summary`
+        );
+        setIngredients(res.data.data);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    fetchIngredients();
+  }, []);
+
+  //   console.log({ ingredients });
+  const updatePrice = async () => {
+    try {
+      const newIngredients = ingredients.map((ing) => {
+        return {
+          ...ing,
+          price: Number(ing.price),
+        };
+      });
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient/update-price`,
+        {
+          ingredients: newIngredients,
+        }
+      );
+      console.log({ res });
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  return (
+    <div>
+      <h2 className="text-xl font-semibold mb-4">Manual Price Update</h2>
+      {ingredients &&
+        ingredients.map((ingredient) => {
+          return (
+            <div key={ingredient._id} className="flex items-center w-1/2 my-4">
+              <div className="w-1/2">
+                <p>{ingredient.name}</p>
+              </div>
+              <div className="w-1/2 flex items-center">
+                <div>
+                  <input
+                    type="text"
+                    onChange={(e) => {
+                      const updatedIngredients = ingredients.map((ing) => {
+                        // console.log({ ingredient, ing });
+                        if (ing._id === ingredient._id) {
+                          return {
+                            ...ingredient,
+                            price: e.target.value,
+                          };
+                        }
+                        return ing;
+                      });
+                      setIngredients(updatedIngredients);
+                    }}
+                    value={ingredient.price}
+                    className="pl-10 pr-4 py-2 border rounded-md"
+                  />
+                </div>
+
+                <div className="ml-2">
+                  <p>INR / {ingredient.purchaseUnit}</p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      <div className="mt-10">
+        <button
+          type="submit"
+          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+          onClick={updatePrice}
+        >
+          Update Price
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default ManualPriceUpdate;
