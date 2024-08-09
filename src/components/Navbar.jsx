@@ -84,7 +84,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center font-open-sans">
       {items.map((item) => (
         <div
           key={item.title}
@@ -93,7 +93,7 @@ const Navbar = () => {
           onMouseLeave={handleMouseLeave}
         >
           <div className="relative">
-            <div className="title">{item.title}</div>
+            <div className="py-2">{item.title}</div>
             {activeItem === item.title && (
               <div
                 className="absolute left-0 bg-[#8E7576] rounded-[5px] border-y-8 border-[#735E5F] min-w-[200px] text-left"
@@ -105,7 +105,7 @@ const Navbar = () => {
                   <a
                     key={subItem.title}
                     href={subItem.pathname}
-                    className="block px-4 py-2 hover:bg-[#8a7879] hover:cursor-pointer hover:opacity-60 whitespace-nowrap"
+                    className="text-sm block px-4 py-2 hover:bg-[#7B6B6C] hover:cursor-pointer hover:opacity-50 whitespace-nowrap border-b border-b-[#735E5F]"
                   >
                     {subItem.title}
                   </a>
@@ -118,7 +118,5 @@ const Navbar = () => {
     </div>
   );
 };
-
-// activeItem === item.title &&
 
 export default Navbar;
