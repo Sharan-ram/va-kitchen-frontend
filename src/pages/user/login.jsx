@@ -19,8 +19,8 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = login({ username, password });
-      localStorage.setItem("token", response.data.token);
+      const response = await login({ username, password });
+      localStorage.setItem("token", response);
       router.push("/mealPlan/render");
     } catch (error) {
       setError("Invalid username or password");
