@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { registerNewUser } from "@/services/user";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -11,16 +11,13 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/register`,
-        {
-          username,
-          email,
-          password,
-          role,
-        }
-      );
-      setMessage(response.data.message);
+      const response = await registerNewUser({
+        username,
+        email,
+        password,
+        role,
+      });
+      setMessage(response);
     } catch (error) {
       setMessage(error.response.data.message || "Error registering user");
     }

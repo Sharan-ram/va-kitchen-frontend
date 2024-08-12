@@ -1,5 +1,8 @@
-import axios from "axios";
 import { useState, useEffect } from "react";
+import {
+  getIngredientStock,
+  updateStock as updateStockToDB,
+} from "@/services/ingredient";
 
 const ManualStockUpdate = () => {
   const [ingredients, setIngredients] = useState();
@@ -7,10 +10,8 @@ const ManualStockUpdate = () => {
   useEffect(() => {
     const fetchIngredients = async () => {
       try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient/stock-summary`
-        );
-        setIngredients(res.data.data);
+        const res = await getIngredientStock();
+        setIngredients(res);
       } catch (e) {
         console.error(e);
       }
@@ -28,13 +29,9 @@ const ManualStockUpdate = () => {
           stock: Number(ing.stock),
         };
       });
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient/update-stock`,
-        {
-          ingredients: newIngredients,
-        }
-      );
-      console.log({ res });
+      await updateStockToDB({
+        ingredients: newIngredients,
+      });
     } catch (e) {
       console.error(e);
     }

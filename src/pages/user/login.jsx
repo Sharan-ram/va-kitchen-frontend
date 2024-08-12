@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useRouter } from "next/router";
+import { login } from "@/services/user";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -19,10 +19,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/login`,
-        { username, password }
-      );
+      const response = login({ username, password });
       localStorage.setItem("token", response.data.token);
       router.push("/mealPlan/render");
     } catch (error) {

@@ -1,8 +1,8 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { format } from "date-fns";
 import { Trash } from "phosphor-react";
+import { searchRecipe } from "@/services/recipe";
 
 const RecipeSearchInput = ({
   placeholder,
@@ -42,10 +42,8 @@ const RecipeSearchInput = ({
       if (value.length >= 3) {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(async () => {
-          const res = await axios.get(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/recipe?search=${value}`
-          );
-          setSearchResults(res.data.data);
+          const res = await searchRecipe(value);
+          setSearchResults(res);
           setShowSearchResults(true);
         }, 300);
       }

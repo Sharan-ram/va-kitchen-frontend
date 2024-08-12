@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Input from "@/components/Input";
 import { years, months, seasons } from "@/helpers/constants";
-import axios from "axios";
+import { getMealPlanPerMonth } from "@/services/mealPlan";
 
 const MealPlanForm = ({
   showTable,
@@ -38,10 +38,8 @@ const MealPlanForm = ({
   const fetchMealPlan = async () => {
     setLoadingMealPlan(true);
     try {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/mealPlan?year=${year}&month=${month}`
-      );
-      if (res.data.data.length === 0) {
+      const res = await getMealPlanPerMonth(year, month);
+      if (res.length === 0) {
         setMealPlan({
           year: Number(year),
           month: Number(month),

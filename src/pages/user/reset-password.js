@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import axios from "axios";
+import { resetPassword } from "@/services/user";
 
 const ResetPassword = () => {
   const router = useRouter();
@@ -21,15 +21,7 @@ const ResetPassword = () => {
     }
 
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/reset-password/${token}`,
-        { password },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await resetPassword({ token, password });
 
       if (response.status === 200) {
         setMessage("Password reset successful");

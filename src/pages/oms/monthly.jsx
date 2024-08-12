@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import {
+  getMonthlyOrder,
+  generateMonthlyPurchaseOrder,
+} from "@/services/order";
 
 const MonthlyOrder = () => {
   const [ingredients, setIngredients] = useState();
@@ -7,11 +10,8 @@ const MonthlyOrder = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/order/monthly-order`
-        );
-        console.log({ res });
-        setIngredients(res.data.data);
+        const res = await getMonthlyOrder();
+        setIngredients(res);
       } catch (e) {
         console.error(e);
       }
@@ -56,12 +56,7 @@ const MonthlyOrder = () => {
     ];
 
     try {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/order/generate-monthly-purchase-order`,
-        {
-          data: tableData,
-        }
-      );
+      const res = await generateMonthlyPurchaseOrder(tableData);
       if (res.data.success) {
         // Open the Google Sheet in a new tab
         window.open(res.data.sheetUrl, "_blank");

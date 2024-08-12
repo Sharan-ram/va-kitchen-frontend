@@ -1,5 +1,5 @@
-import axios from "axios";
 import { useState, useEffect } from "react";
+import { getIngredientPrices, updatePrices } from "@/services/ingredient";
 
 const ManualPriceUpdate = () => {
   const [ingredients, setIngredients] = useState();
@@ -7,10 +7,8 @@ const ManualPriceUpdate = () => {
   useEffect(() => {
     const fetchIngredients = async () => {
       try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient/price-summary`
-        );
-        setIngredients(res.data.data);
+        const res = await getIngredientPrices();
+        setIngredients(res);
       } catch (e) {
         console.error(e);
       }
@@ -28,13 +26,9 @@ const ManualPriceUpdate = () => {
           price: Number(ing.price),
         };
       });
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient/update-price`,
-        {
-          ingredients: newIngredients,
-        }
-      );
-      console.log({ res });
+      await updatePrices({
+        ingredients: newIngredients,
+      });
     } catch (e) {
       console.error(e);
     }

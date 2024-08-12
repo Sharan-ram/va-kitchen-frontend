@@ -1,9 +1,7 @@
 import { useMemo, useState } from "react";
 import Selections from "@/components/mealPlan/render/Selections";
-import axios from "axios";
 import IngredientsTable from "@/components/mealPlan/render/IngredientsTable";
 import Table from "@/components/mealPlan/Table";
-import { format } from "date-fns";
 import { generateDaysForDateRange } from "@/helpers/utils";
 import Tabs from "@/components/Tabs";
 import Modal from "@/components/Modal";
@@ -33,16 +31,9 @@ const RenderMealPlanPage = () => {
     // console.log({ startDate, endDate });
     try {
       setMealPlanLoading(true);
-      const res = await axios.get(
-        `${
-          process.env.NEXT_PUBLIC_BACKEND_URL
-        }/mealPlan/date-range?startDate=${format(
-          startDate,
-          "dd-MM-yyyy"
-        )}&endDate=${format(endDate, "dd-MM-yyyy")}`
-      );
+      const res = await getMealPlanBetweenDateRange(startDate, endDate);
       // console.log({ res });
-      setMealPlan(res.data.data);
+      setMealPlan(res);
       setMealPlanLoading(false);
       toggleMealPlan(true);
     } catch (e) {
@@ -57,10 +48,7 @@ const RenderMealPlanPage = () => {
   const createUpdatedMealPlanPromises = async (updatedMealPlans) => {
     try {
       const updateRequests = updatedMealPlans.map(async (mealPlan) => {
-        const response = await axios.put(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/mealPlan/${mealPlan._id}`,
-          mealPlan
-        );
+        const response = await updateExistingMealPlan(mealPlan);
         return response.data;
       });
 

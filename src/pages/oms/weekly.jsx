@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState } from "react";
 import Selections from "@/components/mealPlan/render/Selections";
-import { format } from "date-fns";
+import { getWeeklyOrder, generateMonthlyPurchaseOrder } from "@/services/order";
 
-const MonthlyOrder = () => {
+const WeeklyOrder = () => {
   const [ingredients, setIngredients] = useState();
   const [showPurchaseOrder, setShowPurchaseOrder] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
@@ -11,16 +10,8 @@ const MonthlyOrder = () => {
 
   const fetchPurchaseOrder = async () => {
     try {
-      const res = await axios.get(
-        `${
-          process.env.NEXT_PUBLIC_BACKEND_URL
-        }/order/weekly-order?startDate=${format(
-          startDate,
-          "dd-MM-yyyy"
-        )}&endDate=${format(endDate, "dd-MM-yyyy")}`
-      );
-      console.log({ res });
-      setIngredients(res.data.data);
+      const res = await getWeeklyOrder(startDate, endDate);
+      setIngredients(res);
       setShowPurchaseOrder(true);
     } catch (e) {
       console.error(e);
@@ -63,12 +54,7 @@ const MonthlyOrder = () => {
     ];
 
     try {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/order/generate-monthly-purchase-order`,
-        {
-          data: tableData,
-        }
-      );
+      const res = await generateMonthlyPurchaseOrder(tableData);
       if (res.data.success) {
         // Open the Google Sheet in a new tab
         window.open(res.data.sheetUrl, "_blank");
@@ -195,4 +181,4 @@ const MonthlyOrder = () => {
   );
 };
 
-export default MonthlyOrder;
+export default WeeklyOrder;

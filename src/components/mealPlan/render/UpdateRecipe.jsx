@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import classNames from "classnames";
 import { Trash } from "phosphor-react";
+import { searchIngredient } from "@/services/ingredient";
 
 const UpdateRecipe = ({ recipe, onUpdateRecipe }) => {
   const [ingredients, setIngredients] = useState([]);
@@ -38,10 +38,8 @@ const UpdateRecipe = ({ recipe, onUpdateRecipe }) => {
       if (value.length >= 3) {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(async () => {
-          const res = await axios.get(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient?search=${value}`
-          );
-          setSearchResults(res.data.data);
+          const res = await searchIngredient(value);
+          setSearchResults(res);
         }, 300);
       } else {
         setSearchResults([]);

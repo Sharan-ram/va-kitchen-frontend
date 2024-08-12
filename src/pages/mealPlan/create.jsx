@@ -1,8 +1,8 @@
 import CreateForm from "@/components/mealPlan/CreateForm";
 import { useState, useMemo } from "react";
 import Table from "@/components/mealPlan/Table";
-import axios from "axios";
 import { generateDaysOfMonth } from "@/helpers/utils";
+import { saveNewMealPlan, updateExistingMealPlan } from "@/services/mealPlan";
 
 const CreateMealPlanPage = () => {
   const [showTable, setShowTable] = useState(false);
@@ -19,17 +19,9 @@ const CreateMealPlanPage = () => {
       let res;
       if (typeof isNew !== "undefined") {
         if (isNew) {
-          res = await axios.post(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/mealPlan`,
-            mealPlan
-          );
-          console.log("new res", res);
+          await saveNewMealPlan(mealPlan);
         } else {
-          res = await axios.put(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/mealPlan/${mealPlan._id}`,
-            mealPlan
-          );
-          console.log("updated res", res);
+          await updateExistingMealPlan(mealPlan);
         }
         setIsNew(false);
         setMealPlan(res.data.data);

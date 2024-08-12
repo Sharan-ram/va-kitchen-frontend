@@ -1,7 +1,8 @@
 import { useState } from "react";
-import axios from "axios";
 import Input from "./Input"; // Assuming you have an Input component for text and select fields
 import classNames from "classnames";
+import { searchIngredient } from "@/services/ingredient";
+import { saveRecipe } from "@/services/recipe";
 
 const RecipeForm = () => {
   const [formData, setFormData] = useState({
@@ -56,14 +57,10 @@ const RecipeForm = () => {
         retreatQuantity: Number(ingredient.retreatQuantity),
       };
     });
-    const res = await axios.post(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/recipe`,
-      {
-        ...formData,
-        ingredients: newIngredients,
-      }
-    );
-    console.log({ res });
+    await saveRecipe({
+      ...formData,
+      ingredients: newIngredients,
+    });
   };
 
   const isIngredientFilled = (ingredient) => {
@@ -104,10 +101,8 @@ const RecipeForm = () => {
       if (value.length >= 3) {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(async () => {
-          const res = await axios.get(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient?search=${value}`
-          );
-          setSearchResults(res.data.data);
+          const res = await searchIngredient(value);
+          setSearchResults(res);
           setShowSearchResults(index);
         }, 300);
       } else {

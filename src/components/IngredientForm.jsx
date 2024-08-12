@@ -1,5 +1,4 @@
 import { useState } from "react";
-import axios from "axios";
 import {
   purchaseUnits,
   ingredientType,
@@ -7,6 +6,7 @@ import {
   vendors,
 } from "@/helpers/constants";
 import Input from "./Input";
+import { saveIngredient } from "@/services/ingredient";
 
 const initialFormState = {
   name: "",
@@ -35,16 +35,11 @@ const IngredientForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient`,
-        {
-          ...formData,
-          purchaseUnitPerCookingUnit: Number(
-            formData.purchaseUnitPerCookingUnit
-          ),
-        }
-      );
-      console.log({ response });
+      await saveIngredient({
+        ...formData,
+        purchaseUnitPerCookingUnit: Number(formData.purchaseUnitPerCookingUnit),
+      });
+      // console.log({ response });
       setFormData(initialFormState);
     } catch (error) {
       console.error("Error:", error);
