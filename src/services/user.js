@@ -2,7 +2,7 @@ import axiosInstance from "@/utils/axiosInstance";
 
 export const login = async (payload) => {
   try {
-    const response = await axiosInstance.post(
+    const response = await axios.post(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/login`,
       payload
     );
