@@ -23,6 +23,7 @@ axiosInstance.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       // If the error is unauthorized, remove the token and redirect to login
       localStorage.removeItem("token");
+      localStorage.removeItem("user");
       window.location.href = "/user/login"; // Adjust the path to your login page
     }
     return Promise.reject(error);

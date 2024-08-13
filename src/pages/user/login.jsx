@@ -22,6 +22,7 @@ const Login = () => {
       const response = await login({ username, password });
       localStorage.setItem("token", response.token);
       localStorage.setItem("user", JSON.stringify(response.user));
+      window.dispatchEvent(new Event("userUpdated"));
       router.push("/mealPlan/render");
     } catch (error) {
       setError("Invalid username or password");
