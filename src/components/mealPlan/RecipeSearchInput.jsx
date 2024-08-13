@@ -164,9 +164,12 @@ const RecipeSearchInput = ({
           <div>
             {selectedRecipes.map((recipe, recipeIndex) => {
               return (
-                <div key={recipeIndex} className="flex items-center mb-2">
+                <div
+                  key={recipeIndex}
+                  className="flex items-center mb-2 justify-between w-full"
+                >
                   <div
-                    className=" cursor-pointer block w-full pl-10 pr-4 py-2 border rounded-md bg-[#f3f1f1]"
+                    className="cursor-pointer border rounded-md bg-[#f3f1f1] px-2 py-1 w-[90%]"
                     onClick={() => setActiveRecipe({ recipe, month, year })}
                   >
                     {recipe.name}
@@ -187,7 +190,7 @@ const RecipeSearchInput = ({
                 onChange={handleInputChange}
                 value={search?.text || ""}
                 type="text"
-                className="block w-full pl-10 pr-4 py-2 border rounded-md"
+                className="border rounded-md w-full pl-2 py-1"
                 placeholder={placeholder}
               />
             </div>

@@ -107,7 +107,7 @@ const MealCountInput = ({
   };
 
   return (
-    <div className="flex mt-2">
+    <div className="flex mt-2 justify-between">
       {dietTypeCounts.map((dietTypeCount) => {
         return (
           <input
@@ -115,7 +115,7 @@ const MealCountInput = ({
             type="number"
             placeholder={dietTypeCount}
             onChange={(e) => handleInputChange(e, dietTypeCount)}
-            className="flex-1 mr-2 pl-2 py-1 border rounded-md"
+            className="w-[30%] pl-2 py-1 border rounded-md"
             value={getValue(dietTypeCount)}
           />
         );

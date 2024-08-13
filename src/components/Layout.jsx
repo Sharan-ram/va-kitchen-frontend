@@ -7,7 +7,7 @@ const Layout = () => {
   const router = useRouter();
   return (
     <div className="fixed w-full py-4 bg-[#8e7576] z-[999]">
-      <div className="max-w-[1500px] mx-auto">
+      <div className="max-w-[1500px] 2xl:mx-auto xl:mx-[40px]">
         <div className="flex justify-between items-center">
           <div
             className="cursor-pointer w-[240px] h-[70px] relative"
