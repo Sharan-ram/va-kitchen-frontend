@@ -7,7 +7,7 @@ export const login = async (payload) => {
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/login`,
       payload
     );
-    return response.data.token;
+    return response.data;
   } catch (e) {
     throw new Error(e);
   }
