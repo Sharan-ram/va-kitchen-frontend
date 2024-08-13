@@ -6,6 +6,7 @@ import { generateDaysForDateRange } from "@/helpers/utils";
 import Tabs from "@/components/Tabs";
 import Modal from "@/components/Modal";
 import UpdateRecipe from "@/components/mealPlan/render/UpdateRecipe";
+import { getMealPlanBetweenDateRange } from "@/services/mealPlan";
 
 const RenderMealPlanPage = () => {
   const [mealPlan, setMealPlan] = useState();
