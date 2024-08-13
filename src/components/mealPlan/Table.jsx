@@ -29,16 +29,16 @@ const MealPlanTable = ({
       <table className="min-w-full divide-y divide-gray-200 max-w-[100%]">
         <thead className="bg-gray-50 max-w-[100%]">
           <tr className="bg-gray-200">
-            <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-3 py-2 font-bold uppercase tracking-wider">
               Day
             </th>
-            <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-3 py-2 font-bold uppercase tracking-wider">
               Breakfast
             </th>
-            <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-3 py-2 font-bold uppercase tracking-wider">
               Lunch
             </th>
-            <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-3 py-2 font-bold uppercase tracking-wider">
               Dinner
             </th>
           </tr>
@@ -56,7 +56,7 @@ const MealPlanTable = ({
                 : getMealPlanObj(yearRenderPage, monthRenderPage);
             return (
               <tr key={day} className="border-b max-w-[100%]">
-                <td className="px-3 py-2 whitespace-nowrap">{`${date}, ${weekDays[dayName]}`}</td>
+                <td className="px-3 py-2 whitespace-nowrap font-bold">{`${date}, ${weekDays[dayName]}`}</td>
                 {meals.map((meal) => {
                   return (
                     <td

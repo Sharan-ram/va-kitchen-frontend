@@ -39,6 +39,7 @@ const MealPlanForm = ({
     setLoadingMealPlan(true);
     try {
       const res = await getMealPlanPerMonth(year, month);
+      console.log({ res });
       if (res.length === 0) {
         setMealPlan({
           year: Number(year),
@@ -46,7 +47,7 @@ const MealPlanForm = ({
         });
         setIsNew(true);
       } else {
-        setMealPlan(res.data.data[0]);
+        setMealPlan(res[0]);
         setIsNew(false);
       }
       setLoadingMealPlan(false);
