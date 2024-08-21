@@ -13,8 +13,8 @@ const Ingredients = () => {
   }, []);
 
   return !ingredients ? null : (
-    <div>
-      <table className="min-w-full divide-y divide-gray-200 max-w-[100%]">
+    <div className="">
+      <table className="min-w-full divide-y divide-gray-200 max-w-[100%] mr-[40px]">
         <thead className="bg-gray-50 max-w-[100%]">
           <tr className="bg-gray-200">
             <th className="px-3 py-2 font-bold uppercase tracking-wider">
@@ -95,10 +95,10 @@ const Ingredients = () => {
                 <td className="px-3 py-2 whitespace-nowrap capitalize">
                   {index + 1}
                 </td>
-                <td className="px-3 py-2 whitespace-nowrap capitalize">
+                <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden max-w-[300px] text-ellipsis">
                   {name}
                 </td>
-                <td className="px-3 py-2 whitespace-nowrap capitalize">
+                <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden max-w-[300px] text-ellipsis">
                   {englishEquivalent}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap capitalize">
@@ -123,13 +123,13 @@ const Ingredients = () => {
                   {cookingUnit}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap capitalize">
-                  {nuts}
+                  {nuts === true && "Yes"}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap capitalize">
-                  {dairy}
+                  {dairy === true && "Yes"}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap capitalize">
-                  {gluten}
+                  {gluten === true && "Yes"}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap capitalize">
                   {ingredientSpecificAllergy}
