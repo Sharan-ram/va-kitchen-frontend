@@ -14,9 +14,11 @@ export const saveIngredient = async (payload) => {
 
 export const searchIngredient = async (searchText) => {
   try {
-    const response = await axiosInstance.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient?search=${searchText}`
-    );
+    let response;
+    let url = searchText
+      ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient?search=${searchText}`
+      : `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient`;
+    response = await axiosInstance.get(url);
     return response.data.data;
   } catch (e) {
     throw new Error(e);
