@@ -164,7 +164,12 @@ const Navbar = () => {
             </div>
             {activeItem === item.title && (
               <div
-                className="absolute left-0 bg-[#8E7576] rounded-[5px] border-y-8 border-[#735E5F] min-w-[200px] text-left"
+                className={classNames(
+                  "absolute bg-[#8E7576] rounded-[5px] border-y-8 border-[#735E5F] min-w-[200px] text-left",
+                  item.title === "Username" || item.title === "Recipes"
+                    ? "right-0"
+                    : "left-0"
+                )}
                 style={{ boxShadow: "0 3px 6px rgba(0, 0, 0, 0.2)" }}
                 onMouseEnter={() => handleMouseEnter(item.title)}
                 onMouseLeave={handleMouseLeave}
