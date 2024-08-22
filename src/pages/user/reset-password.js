@@ -82,8 +82,8 @@ const ResetPassword = () => {
           {isUserLoggedIn && (
             <div className="mb-4">
               <label
-                htmlFor="current-password"
                 className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="username"
               >
                 Current Password
               </label>
@@ -102,6 +102,12 @@ const ResetPassword = () => {
           )}
 
           <div className="mb-2">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="username"
+            >
+              New Password
+            </label>
             <input
               id="password"
               name="password"
@@ -115,7 +121,10 @@ const ResetPassword = () => {
             />
           </div>
           <div>
-            <label htmlFor="confirm-password" className="sr-only">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="username"
+            >
               Confirm Password
             </label>
             <input
