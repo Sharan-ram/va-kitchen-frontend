@@ -53,3 +53,16 @@ export const resetPassword = async ({ token, password }) => {
     throw new Error(e);
   }
 };
+
+export const resetPasswordLoggedIn = async (payload) => {
+  try {
+    const response = await axiosInstance.post(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/change-password`,
+      payload
+    );
+    console.log({ response });
+    return response;
+  } catch (e) {
+    throw new Error(e);
+  }
+};

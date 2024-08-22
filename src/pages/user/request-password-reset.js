@@ -62,9 +62,7 @@ const RequestPasswordReset = () => {
               required
             />
           </div>
-          {message && (
-            <p className="text-red-500 text-xs italic mb-4">{message}</p>
-          )}
+          {message && <p className="text-red-500 text-xs mb-4">{message}</p>}
           <div className="flex items-center justify-between">
             <button
               type="submit"

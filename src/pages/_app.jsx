@@ -3,6 +3,12 @@ import Layout from "@/components/Layout";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 
+const unprotectedRoutes = [
+  "/user/login",
+  "/user/request-password-reset",
+  "/user/reset-password",
+];
+
 export default function App({ Component, pageProps }) {
   const router = useRouter();
 
@@ -10,10 +16,11 @@ export default function App({ Component, pageProps }) {
     const token = localStorage.getItem("token");
     const user = JSON.parse(localStorage.getItem("user"));
     console.log({ token });
-    if (!token) {
+    if (!token && !unprotectedRoutes.includes(router.pathname)) {
+      console.log("unprotected routes");
       router.push("/user/login");
     }
-  }, []);
+  }, [router.pathname]);
 
   return (
     <main>

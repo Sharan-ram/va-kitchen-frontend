@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { login } from "@/services/user";
+import Link from "next/link";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -51,7 +52,7 @@ const Login = () => {
               required
             />
           </div>
-          <div className="mb-6">
+          <div className="mb-2">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
               htmlFor="password"
@@ -68,7 +69,17 @@ const Login = () => {
               required
             />
           </div>
-          {error && <p className="text-red-500 text-xs italic mb-4">{error}</p>}
+          <div className="mb-2">
+            <Link
+              href="/user/request-password-reset"
+              className="text-sm font-medium text-blue-600 hover:text-blue-800"
+            >
+              Forgot Password?
+            </Link>
+          </div>
+
+          {error && <p className="text-red-500 text-xs mb-4">{error}</p>}
+
           <div className="flex items-center justify-between">
             <button
               type="submit"

@@ -13,7 +13,12 @@ const Layout = () => {
             className="cursor-pointer w-[240px] h-[70px] relative"
             onClick={() => router.push("/")}
           >
-            <Image src={Logo} fill={true} className="object-contain" />
+            <Image
+              src={Logo}
+              fill={true}
+              className="object-contain"
+              alt="Vedanta Academy logo"
+            />
           </div>
           <div>
             <Navbar />
