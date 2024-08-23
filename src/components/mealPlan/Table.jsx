@@ -83,11 +83,13 @@ const MealPlanTable = ({
                 ? mealPlan
                 : getMealPlanObj(yearRenderPage, monthRenderPage);
             // console.log({ day });
-            const selectedDateObjIndex = mealPlan.days?.findIndex((obj) => {
-              return obj.date === format(day, "dd-MM-yyyy");
-            });
+            const selectedDateObjIndex = mealPlan.days
+              ? mealPlan.days?.findIndex((obj) => {
+                  return obj.date === format(day, "dd-MM-yyyy");
+                })
+              : -1;
             const season =
-              selectedDateObjIndex && selectedDateObjIndex > 0
+              selectedDateObjIndex >= 0
                 ? mealPlan.days[selectedDateObjIndex].season
                 : mealPlan.season;
 
