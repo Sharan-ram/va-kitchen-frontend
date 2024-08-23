@@ -24,6 +24,8 @@ const RenderMealPlanPage = () => {
     return generateDaysForDateRange(startDate, endDate);
   }, [startDate, endDate]);
 
+  // console.log({ days });
+
   const tabs = useMemo(() => {
     return ["Meal Plan", "Ingredients Per Meal"];
   }, []);

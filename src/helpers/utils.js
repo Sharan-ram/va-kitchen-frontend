@@ -11,13 +11,17 @@ export function generateDaysOfMonth(year, month) {
 
 export function generateDaysForDateRange(start, end) {
   const days = [];
-  for (
-    let date = new Date(start);
-    date <= end;
-    date.setDate(date.getDate() + 1)
-  ) {
+  let date = new Date(start);
+
+  // Ensure the time part is reset to midnight for accurate comparison
+  date.setHours(0, 0, 0, 0);
+  end.setHours(0, 0, 0, 0);
+
+  while (date <= end) {
     days.push(new Date(date)); // Push a new copy of the date object to avoid mutation
+    date.setDate(date.getDate() + 1);
   }
+
   return days;
 }
 
