@@ -6,7 +6,13 @@ import { generateDaysForDateRange } from "@/helpers/utils";
 import Tabs from "@/components/Tabs";
 import Modal from "@/components/Modal";
 import UpdateRecipe from "@/components/mealPlan/render/UpdateRecipe";
-import { getMealPlanBetweenDateRange } from "@/services/mealPlan";
+import {
+  getMealPlanBetweenDateRange,
+  updateExistingMealPlan,
+} from "@/services/mealPlan";
+import { toast } from "react-toastify";
+import Loader from "@/components/Loader";
+import classNames from "classnames";
 
 const RenderMealPlanPage = () => {
   const [mealPlan, setMealPlan] = useState();
@@ -18,6 +24,8 @@ const RenderMealPlanPage = () => {
 
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+
+  const [saveMealPlanLoading, setSaveMealPlanLoading] = useState(false);
 
   const days = useMemo(() => {
     if (!startDate || !endDate) return [];
@@ -107,17 +115,24 @@ const RenderMealPlanPage = () => {
       return newMealPlanObj;
     });
 
-    createUpdatedMealPlanPromises(newMealPlan)
+    setMealPlan(newMealPlan);
+    setActiveRecipe(false);
+  };
+
+  const saveMealPlan = async () => {
+    setSaveMealPlanLoading(true);
+    createUpdatedMealPlanPromises(mealPlan)
       .then((updatedResults) => {
         console.log("Meal plans updated successfully:", updatedResults);
-        setMealPlan(newMealPlan);
+        toast.success("Meal plan updated successfully!");
+        setSaveMealPlanLoading(false);
       })
       .catch((error) => {
+        setSaveMealPlanLoading(false);
+        toast.error("Error. Try again later!");
         console.error("Error updating meal plans:", error);
       });
   };
-
-  const saveMealPlan = () => {};
 
   return (
     <div>
@@ -169,10 +184,14 @@ const RenderMealPlanPage = () => {
           />
           <div className="mt-6">
             <button
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-5"
+              className={classNames(
+                "px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-5",
+                saveMealPlanLoading && "cursor-not-allowed"
+              )}
               onClick={saveMealPlan}
+              disabled={saveMealPlanLoading}
             >
-              Save Meal Plan
+              {saveMealPlanLoading ? <Loader /> : "Save Meal Plan"}
             </button>
           </div>
         </div>
