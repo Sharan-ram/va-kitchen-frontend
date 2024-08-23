@@ -11,10 +11,10 @@ const CreateMealPlanPage = () => {
 
   const [isNew, setIsNew] = useState();
 
-  console.log({ mealPlan });
+  // console.log({ mealPlan });
 
   const saveMealPlan = async () => {
-    console.log({ mealPlan });
+    // console.log({ mealPlan });
     try {
       let res;
       if (typeof isNew !== "undefined") {
@@ -50,6 +50,7 @@ const CreateMealPlanPage = () => {
           }
         }
         setIsNew={setIsNew}
+        isNew={isNew}
       />
       {showTable && (
         <Table

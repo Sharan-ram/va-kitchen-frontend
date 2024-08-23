@@ -39,20 +39,20 @@ const MealPlanForm = ({
     setLoadingMealPlan(true);
     try {
       const res = await getMealPlanPerMonth(year, month);
-      console.log({ res });
       if (res.length === 0) {
+        // console.log({ resInsideNewMealPlan: res });
         setMealPlan({
           year: Number(year),
           month: Number(month),
         });
         setIsNew(true);
+        setStep(2);
       } else {
         setMealPlan(res[0]);
         setIsNew(false);
         showTable(true);
       }
       setLoadingMealPlan(false);
-      setStep(2);
     } catch (e) {
       console.error(e);
       setLoadingMealPlan(false);
@@ -68,7 +68,10 @@ const MealPlanForm = ({
               type="select"
               selectProps={{
                 selected: year,
-                onChange: (e) => setYear(e.target.value),
+                onChange: (e) => {
+                  setYear(e.target.value);
+                  showTable(false);
+                },
                 options: [{ value: "", text: "Select year" }, ...years],
               }}
             />
@@ -79,7 +82,10 @@ const MealPlanForm = ({
               type="select"
               selectProps={{
                 selected: month,
-                onChange: (e) => setMonth(e.target.value),
+                onChange: (e) => {
+                  setMonth(e.target.value);
+                  showTable(false);
+                },
                 options: [{ value: "", text: "Select month" }, ...months],
               }}
             />
@@ -95,7 +101,7 @@ const MealPlanForm = ({
         </div>
       </div>
 
-      {!loadingMealPlan && step === 2 && (
+      {!loadingMealPlan && step === 2 && isNew && (
         <div className="w-full flex justify-between items-end mt-6">
           <div className="w-[85%] flex items-end justify-between">
             <div className="w-[20%]">
