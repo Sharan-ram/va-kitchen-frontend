@@ -5,6 +5,7 @@ import { generateDaysOfMonth } from "@/helpers/utils";
 import { saveNewMealPlan, updateExistingMealPlan } from "@/services/mealPlan";
 import classNames from "classnames";
 import Loader from "@/components/Loader";
+import { toast } from "react-toastify";
 
 const CreateMealPlanPage = () => {
   const [showTable, setShowTable] = useState(false);
@@ -29,10 +30,12 @@ const CreateMealPlanPage = () => {
         }
         setIsNew(false);
         setSaveMealPlanLoading(false);
+        toast.success("Meal Plan Saved!");
       }
     } catch (e) {
       console.error(e);
       setSaveMealPlanLoading(false);
+      toast.error("Error. Try again later!");
     }
   };
 
