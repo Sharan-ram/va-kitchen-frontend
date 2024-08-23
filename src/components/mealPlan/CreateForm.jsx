@@ -49,6 +49,7 @@ const MealPlanForm = ({
       } else {
         setMealPlan(res[0]);
         setIsNew(false);
+        showTable(true);
       }
       setLoadingMealPlan(false);
       setStep(2);
@@ -103,7 +104,10 @@ const MealPlanForm = ({
                 key={season}
                 selectProps={{
                   selected: season,
-                  onChange: (e) => setSeason(e.target.value),
+                  onChange: (e) => {
+                    showTable(false);
+                    setSeason(e.target.value);
+                  },
                   options: [{ value: "", text: "Select season" }, ...seasons],
                   // value: season,
                 }}
@@ -117,12 +121,13 @@ const MealPlanForm = ({
                 type="number"
                 id="veganCount"
                 value={monthCounts.veganCount}
-                onChange={(e) =>
+                onChange={(e) => {
                   setMonthCounts({
                     ...monthCounts,
                     veganCount: Number(e.target.value),
-                  })
-                }
+                  });
+                  showTable(false);
+                }}
                 placeholder="Vegan Count"
                 className="w-full rounded-md border border-gray-300 p-2"
               />
@@ -135,12 +140,13 @@ const MealPlanForm = ({
                 type="number"
                 id="nonVeganCount"
                 value={monthCounts.nonVeganCount}
-                onChange={(e) =>
+                onChange={(e) => {
                   setMonthCounts({
                     ...monthCounts,
                     nonVeganCount: Number(e.target.value),
-                  })
-                }
+                  });
+                  showTable(false);
+                }}
                 placeholder="Non-Vegan Count"
                 className="w-full rounded-md border border-gray-300 p-2"
               />
@@ -153,12 +159,13 @@ const MealPlanForm = ({
                 type="number"
                 id="glutenFreeCount"
                 value={monthCounts.glutenFreeCount}
-                onChange={(e) =>
+                onChange={(e) => {
                   setMonthCounts({
                     ...monthCounts,
                     glutenFreeCount: Number(e.target.value),
-                  })
-                }
+                  });
+                  showTable(false);
+                }}
                 placeholder="Gluten-Free Count"
                 className="w-full rounded-md border border-gray-300 p-2"
               />
