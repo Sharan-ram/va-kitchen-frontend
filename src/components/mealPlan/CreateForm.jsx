@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Input from "@/components/Input";
 import { years, months, seasons } from "@/helpers/constants";
 import { getMealPlanPerMonth } from "@/services/mealPlan";
+import classNames from "classnames";
+import Loader from "@/components/Loader";
 
 const MealPlanForm = ({
   showTable,
@@ -59,6 +61,10 @@ const MealPlanForm = ({
     }
   };
 
+  const nextDisabled = !year || !month || loadingMealPlan;
+
+  const showMealPlanDisabled = !season || loadingMealPlan;
+
   return (
     <div>
       <div className="flex justify-between w-full">
@@ -71,6 +77,7 @@ const MealPlanForm = ({
                 onChange: (e) => {
                   setYear(e.target.value);
                   showTable(false);
+                  setStep(1);
                 },
                 options: [{ value: "", text: "Select year" }, ...years],
               }}
@@ -85,6 +92,7 @@ const MealPlanForm = ({
                 onChange: (e) => {
                   setMonth(e.target.value);
                   showTable(false);
+                  setStep(1);
                 },
                 options: [{ value: "", text: "Select month" }, ...months],
               }}
@@ -94,9 +102,13 @@ const MealPlanForm = ({
         <div className="w-[15%] text-right">
           <button
             onClick={fetchMealPlan}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            className={classNames(
+              "px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600",
+              nextDisabled && "opacity-50 cursor-not-allowed"
+            )}
+            disabled={nextDisabled}
           >
-            Next
+            {loadingMealPlan ? <Loader /> : "Next"}
           </button>
         </div>
       </div>
@@ -180,9 +192,13 @@ const MealPlanForm = ({
           <div className="w-[15%] text-right">
             <button
               onClick={handleShowMealPlan}
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+              className={classNames(
+                "px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600",
+                showMealPlanDisabled && "cursor-not-allowed opacity-50"
+              )}
+              disabled={showMealPlanDisabled}
             >
-              Show Meal Plan
+              {loadingMealPlan ? <Loader /> : "Show Meal Plan"}
             </button>
           </div>
         </div>

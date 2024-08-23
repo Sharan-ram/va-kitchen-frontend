@@ -3,6 +3,8 @@ import { useState, useMemo } from "react";
 import Table from "@/components/mealPlan/Table";
 import { generateDaysOfMonth } from "@/helpers/utils";
 import { saveNewMealPlan, updateExistingMealPlan } from "@/services/mealPlan";
+import classNames from "classnames";
+import Loader from "@/components/Loader";
 
 const CreateMealPlanPage = () => {
   const [showTable, setShowTable] = useState(false);
@@ -11,12 +13,14 @@ const CreateMealPlanPage = () => {
 
   const [isNew, setIsNew] = useState();
 
+  const [saveMealPlanLoading, setSaveMealPlanLoading] = useState(false);
+
   // console.log({ mealPlan });
 
   const saveMealPlan = async () => {
     // console.log({ mealPlan });
     try {
-      let res;
+      setSaveMealPlanLoading(true);
       if (typeof isNew !== "undefined") {
         if (isNew) {
           await saveNewMealPlan(mealPlan);
@@ -24,10 +28,11 @@ const CreateMealPlanPage = () => {
           await updateExistingMealPlan(mealPlan);
         }
         setIsNew(false);
-        setMealPlan(res.data.data);
+        setSaveMealPlanLoading(false);
       }
     } catch (e) {
       console.error(e);
+      setSaveMealPlanLoading(false);
     }
   };
 
@@ -64,10 +69,14 @@ const CreateMealPlanPage = () => {
       )}
       {showTable && (
         <button
-          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-5"
+          className={classNames(
+            "px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-5",
+            saveMealPlanLoading && "opacity-50 cursor-not-allowed"
+          )}
+          disabled={saveMealPlanLoading}
           onClick={saveMealPlan}
         >
-          Save Meal Plan
+          {saveMealPlanLoading ? <Loader /> : "Save Meal Plan"}
         </button>
       )}
     </div>
