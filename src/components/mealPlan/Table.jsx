@@ -1,7 +1,7 @@
 import React from "react";
 import RecipeSearchInput from "./RecipeSearchInput";
 import MealCountInput from "./MealCountInput";
-import { weekDays, meals, seasons } from "@/helpers/constants";
+import { weekDays, meals, seasons, months } from "@/helpers/constants";
 import { format } from "date-fns";
 import Input from "@/components/Input";
 
@@ -51,7 +51,7 @@ const MealPlanTable = ({
     <div className="meal-plan-table mt-8 max-w-[100%]">
       {page === "create" && (
         <h2 className="text-lg font-semibold mb-4">
-          Meal Plan for {month} {year}
+          Meal Plan for {months[month - 1].text} {year}
         </h2>
       )}
       <table className="min-w-full divide-y divide-gray-200 max-w-[100%]">
