@@ -110,14 +110,26 @@ const MealCountInput = ({
     <div className="flex mt-2 justify-between">
       {dietTypeCounts.map((dietTypeCount) => {
         return (
-          <input
-            key={dietTypeCount}
-            type="number"
-            placeholder={dietTypeCount}
-            onChange={(e) => handleInputChange(e, dietTypeCount)}
-            className="w-[30%] pl-2 py-1 border rounded-md"
-            value={getValue(dietTypeCount)}
-          />
+          <div className="w-[30%]" key={dietTypeCount}>
+            <div>
+              <p className="text-sm font-semibold">
+                {dietTypeCount === "veganCount"
+                  ? "Vegan"
+                  : dietTypeCount === "nonVeganCount"
+                  ? "Non Vegan"
+                  : "Gluten Free"}
+              </p>
+            </div>
+            <div className="w-full">
+              <input
+                type="number"
+                placeholder={dietTypeCount}
+                onChange={(e) => handleInputChange(e, dietTypeCount)}
+                className="w-full pl-2 py-1 border rounded-md"
+                value={getValue(dietTypeCount)}
+              />
+            </div>
+          </div>
         );
       })}
     </div>

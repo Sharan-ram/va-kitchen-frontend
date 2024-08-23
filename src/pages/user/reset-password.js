@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { resetPassword, resetPasswordLoggedIn } from "@/services/user";
+import classNames from "classnames";
 
 const ResetPassword = () => {
   const router = useRouter();
@@ -12,6 +13,8 @@ const ResetPassword = () => {
   const [message, setMessage] = useState("");
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [isQueryReady, setIsQueryReady] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     // Mark query as ready when token is available or if we are sure the query parameters have been resolved
@@ -145,7 +148,9 @@ const ResetPassword = () => {
           <div>
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className={classNames(
+                "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              )}
             >
               Reset Password
             </button>
