@@ -128,6 +128,8 @@ const RenderMealPlanPage = () => {
         setStartDate={setStartDate}
         setEndDate={setEndDate}
         buttonText={"Show meal plan"}
+        toggleMealPlan={toggleMealPlan}
+        mealPlanLoading={mealPlanLoading}
       />
       {showMealPlan && (
         <div className="mt-10">

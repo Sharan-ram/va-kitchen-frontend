@@ -1,7 +1,8 @@
-import { useState } from "react";
 import "react-date-picker/dist/DatePicker.css";
 import "react-calendar/dist/Calendar.css";
 import DatePicker from "react-date-picker";
+import classNames from "classnames";
+import Loader from "@/components/Loader";
 
 const Selections = ({
   onSubmit,
@@ -10,7 +11,10 @@ const Selections = ({
   setStartDate,
   setEndDate,
   buttonText,
+  mealPlanLoading,
+  toggleMealPlan,
 }) => {
+  const disabled = !startDate || !endDate || mealPlanLoading;
   return (
     <div className="flex items-center justify-between w-1/2">
       <div>
@@ -25,6 +29,7 @@ const Selections = ({
             value={startDate}
             onChange={(date) => {
               setStartDate(date);
+              toggleMealPlan(false);
             }}
             format="dd-MM-yyyy"
           />
@@ -42,6 +47,7 @@ const Selections = ({
             value={endDate}
             onChange={(date) => {
               setEndDate(date);
+              toggleMealPlan(false);
             }}
             format="dd-MM-yyyy"
           />
@@ -49,11 +55,14 @@ const Selections = ({
       </div>
       <div>
         <button
-          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-          disabled={!startDate || !endDate}
+          className={classNames(
+            "px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600",
+            disabled && "opacity-50 cursor-not-allowed"
+          )}
+          disabled={disabled}
           onClick={() => onSubmit({ startDate, endDate })}
         >
-          {buttonText}
+          {mealPlanLoading ? <Loader /> : buttonText}
         </button>
       </div>
     </div>
