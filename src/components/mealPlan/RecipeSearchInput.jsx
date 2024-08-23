@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { Trash } from "phosphor-react";
 import { searchRecipe } from "@/services/recipe";
+import classNames from "classnames";
 
 const RecipeSearchInput = ({
   placeholder,
@@ -13,6 +14,7 @@ const RecipeSearchInput = ({
   year,
   month,
   setActiveRecipe,
+  allowRecipeUpdate,
 }) => {
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
@@ -96,6 +98,7 @@ const RecipeSearchInput = ({
                 mealCounts: newMealPlan.entireMonthCounts,
                 recipes: [recipe],
               },
+              season: newMealPlan.season,
             },
           ];
         }
@@ -112,6 +115,7 @@ const RecipeSearchInput = ({
               mealCounts: newMealPlan.entireMonthCounts,
               recipes: [recipe],
             },
+            season: newMealPlan.season,
           },
         ],
       };
@@ -169,8 +173,15 @@ const RecipeSearchInput = ({
                   className="flex items-center mb-2 justify-between w-full"
                 >
                   <div
-                    className="cursor-pointer border rounded-md bg-[#f3f1f1] px-2 py-1 w-[90%]"
-                    onClick={() => setActiveRecipe({ recipe, month, year })}
+                    className={classNames(
+                      "border rounded-md bg-[#f3f1f1] px-2 py-1 w-[90%]",
+                      allowRecipeUpdate && "cursor-pointer"
+                    )}
+                    onClick={() => {
+                      allowRecipeUpdate
+                        ? setActiveRecipe({ recipe, month, year })
+                        : () => {};
+                    }}
                   >
                     {recipe.name}
                   </div>
