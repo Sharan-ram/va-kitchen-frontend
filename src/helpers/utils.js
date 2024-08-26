@@ -1,3 +1,5 @@
+import { months } from "./constants";
+
 export function generateDaysOfMonth(year, month) {
   const daysInMonth = new Date(year, month + 1, 0).getDate(); // Get the last day of the specified month
 
@@ -39,4 +41,18 @@ export const getRecipesForMeal = ({ date, meal, year, month, mealPlan }) => {
     return;
   }
   return;
+};
+
+export const getCurrentMonthIndex = () => {
+  const date = new Date();
+  const currentMonthIndex = date.getMonth();
+  return currentMonthIndex;
+};
+
+export const getCurrentMonth = () => {
+  return months[getCurrentMonthIndex()].text;
+};
+
+export const getNextMonth = () => {
+  return months[getCurrentMonthIndex() + 1].text;
 };
