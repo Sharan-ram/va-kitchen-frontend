@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { searchIngredient } from "@/services/ingredient";
 import Loader from "@/components/Loader";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 const Ingredients = () => {
   const [ingredients, setIngredients] = useState();
@@ -105,14 +106,20 @@ const Ingredients = () => {
               allergyCode,
               masterCode,
               todo,
+              _id,
             } = ingredient;
             return (
-              <tr key={ingredient._id}>
+              <tr key={_id}>
                 <td className="px-3 py-2 whitespace-nowrap capitalize">
                   {index + 1}
                 </td>
-                <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden max-w-[300px] text-ellipsis">
-                  {name}
+                <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden max-w-[300px] text-ellipsis font-bold ">
+                  <Link
+                    href={`/ingredients/${_id}`}
+                    className="hover:text-[#8e7576]"
+                  >
+                    {name}
+                  </Link>
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden max-w-[300px] text-ellipsis">
                   {englishEquivalent}

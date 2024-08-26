@@ -25,6 +25,18 @@ export const searchIngredient = async (searchText) => {
   }
 };
 
+export const getIngredientById = async (ingredientId) => {
+  try {
+    let response;
+    response = await axiosInstance.get(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient/${ingredientId}`
+    );
+    return response.data.data;
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+
 export const getIngredientPrices = async () => {
   try {
     const response = await axiosInstance.get(
