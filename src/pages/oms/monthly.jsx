@@ -186,11 +186,11 @@ const MonthlyOrder = () => {
           type="submit"
           className={classNames(
             "px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600",
-            (loading || generateOrderInProgress) &&
+            (loading || generateOrderInProgress || !ingredients) &&
               "cursor-not-allowed opacity-50"
           )}
           onClick={generatePurchaseOrder}
-          disabled={loading || generateOrderInProgress}
+          disabled={loading || generateOrderInProgress || !ingredients}
         >
           Generate Purchase order
         </button>

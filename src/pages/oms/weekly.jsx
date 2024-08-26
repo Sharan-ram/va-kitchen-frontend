@@ -1,24 +1,37 @@
 import { useState } from "react";
 import Selections from "@/components/mealPlan/render/Selections";
 import { getWeeklyOrder, generateMonthlyPurchaseOrder } from "@/services/order";
+import Loader from "@/components/Loader";
+import classNames from "classnames";
+import { toast } from "react-toastify";
+import { format } from "date-fns";
+import { getDayBeforeGivenDate } from "@/helpers/utils";
 
 const WeeklyOrder = () => {
   const [ingredients, setIngredients] = useState();
   const [showPurchaseOrder, setShowPurchaseOrder] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const [ingredientsLoading, setIngredientsLoading] = useState(false);
+  const [generatePurchaseOrderLoading, setGeneratePurchaseOrder] =
+    useState(false);
 
   const fetchPurchaseOrder = async () => {
     try {
+      setIngredientsLoading(true);
       const res = await getWeeklyOrder(startDate, endDate);
       setIngredients(res);
       setShowPurchaseOrder(true);
+      setIngredientsLoading(false);
     } catch (e) {
       console.error(e);
+      setIngredientsLoading(false);
+      toast.error("Fetching Purchase Order Failed!");
     }
   };
 
   const generatePurchaseOrder = async () => {
+    setGeneratePurchaseOrder(true);
     const tableData = [
       [
         "Ingredient",
@@ -58,16 +71,21 @@ const WeeklyOrder = () => {
       if (res.data.success) {
         // Open the Google Sheet in a new tab
         window.open(res.data.sheetUrl, "_blank");
+        setGeneratePurchaseOrder(false);
       }
     } catch (error) {
       console.error("Error generating purchase order:", error);
+      setGeneratePurchaseOrder(false);
+      toast.error("Error generating purchase order!");
       // alert("Failed to generate purchase order.");
     }
   };
 
+  const today = new Date();
+  const dayBeforeStartDate = getDayBeforeGivenDate(startDate);
+
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4">Weekly Order Generation</h2>
       <Selections
         onSubmit={fetchPurchaseOrder}
         startDate={startDate}
@@ -75,8 +93,13 @@ const WeeklyOrder = () => {
         setStartDate={setStartDate}
         setEndDate={setEndDate}
         buttonText={"Show purchase order"}
+        toggleMealPlan={() => setShowPurchaseOrder(false)}
       />
-      {showPurchaseOrder && (
+      <h2 className="text-xl font-semibold my-6">{`Weekly Order Generation: ${format(
+        startDate,
+        "dd-MM-yyyy"
+      )} to ${format(endDate, "dd-MM-yyyy")}`}</h2>
+      {!ingredientsLoading && showPurchaseOrder && (
         <>
           <div className="my-4">
             <table className="mt-2 text-center border-2 border-black w-full">
@@ -84,16 +107,21 @@ const WeeklyOrder = () => {
                 <tr>
                   <th className="border-r border-r-black py-2">Ingredient</th>
                   <th className="border-r border-r-black py-2">
-                    Requirement (Next Month)
+                    {`Requirement (${format(startDate, "dd-MM-yyyy")} to
+                      ${format(endDate, "dd-MM-yyyy")})`}
                   </th>
                   <th className="border-r border-r-black py-2">
-                    Requirement (Rest)
+                    {`Requirement (${format(today, "dd-MM-yyyy")} to
+                      ${format(dayBeforeStartDate, "dd-MM-yyyy")})`}
                   </th>
                   <th className="border-r border-r-black py-2">
                     Current Stock
                   </th>
                   <th className="border-r border-r-black py-2">
-                    Closing Stock (as on 31st)
+                    {`Closing Stock (as on ${format(
+                      dayBeforeStartDate,
+                      "dd-MM-yyyy"
+                    )})`}
                   </th>
                   <th className="border-r border-r-black py-2">Bulk order</th>
                   <th className="border-r border-r-black py-2">Adjustment</th>
@@ -165,18 +193,33 @@ const WeeklyOrder = () => {
               </tbody>
             </table>
           </div>
-
-          <div className="mt-10">
-            <button
-              type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-              onClick={generatePurchaseOrder}
-            >
-              Generate Purchase order
-            </button>
-          </div>
         </>
       )}
+
+      {ingredientsLoading && (
+        <div className="w-full flex justify-center items-center">
+          <Loader />
+        </div>
+      )}
+
+      <div className="mt-10">
+        <button
+          type="submit"
+          className={classNames(
+            "px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600",
+            (ingredientsLoading ||
+              generatePurchaseOrderLoading ||
+              !ingredients) &&
+              "opacity-50 cursor-not-allowed"
+          )}
+          onClick={generatePurchaseOrder}
+          disabled={
+            ingredientsLoading || generatePurchaseOrderLoading || !ingredients
+          }
+        >
+          Generate Purchase order
+        </button>
+      </div>
     </div>
   );
 };

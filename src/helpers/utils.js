@@ -56,3 +56,9 @@ export const getCurrentMonth = () => {
 export const getNextMonth = () => {
   return months[getCurrentMonthIndex() + 1].text;
 };
+
+export const getDayBeforeGivenDate = (startDate) => {
+  const date = new Date(startDate); // Create a new Date object based on the start date
+  date.setDate(date.getDate() - 1); // Subtract one day from the current date
+  return date;
+};
