@@ -1,18 +1,34 @@
 import { useEffect, useState } from "react";
 import { searchIngredient } from "@/services/ingredient";
+import Loader from "@/components/Loader";
+import { toast } from "react-toastify";
 
 const Ingredients = () => {
   const [ingredients, setIngredients] = useState();
+  const [ingredientsLoading, setIngredientsLoading] = useState(false);
+
   useEffect(() => {
     const fetchIngredients = async () => {
-      const response = await searchIngredient();
-      setIngredients(response);
+      try {
+        setIngredientsLoading(true);
+        const response = await searchIngredient();
+        setIngredients(response);
+        setIngredientsLoading(false);
+      } catch (e) {
+        console.error(e);
+        setIngredientsLoading(false);
+        toast.error("Error fetching ingredients");
+      }
     };
 
     fetchIngredients();
   }, []);
 
-  return !ingredients ? null : (
+  return !ingredients || ingredientsLoading ? (
+    <div className="w-full flex justify-center items-center">
+      <Loader />
+    </div>
+  ) : (
     <div className="">
       <table className="min-w-full divide-y divide-gray-200 max-w-[100%] mr-[40px]">
         <thead className="bg-gray-50 max-w-[100%]">
