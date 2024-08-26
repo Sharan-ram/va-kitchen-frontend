@@ -4,6 +4,7 @@ import { getIngredientById } from "@/services/ingredient";
 import { toast } from "react-toastify";
 
 import Loader from "@/components/Loader";
+import IngredientForm from "@/components/IngredientForm";
 
 const EditIngredient = () => {
   const [ingredientLoading, setIngredientLoading] = useState(false);
@@ -33,7 +34,7 @@ const EditIngredient = () => {
   console.log({ ingredient });
 
   return !ingredientLoading && ingredient ? (
-    <div>This is ingredient edit page</div>
+    <IngredientForm ingredient={ingredient} type="edit" />
   ) : (
     <div className="w-full flex justify-center items-center">
       <Loader />

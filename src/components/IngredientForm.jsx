@@ -18,11 +18,20 @@ const initialFormState = {
   purchaseUnit: "",
   cookingUnit: "",
   purchaseUnitPerCookingUnit: "",
-  price: "",
+  // price: "",
+  nuts: false,
+  dairy: false,
+  gluten: false,
+  ingredientSpecificAllergy: "",
+  allergyCode: 0,
+  masterCode: "",
+  todo: "",
 };
 
-const IngredientForm = () => {
-  const [formData, setFormData] = useState(initialFormState);
+const IngredientForm = ({ ingredient, type }) => {
+  const [formData, setFormData] = useState(
+    type === "edit" ? ingredient : initialFormState
+  );
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -48,7 +57,9 @@ const IngredientForm = () => {
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-md shadow-md">
-      <h2 className="text-lg font-semibold mb-4">Add Ingredient</h2>
+      <h2 className="text-lg font-semibold mb-4">
+        {type === "edit" ? "Edit Ingredient" : "Add Ingredient"}
+      </h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label
@@ -155,7 +166,9 @@ const IngredientForm = () => {
               onChange={handleChange}
               className="mr-2"
             />
-            <span className="text-sm font-medium text-gray-700">Sponsored</span>
+            <span className="text-sm font-semibold text-gray-700 cursor-pointer">
+              Sponsored
+            </span>
           </label>
         </div>
         <div className="mb-4">
@@ -182,6 +195,22 @@ const IngredientForm = () => {
         </div>
         <div className="mb-4">
           <label
+            htmlFor="purchaseUnitPerCookingUnit"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Purchase Unit Per Cooking Unit
+          </label>
+          <input
+            type="number"
+            id="purchaseUnitPerCookingUnit"
+            name="purchaseUnitPerCookingUnit"
+            value={formData.purchaseUnitPerCookingUnit}
+            onChange={handleChange}
+            className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+          />
+        </div>
+        <div className="mb-4">
+          <label
             htmlFor="cookingUnit"
             className="block text-sm font-medium text-gray-700"
           >
@@ -203,33 +232,110 @@ const IngredientForm = () => {
           />
         </div>
         <div className="mb-4">
+          <label htmlFor="nuts" className="flex items-center">
+            <input
+              type="checkbox"
+              id="nuts"
+              name="nuts"
+              checked={formData.nuts}
+              onChange={handleChange}
+              className="mr-2"
+            />
+            <span className="text-sm font-semibold text-gray-700 cursor-pointer">
+              Nuts
+            </span>
+          </label>
+        </div>
+        <div className="mb-4">
+          <label htmlFor="dairy" className="flex items-center">
+            <input
+              type="checkbox"
+              id="dairy"
+              name="dairy"
+              checked={formData.dairy}
+              onChange={handleChange}
+              className="mr-2"
+            />
+            <span className="text-sm font-semibold text-gray-700 cursor-pointer">
+              Dairy
+            </span>
+          </label>
+        </div>
+        <div className="mb-4">
+          <label htmlFor="gluten" className="flex items-center">
+            <input
+              type="checkbox"
+              id="gluten"
+              name="gluten"
+              checked={formData.gluten}
+              onChange={handleChange}
+              className="mr-2"
+            />
+            <span className="text-sm font-semibold text-gray-700 cursor-pointer">
+              Gluten
+            </span>
+          </label>
+        </div>
+        <div className="mb-4">
           <label
-            htmlFor="purchaseUnitPerCookingUnit"
+            htmlFor="ingredientSpecificAllergy"
             className="block text-sm font-medium text-gray-700"
           >
-            Purchase Unit Per Cooking Unit
+            Ingredient Specific Allergy
           </label>
           <input
-            type="number"
-            id="purchaseUnitPerCookingUnit"
-            name="purchaseUnitPerCookingUnit"
-            value={formData.purchaseUnitPerCookingUnit}
+            type="text"
+            id="ingredientSpecificAllergy"
+            name="ingredientSpecificAllergy"
+            value={formData.ingredientSpecificAllergy}
             onChange={handleChange}
             className="mt-1 p-2 border border-gray-300 rounded-md w-full"
           />
         </div>
         <div className="mb-4">
           <label
-            htmlFor="price"
+            htmlFor="allergyCode"
             className="block text-sm font-medium text-gray-700"
           >
-            Price
+            Allergy Code
           </label>
           <input
             type="number"
-            id="price"
-            name="price"
-            value={formData.price}
+            id="allergyCode"
+            name="allergyCode"
+            value={formData.allergyCode}
+            onChange={handleChange}
+            className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+          />
+        </div>
+        <div className="mb-4">
+          <label
+            htmlFor="masterCode"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Master Code
+          </label>
+          <input
+            type="text"
+            id="masterCode"
+            name="masterCode"
+            value={formData.masterCode}
+            onChange={handleChange}
+            className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+          />
+        </div>
+        <div className="mb-4">
+          <label
+            htmlFor="todo"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Todo
+          </label>
+          <input
+            type="text"
+            id="todo"
+            name="todo"
+            value={formData.todo}
             onChange={handleChange}
             className="mt-1 p-2 border border-gray-300 rounded-md w-full"
           />
