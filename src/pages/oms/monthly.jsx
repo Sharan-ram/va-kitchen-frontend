@@ -93,26 +93,36 @@ const MonthlyOrder = () => {
       </h2>
       <div className="my-4">
         {ingredients ? (
-          <table className="mt-2 text-center border-2 border-black w-full">
-            <thead className="border-b-2 border-b-black">
-              <tr>
-                <th className="border-r border-r-black py-2">Ingredient</th>
-                <th className="border-r border-r-black py-2">
+          <table className="min-w-full divide-y divide-gray-200 max-w-[100%]">
+            <thead className="bg-gray-50 max-w-[100%]">
+              <tr className="bg-gray-200">
+                <th className="px-3 py-2 font-bold uppercase tracking-wider">
+                  Ingredient
+                </th>
+                <th className="px-3 py-2 font-bold uppercase tracking-wider">
                   Requirement (Next Month)
                 </th>
-                <th className="border-r border-r-black py-2">
+                <th className="px-3 py-2 font-bold uppercase tracking-wider">
                   Requirement (Rest)
                 </th>
-                <th className="border-r border-r-black py-2">Current Stock</th>
-                <th className="border-r border-r-black py-2">
+                <th className="px-3 py-2 font-bold uppercase tracking-wider">
+                  Current Stock
+                </th>
+                <th className="px-3 py-2 font-bold uppercase tracking-wider">
                   Closing Stock (as on 31st)
                 </th>
-                <th className="border-r border-r-black py-2">Bulk order</th>
-                <th className="border-r border-r-black py-2">Adjustment</th>
-                <th className="border-r border-r-black py-2">Purchase Unit</th>
+                <th className="px-3 py-2 font-bold uppercase tracking-wider">
+                  Bulk order
+                </th>
+                <th className="px-3 py-2 font-bold uppercase tracking-wider">
+                  Adjustment
+                </th>
+                <th className="px-3 py-2 font-bold uppercase tracking-wider">
+                  Purchase Unit
+                </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="bg-white divide-y divide-gray-200 max-w-[100%]">
               {ingredients &&
                 ingredients.map((ingredient, index) => {
                   const {
@@ -127,24 +137,26 @@ const MonthlyOrder = () => {
                     closingStock,
                   } = ingredient;
                   return (
-                    <tr className="border border-black" key={_id}>
-                      <td className="border-r border-r-black p-4">{name}</td>
-                      <td className="border-r border-r-black p-4">
+                    <tr className="border-b max-w-[100%]" key={_id}>
+                      <td className="px-3 py-2 whitespace-nowrap font-bold">
+                        {name}
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap text-center">
                         {monthlyMealPlan}
                       </td>
-                      <td className="border-r border-r-black p-4">
+                      <td className="px-3 py-2 whitespace-nowrap text-center">
                         {remainingMealPlan}
                       </td>
-                      <td className="border-r border-r-black p-4">
+                      <td className="px-3 py-2 whitespace-nowrap text-center">
                         {currentStock}
                       </td>
-                      <td className="border-r border-r-black p-4">
+                      <td className="px-3 py-2 whitespace-nowrap text-center">
                         {closingStock}
                       </td>
-                      <td className="border-r border-r-black p-4">
+                      <td className="px-3 py-2 whitespace-nowrap text-center">
                         {bulkOrder}
                       </td>
-                      <td className="border-r border-r-black p-4">
+                      <td className="px-3 py-2 whitespace-nowrap text-center">
                         <input
                           type="text"
                           onChange={(e) => {
@@ -166,7 +178,7 @@ const MonthlyOrder = () => {
                           className="pl-10 pr-4 py-2 border rounded-md"
                         />
                       </td>
-                      <td className="border-r border-r-black p-4">
+                      <td className="px-3 py-2 whitespace-nowrap text-center">
                         {purchaseUnit}
                       </td>
                     </tr>
