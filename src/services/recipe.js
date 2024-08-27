@@ -24,3 +24,15 @@ export const searchRecipe = async (searchText) => {
     throw new Error(e);
   }
 };
+
+export const getRecipeById = async (recipeId) => {
+  try {
+    let response;
+    response = await axiosInstance.get(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/recipe/${recipeId}`
+    );
+    return response.data.data;
+  } catch (e) {
+    throw new Error(e);
+  }
+};

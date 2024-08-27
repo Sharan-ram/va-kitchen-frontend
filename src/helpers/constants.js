@@ -110,3 +110,39 @@ export const dietTypeCounts = [
   "nonVeganCount",
   "glutenFreeCount",
 ];
+
+export const usualMealTime = [
+  { text: "BF", value: "BF" },
+  { text: "L", value: "L" },
+  { text: "D", value: "D" },
+  { text: "BF, D", value: "BF, D" },
+  { text: "BF, L", value: "BF, L" },
+  { text: "L, D", value: "L, D" },
+];
+
+export const mealType = [
+  { text: "Meal", value: "Meal" },
+  { text: "Rice", value: "Rice" },
+  { text: "Dessert", value: "Dessert" },
+  { text: "Bread / Roti", value: "Bread / Roti" },
+  { text: "Salad", value: "Salad" },
+  { text: "Salad Dressing", value: "Salad Dressing" },
+  { text: "Side", value: "Side" },
+  { text: "Sauce", value: "Sauce" },
+  { text: "Pasta", value: "Pasta" },
+  { text: "Fruit", value: "Fruit" },
+  { text: "Drink", value: "Drink" },
+  { text: "Soup", value: "Soup" },
+  { text: "Spread", value: "Spread" },
+  { text: "Vegetable", value: "Vegetable" },
+  { text: "Curry", value: "Curry" },
+  { text: "Chutney", value: "Chutney" },
+  { text: "Dal", value: "Dal" },
+  { text: "Sprouts", value: "Sprouts" },
+  { text: "Pickle", value: "Pickle" },
+];
+
+export const dietType = [
+  { value: "vegan", text: "Vegan" },
+  { value: "non-vegan", text: "Non-Vegan" },
+];

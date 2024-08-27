@@ -3,11 +3,22 @@ import Input from "./Input"; // Assuming you have an Input component for text an
 import classNames from "classnames";
 import { searchIngredient } from "@/services/ingredient";
 import { saveRecipe } from "@/services/recipe";
+import { usualMealTime, mealType, dietType } from "@/helpers/constants";
 
 const RecipeForm = () => {
   const [formData, setFormData] = useState({
     name: "",
-    type: "",
+    dietType: "",
+    usualMealTime: "",
+    mealType: "",
+    label: {
+      indian: "",
+      english: "",
+    },
+    tableSetting: {
+      vessels: "",
+      utensils: "",
+    },
     ingredients: [],
   });
 
@@ -164,31 +175,190 @@ const RecipeForm = () => {
         </div>
         <div className="mb-4">
           <label
-            htmlFor="type"
+            htmlFor="usualMealTime"
             className="block text-sm font-medium text-gray-700"
           >
-            Type
+            Usual Meal Time
           </label>
           <Input
             type="select"
             selectProps={{
-              id: "type",
-              name: "type",
-              value: formData.type,
+              id: "usualMealTime",
+              name: "usualMealTime",
+              value: formData.usualMealTime,
               onChange: (e) =>
                 setFormData((prevFormData) => ({
                   ...prevFormData,
-                  type: e.target.value,
+                  usualMealTime: e.target.value,
                 })),
               options: [
-                { value: "", text: "Select Type" },
-                { value: "vegan", text: "Vegan" },
-                { value: "non-vegan", text: "Non-Vegan" },
+                { value: "", text: "Select Usual Meal Time" },
+                ...usualMealTime,
               ],
             }}
             classes={{
               wrapper:
                 "mt-1 p-2 border border-gray-300 rounded-md w-full cursor-pointer",
+            }}
+          />
+        </div>
+        <div className="mb-4">
+          <label
+            htmlFor="mealType"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Type of Meal
+          </label>
+          <Input
+            type="select"
+            selectProps={{
+              id: "mealType",
+              name: "mealType",
+              value: formData.mealType,
+              onChange: (e) =>
+                setFormData((prevFormData) => ({
+                  ...prevFormData,
+                  mealType: e.target.value,
+                })),
+              options: [{ value: "", text: "Select Meal Type" }, ...mealType],
+            }}
+            classes={{
+              wrapper:
+                "mt-1 p-2 border border-gray-300 rounded-md w-full cursor-pointer",
+            }}
+          />
+        </div>
+        <div className="mb-4">
+          <label
+            htmlFor="dietType"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Diet Type
+          </label>
+          <Input
+            type="select"
+            selectProps={{
+              id: "dietType",
+              name: "dietType",
+              value: formData.dietType,
+              onChange: (e) =>
+                setFormData((prevFormData) => ({
+                  ...prevFormData,
+                  dietType: e.target.value,
+                })),
+              options: [{ value: "", text: "Select Diet Type" }, ...dietType],
+            }}
+            classes={{
+              wrapper:
+                "mt-1 p-2 border border-gray-300 rounded-md w-full cursor-pointer",
+            }}
+          />
+        </div>
+        <div className="mb-4">
+          <label
+            htmlFor="indianLabel"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Indian Label
+          </label>
+          <Input
+            type="text"
+            textInputProps={{
+              id: "indianLabel",
+              name: "indianLabel",
+              value: formData.label.indian,
+              onChange: (e) =>
+                setFormData((prevFormData) => ({
+                  ...prevFormData,
+                  label: {
+                    ...formData.label,
+                    indian: e.target.value,
+                  },
+                })),
+            }}
+            classes={{
+              wrapper: "mt-1 p-2 border border-gray-300 rounded-md w-full",
+            }}
+          />
+        </div>
+        <div className="mb-4">
+          <label
+            htmlFor="englishLabel"
+            className="block text-sm font-medium text-gray-700"
+          >
+            English Label
+          </label>
+          <Input
+            type="text"
+            textInputProps={{
+              id: "englishLabel",
+              name: "englishLabel",
+              value: formData.label.english,
+              onChange: (e) =>
+                setFormData((prevFormData) => ({
+                  ...prevFormData,
+                  label: {
+                    ...formData.label,
+                    english: e.target.value,
+                  },
+                })),
+            }}
+            classes={{
+              wrapper: "mt-1 p-2 border border-gray-300 rounded-md w-full",
+            }}
+          />
+        </div>
+        <div className="mb-4">
+          <label
+            htmlFor="vessels"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Vessels
+          </label>
+          <Input
+            type="text"
+            textInputProps={{
+              id: "vessels",
+              name: "vessels",
+              value: formData.tableSetting.vessels,
+              onChange: (e) =>
+                setFormData((prevFormData) => ({
+                  ...prevFormData,
+                  tableSetting: {
+                    ...formData.tableSetting,
+                    vessels: e.target.value,
+                  },
+                })),
+            }}
+            classes={{
+              wrapper: "mt-1 p-2 border border-gray-300 rounded-md w-full",
+            }}
+          />
+        </div>
+        <div className="mb-4">
+          <label
+            htmlFor="utensils"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Utensils
+          </label>
+          <Input
+            type="text"
+            textInputProps={{
+              id: "utensils",
+              name: "utensils",
+              value: formData.tableSetting.utensils,
+              onChange: (e) =>
+                setFormData((prevFormData) => ({
+                  ...prevFormData,
+                  tableSetting: {
+                    ...formData.tableSetting,
+                    utensils: e.target.value,
+                  },
+                })),
+            }}
+            classes={{
+              wrapper: "mt-1 p-2 border border-gray-300 rounded-md w-full",
             }}
           />
         </div>
