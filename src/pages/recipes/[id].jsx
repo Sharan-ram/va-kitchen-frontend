@@ -34,8 +34,7 @@ const EditRecipe = () => {
   console.log({ recipe });
 
   return !recipeLoading && recipe ? (
-    // <RecipeForm recipe={recipe} type="edit" />
-    <div>Update recipe page</div>
+    <RecipeForm recipe={recipe} type="edit" />
   ) : (
     <div className="w-full flex justify-center items-center">
       <Loader />

@@ -5,22 +5,26 @@ import { searchIngredient } from "@/services/ingredient";
 import { saveRecipe } from "@/services/recipe";
 import { usualMealTime, mealType, dietType } from "@/helpers/constants";
 
-const RecipeForm = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    dietType: "",
-    usualMealTime: "",
-    mealType: "",
-    label: {
-      indian: "",
-      english: "",
-    },
-    tableSetting: {
-      vessels: "",
-      utensils: "",
-    },
-    ingredients: [],
-  });
+const RecipeForm = ({ type, recipe }) => {
+  const [formData, setFormData] = useState(
+    type === "edit"
+      ? recipe
+      : {
+          name: "",
+          dietType: "",
+          usualMealTime: "",
+          mealType: "",
+          label: {
+            indian: "",
+            english: "",
+          },
+          tableSetting: {
+            vessels: "",
+            utensils: "",
+          },
+          ingredients: [],
+        }
+  );
 
   const [searchText, setSearchText] = useState([]);
   const [searchResults, setSearchResults] = useState();
@@ -147,7 +151,9 @@ const RecipeForm = () => {
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-md shadow-md">
-      <h2 className="text-lg font-semibold mb-4">Add Recipe</h2>
+      <h2 className="text-lg font-semibold mb-4">
+        {type === "edit" ? "Edit Recipe" : "Add Recipe"}
+      </h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label
@@ -185,7 +191,8 @@ const RecipeForm = () => {
             selectProps={{
               id: "usualMealTime",
               name: "usualMealTime",
-              value: formData.usualMealTime,
+              selected: formData.usualMealTime,
+              defaultValue: "",
               onChange: (e) =>
                 setFormData((prevFormData) => ({
                   ...prevFormData,
@@ -214,7 +221,8 @@ const RecipeForm = () => {
             selectProps={{
               id: "mealType",
               name: "mealType",
-              value: formData.mealType,
+              selected: formData.mealType,
+              defaultValue: "",
               onChange: (e) =>
                 setFormData((prevFormData) => ({
                   ...prevFormData,
@@ -240,7 +248,8 @@ const RecipeForm = () => {
             selectProps={{
               id: "dietType",
               name: "dietType",
-              value: formData.dietType,
+              selected: formData.dietType,
+              defaultValue: "",
               onChange: (e) =>
                 setFormData((prevFormData) => ({
                   ...prevFormData,
