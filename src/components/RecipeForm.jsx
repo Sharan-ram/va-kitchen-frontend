@@ -2,8 +2,11 @@ import { useState } from "react";
 import Input from "./Input"; // Assuming you have an Input component for text and select fields
 import classNames from "classnames";
 import { searchIngredient } from "@/services/ingredient";
+import { updateRecipe } from "@/services/recipe";
 import { saveRecipe } from "@/services/recipe";
 import { usualMealTime, mealType, dietType } from "@/helpers/constants";
+import { toast } from "react-toastify";
+import Loader from "./Loader";
 
 const RecipeForm = ({ type, recipe }) => {
   const [formData, setFormData] = useState(
@@ -29,6 +32,7 @@ const RecipeForm = ({ type, recipe }) => {
   const [searchText, setSearchText] = useState([]);
   const [searchResults, setSearchResults] = useState();
   const [showSearchResults, setShowSearchResults] = useState();
+  const [recipeSaveLoading, setRecipeSaveLoading] = useState(false);
 
   const handleChange = (e, index) => {
     const { name, value } = e.target;
@@ -40,7 +44,7 @@ const RecipeForm = ({ type, recipe }) => {
     }));
   };
 
-  // console.log({ formData });
+  console.log({ formData });
 
   const handleAddIngredient = () => {
     setFormData((prevData) => ({
@@ -62,36 +66,57 @@ const RecipeForm = ({ type, recipe }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { ingredients } = formData;
-    const newIngredients = ingredients.map((ingredient) => {
-      return {
-        ...ingredient,
-        summerQuantity: Number(ingredient.summerQuantity),
-        winterQuantity: Number(ingredient.winterQuantity),
-        monsoonQuantity: Number(ingredient.monsoonQuantity),
-        retreatQuantity: Number(ingredient.retreatQuantity),
+    try {
+      setRecipeSaveLoading(true);
+      const { ingredients } = formData;
+      const newIngredients = ingredients.map((ingredient) => {
+        return {
+          ...ingredient,
+          summerQuantity: Number(ingredient.summerQuantity),
+          winterQuantity: Number(ingredient.winterQuantity),
+          monsoonQuantity: Number(ingredient.monsoonQuantity),
+          retreatQuantity: Number(ingredient.retreatQuantity),
+        };
+      });
+      const payload = {
+        ...formData,
+        ingredients: newIngredients,
       };
-    });
-    await saveRecipe({
-      ...formData,
-      ingredients: newIngredients,
-    });
+      console.log({ payload });
+      type === "edit" ? await updateRecipe(payload) : await saveRecipe(payload);
+      toast.success(
+        type === "edit"
+          ? "Recipe update successful!"
+          : "Recipe save successful!"
+      );
+      setRecipeSaveLoading(false);
+    } catch (e) {
+      console.error(e);
+      toast.error(
+        type === "edit" ? "Recipe update failed!" : "Recipe save failed!"
+      );
+      setRecipeSaveLoading(false);
+    }
   };
 
   const isIngredientFilled = (ingredient) => {
     // Check if all fields inside the ingredient object are filled
-    return Object.values(ingredient).every((value) => {
-      if (typeof value === "string") {
-        // If the value is a string, check if it's not empty after trimming
-        return value.trim() !== "";
-      } else if (typeof value === "object") {
-        // If the value is an object, recursively check its fields
-        return isIngredientFilled(value);
-      } else {
-        // For other types of values, consider them filled
-        return true;
-      }
-    });
+    // return Object.values(ingredient).every((value) => {
+    //   if (typeof value === "string") {
+    //     // If the value is a string, check if it's not empty after trimming
+    //     return value.trim() !== "";
+    //   } else if (typeof value === "object") {
+    //     // If the value is an object, recursively check its fields
+    //     return isIngredientFilled(value);
+    //   } else {
+    //     // For other types of values, consider them filled
+    //     return true;
+    //   }
+    // });
+    if (ingredient.ingredient.name) {
+      return true;
+    }
+    return false;
   };
 
   const isFormFilled = () => {
@@ -148,6 +173,13 @@ const RecipeForm = ({ type, recipe }) => {
     setShowSearchResults(false);
     setSearchResults([]);
   };
+
+  const submitDisabled =
+    !isFormFilled() ||
+    formData.ingredients.length === 0 ||
+    !formData.name ||
+    !formData.dietType ||
+    recipeSaveLoading;
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-md shadow-md">
@@ -531,13 +563,13 @@ const RecipeForm = ({ type, recipe }) => {
             type="submit"
             className={classNames(
               "px-4 py-2 bg-blue-500 text-white rounded-md",
-              !isFormFilled() || formData.ingredients.length === 0
-                ? "hover:bg-blue-200 cursor-not-allowed"
+              submitDisabled
+                ? "bg-gray-300 text-gray-600 cursor-not-allowed"
                 : "hover:bg-blue-600"
             )}
-            disabled={!isFormFilled() || formData.ingredients.length === 0}
+            disabled={submitDisabled}
           >
-            Submit
+            {recipeSaveLoading ? <Loader /> : "Submit"}
           </button>
         </div>
       </form>

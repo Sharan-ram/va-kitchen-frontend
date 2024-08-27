@@ -36,3 +36,15 @@ export const getRecipeById = async (recipeId) => {
     throw new Error(e);
   }
 };
+
+export const updateRecipe = async (recipe) => {
+  try {
+    const response = await axiosInstance.put(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/recipe/${recipe._id}`,
+      recipe
+    );
+    return response;
+  } catch (e) {
+    throw new Error(e);
+  }
+};
