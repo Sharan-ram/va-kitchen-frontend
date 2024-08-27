@@ -37,6 +37,18 @@ export const getIngredientById = async (ingredientId) => {
   }
 };
 
+export const updateIngredient = async (ingredient) => {
+  try {
+    const response = await axiosInstance.put(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient/${ingredient._id}`,
+      ingredient
+    );
+    return response;
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+
 export const getIngredientPrices = async () => {
   try {
     const response = await axiosInstance.get(

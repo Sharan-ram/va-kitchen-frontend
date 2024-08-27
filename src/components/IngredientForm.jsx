@@ -6,7 +6,10 @@ import {
   vendors,
 } from "@/helpers/constants";
 import Input from "./Input";
-import { saveIngredient } from "@/services/ingredient";
+import { saveIngredient, updateIngredient } from "@/services/ingredient";
+import { toast } from "react-toastify";
+import classNames from "classnames";
+import Loader from "./Loader";
 
 const initialFormState = {
   name: "",
@@ -33,6 +36,8 @@ const IngredientForm = ({ ingredient, type }) => {
     type === "edit" ? ingredient : initialFormState
   );
 
+  const [saveIngredientLoading, setSaveIngredientLoading] = useState(false);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prevData) => ({
@@ -44,14 +49,38 @@ const IngredientForm = ({ ingredient, type }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await saveIngredient({
-        ...formData,
-        purchaseUnitPerCookingUnit: Number(formData.purchaseUnitPerCookingUnit),
-      });
+      setSaveIngredientLoading(true);
+      type !== "edit"
+        ? await saveIngredient({
+            ...formData,
+            purchaseUnitPerCookingUnit: Number(
+              formData.purchaseUnitPerCookingUnit
+            ),
+            allergyCode: Number(formData.allergyCode),
+          })
+        : await updateIngredient({
+            ...formData,
+            purchaseUnitPerCookingUnit: Number(
+              formData.purchaseUnitPerCookingUnit
+            ),
+            allergyCode: Number(formData.allergyCode),
+          });
       // console.log({ response });
-      setFormData(initialFormState);
+      type !== "edit" && setFormData(initialFormState);
+      setSaveIngredientLoading(false);
+      toast.success(
+        type === "edit"
+          ? "Ingredient updated successfully"
+          : "Ingredient saved successfully"
+      );
     } catch (error) {
       console.error("Error:", error);
+      setSaveIngredientLoading(false);
+      toast.error(
+        type === "edit"
+          ? "Ingredient update failed!"
+          : "Ingredient save failed!"
+      );
     }
   };
 
@@ -343,9 +372,19 @@ const IngredientForm = ({ ingredient, type }) => {
         <div className="mt-6">
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            className={classNames(
+              "px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-center",
+              saveIngredientLoading && "opacity-50 cursor-not-allowed"
+            )}
+            disabled={saveIngredientLoading}
           >
-            Add Ingredient
+            {saveIngredientLoading ? (
+              <Loader />
+            ) : type === "edit" ? (
+              "Edit Ingredient"
+            ) : (
+              "Add Ingredient"
+            )}
           </button>
         </div>
       </form>
