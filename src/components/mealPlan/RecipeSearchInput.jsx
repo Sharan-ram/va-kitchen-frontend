@@ -89,6 +89,7 @@ const RecipeSearchInput = ({
               mealCounts: newMealPlan.entireMonthCounts,
               recipes: [recipe],
             },
+            season: newMealPlan.season,
           });
         } else {
           newMealPlan.days = [

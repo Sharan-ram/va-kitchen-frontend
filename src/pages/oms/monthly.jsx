@@ -94,7 +94,7 @@ const MonthlyOrder = () => {
       <div className="my-4">
         {ingredients ? (
           <table className="min-w-full divide-y divide-gray-200 max-w-[100%]">
-            <thead className="bg-gray-50 max-w-[100%]">
+            <thead className="bg-gray-50 max-w-[100%] sticky top-[100px]">
               <tr className="bg-gray-200">
                 <th className="px-3 py-2 font-bold uppercase tracking-wider">
                   Ingredient

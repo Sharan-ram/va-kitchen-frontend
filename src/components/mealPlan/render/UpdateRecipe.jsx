@@ -68,18 +68,22 @@ const UpdateRecipe = ({ recipe, onUpdateRecipe }) => {
 
   const isIngredientFilled = (ingredient) => {
     // Check if all fields inside the ingredient object are filled
-    return Object.values(ingredient).every((value) => {
-      if (typeof value === "string") {
-        // If the value is a string, check if it's not empty after trimming
-        return value.trim() !== "";
-      } else if (typeof value === "object") {
-        // If the value is an object, recursively check its fields
-        return isIngredientFilled(value);
-      } else {
-        // For other types of values, consider them filled
-        return true;
-      }
-    });
+    // return Object.values(ingredient).every((value) => {
+    //   if (typeof value === "string") {
+    //     // If the value is a string, check if it's not empty after trimming
+    //     return value.trim() !== "";
+    //   } else if (typeof value === "object") {
+    //     // If the value is an object, recursively check its fields
+    //     return isIngredientFilled(value);
+    //   } else {
+    //     // For other types of values, consider them filled
+    //     return true;
+    //   }
+    // });
+    if (ingredient.ingredient.name) {
+      return true;
+    }
+    return false;
   };
 
   const isFormFilled = () => {
