@@ -218,7 +218,7 @@ const RecipeSearchInput = ({
       )}
 
       {showSearchResults && (
-        <div className="absolute left-0 right-0 mt-2 bg-white border border-gray-300 rounded-md shadow-md z-[99999]">
+        <div className="absolute left-0 right-0 mt-2 bg-white border border-gray-300 rounded-md shadow-md z-[99] text-ellipsis overflow-hidden whitespace-nowrap w-full">
           {searchResults.map((result, i) => {
             return (
               <div
