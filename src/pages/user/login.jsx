@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { login } from "@/services/user";
 import Link from "next/link";
+import Loader from "@/components/Loader";
+import classNames from "classnames";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [userLoading, setUserLoading] = useState(false);
 
   const router = useRouter();
 
@@ -20,13 +23,16 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setUserLoading(true);
       const response = await login({ username, password });
       localStorage.setItem("token", response.token);
       localStorage.setItem("user", JSON.stringify(response.user));
       window.dispatchEvent(new Event("userUpdated"));
       router.push("/mealPlan/render");
+      setUserLoading(false);
     } catch (error) {
       setError("Invalid username or password");
+      setUserLoading(false);
     }
   };
 
@@ -83,9 +89,13 @@ const Login = () => {
           <div className="flex items-center justify-between">
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className={classNames(
+                "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline",
+                userLoading && "cursor-not-allowed opacity-50"
+              )}
+              disabled={userLoading}
             >
-              Login
+              {userLoading ? <Loader /> : "Login"}
             </button>
           </div>
         </form>

@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { resetPassword, resetPasswordLoggedIn } from "@/services/user";
 import classNames from "classnames";
+import { toast } from "react-toastify";
+import Loader from "@/components/Loader";
 
 const ResetPassword = () => {
   const router = useRouter();
@@ -47,34 +49,45 @@ const ResetPassword = () => {
     }
 
     try {
+      setLoading(true);
       let response;
       if (token) {
         // Password reset via email link
         response = await resetPassword({ token, password });
+        if (response.status === 200) {
+          setMessage("Password reset successful: Redirecting to login page");
+          toast.success("Password reset successful!");
+          setTimeout(() => {
+            router.push("/user/login");
+          }, 2000);
+        } else {
+          setMessage(response.data.message);
+        }
       } else if (isUserLoggedIn) {
         // Password reset when the user is logged in, requiring current password
         response = await resetPasswordLoggedIn({
           currentPassword,
           newPassword: password,
         });
+        toast.success("Password reset successful!");
       }
-
-      if (response.status === 200) {
-        setMessage("Password reset successful: Redirecting to login page");
-        setTimeout(() => {
-          router.push("/user/login");
-        }, 2000);
-      } else {
-        setMessage(response.data.message);
-      }
+      setLoading(false);
     } catch (error) {
-      setMessage("An error occurred. Please try again.");
+      // setMessage("An error occurred. Please try again.");
+      toast.error("Password reset unsuccessful");
+      setLoading(false);
     }
   };
 
   if (!isQueryReady) {
     return null;
   }
+
+  const isButtonDisabled =
+    (token ? Boolean(currentPassword) : false) ||
+    !password ||
+    !confirmPassword ||
+    loading;
 
   return (
     <div className="flex items-center justify-center">
@@ -149,10 +162,12 @@ const ResetPassword = () => {
             <button
               type="submit"
               className={classNames(
-                "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                "bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline",
+                isButtonDisabled && "cursor-not-allowed opacity-50"
               )}
+              disabled={isButtonDisabled}
             >
-              Reset Password
+              {loading ? <Loader /> : "Reset Password"}
             </button>
           </div>
         </form>

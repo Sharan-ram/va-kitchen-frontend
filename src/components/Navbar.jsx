@@ -82,14 +82,14 @@ let items = [
         roles: ["admin", "user"],
       },
       {
-        title: "Logout",
-        pathname: "/user/logout",
-        roles: ["admin", "user"],
-      },
-      {
         title: "Register new user",
         pathname: "/user/register",
         roles: ["admin"],
+      },
+      {
+        title: "Logout",
+        pathname: "/user/logout",
+        roles: ["admin", "user"],
       },
     ],
   },

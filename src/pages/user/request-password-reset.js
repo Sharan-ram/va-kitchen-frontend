@@ -1,25 +1,33 @@
 import React, { useState } from "react";
 import { requestPasswordReset } from "@/services/user";
+import Loader from "@/components/Loader";
+import classNames from "classnames";
+import { toast } from "react-toastify";
 
 const RequestPasswordReset = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  // const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await requestPasswordReset({
+      setLoading(true);
+      await requestPasswordReset({
         username,
         email,
       });
-      setMessage(response);
+      // setMessage(response);
+      setLoading(false);
+      toast.success("Password reset email sent!");
     } catch (error) {
-      setMessage(
-        error.response.data.message || "Error requesting password reset"
-      );
+      setLoading(false);
+      toast.error("Error, try again later!");
     }
   };
+
+  const isButtonDisabled = !username || !email || loading;
 
   return (
     <div className="flex items-center justify-center">
@@ -62,13 +70,17 @@ const RequestPasswordReset = () => {
               required
             />
           </div>
-          {message && <p className="text-red-500 text-xs mb-4">{message}</p>}
+          {/* {message && <p className="text-red-500 text-xs mb-4">{message}</p>} */}
           <div className="flex items-center justify-between">
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className={classNames(
+                "bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline",
+                isButtonDisabled && "cursor-not-allowed opacity-50"
+              )}
+              disabled={isButtonDisabled}
             >
-              Request Reset
+              {loading ? <Loader /> : "Request Reset"}
             </button>
           </div>
         </form>

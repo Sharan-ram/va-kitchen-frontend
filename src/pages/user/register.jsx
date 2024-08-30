@@ -24,7 +24,7 @@ const Register = () => {
       });
       // setMessage(response);
       setCreateUserLoading(false);
-      toast.success(`New ${role} registered ${username}!`);
+      toast.success(`New ${role} registered - ${username}!`);
     } catch (error) {
       // setMessage(error.response.data.message || "Error registering user");
       setCreateUserLoading(false);
