@@ -103,13 +103,13 @@ const MonthlyOrder = () => {
                   Requirement (Next Month)
                 </th>
                 <th className="px-3 py-2 font-bold uppercase tracking-wider">
-                  Requirement (Rest)
+                  Requirement (Tmrw to Month end)
                 </th>
                 <th className="px-3 py-2 font-bold uppercase tracking-wider">
-                  Current Stock
+                  Current Stock (After today)
                 </th>
                 <th className="px-3 py-2 font-bold uppercase tracking-wider">
-                  Closing Stock (as on 31st)
+                  Closing Stock (Tmrw to Month end)
                 </th>
                 <th className="px-3 py-2 font-bold uppercase tracking-wider">
                   Bulk order
