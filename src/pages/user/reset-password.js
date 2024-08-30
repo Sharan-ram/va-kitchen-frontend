@@ -55,8 +55,8 @@ const ResetPassword = () => {
         // Password reset via email link
         response = await resetPassword({ token, password });
         if (response.status === 200) {
-          setMessage("Password reset successful: Redirecting to login page");
-          toast.success("Password reset successful!");
+          // setMessage("Password reset successful: Redirecting to login page");
+          toast.success("Password reset successful! Redirecting!");
           setTimeout(() => {
             router.push("/user/login");
           }, 2000);
