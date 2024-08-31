@@ -106,7 +106,7 @@ const MonthlyOrder = () => {
                   Requirement (Tmrw to Month end)
                 </th>
                 <th className="px-3 py-2 font-bold uppercase tracking-wider">
-                  Current Stock (After today)
+                  Current Stock (By end of today)
                 </th>
                 <th className="px-3 py-2 font-bold uppercase tracking-wider">
                   Closing Stock (Tmrw to Month end)

@@ -113,14 +113,14 @@ const WeeklyOrder = () => {
                       ${format(endDate, "dd-MM-yyyy")})`}
                   </th>
                   <th className="px-3 py-2 font-bold uppercase tracking-wider">
-                    {`Requirement (${format(today, "dd-MM-yyyy")} to
+                    {`Requirement (Tmrw to
                       ${format(dayBeforeStartDate, "dd-MM-yyyy")})`}
                   </th>
                   <th className="px-3 py-2 font-bold uppercase tracking-wider">
-                    Current Stock
+                    Current Stock (by end of today)
                   </th>
                   <th className="px-3 py-2 font-bold uppercase tracking-wider">
-                    {`Closing Stock (as on ${format(
+                    {`Closing Stock (Tmrw to ${format(
                       dayBeforeStartDate,
                       "dd-MM-yyyy"
                     )})`}
