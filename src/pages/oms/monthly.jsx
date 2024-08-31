@@ -97,6 +97,9 @@ const MonthlyOrder = () => {
             <thead className="bg-gray-50 max-w-[100%] sticky top-[100px]">
               <tr className="bg-gray-200">
                 <th className="px-3 py-2 font-bold uppercase tracking-wider">
+                  No.
+                </th>
+                <th className="px-3 py-2 font-bold uppercase tracking-wider">
                   Ingredient
                 </th>
                 <th className="px-3 py-2 font-bold uppercase tracking-wider">
@@ -138,6 +141,9 @@ const MonthlyOrder = () => {
                   } = ingredient;
                   return (
                     <tr className="border-b max-w-[100%]" key={_id}>
+                      <td className="px-3 py-2 whitespace-nowrap capitalize">
+                        {index + 1}
+                      </td>
                       <td className="px-3 py-2 whitespace-nowrap font-bold">
                         {name}
                       </td>
