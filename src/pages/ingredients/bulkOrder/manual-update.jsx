@@ -60,7 +60,7 @@ const ManualBulkOrderUpdate = () => {
           return (
             <div key={ingredient._id} className="flex items-center w-1/2 my-4">
               <div className="w-1/2">
-                <p>{ingredient.name}</p>
+                <p className="font-semibold">{ingredient.name}</p>
               </div>
               <div className="w-1/2 flex items-center">
                 <div>
