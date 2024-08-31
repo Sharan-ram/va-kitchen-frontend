@@ -204,7 +204,7 @@ const MonthlyOrder = () => {
           onClick={generatePurchaseOrder}
           disabled={loading || generateOrderInProgress || !ingredients}
         >
-          Generate Purchase order
+          {generateOrderInProgress ? <Loader /> : "Generate Purchase order"}
         </button>
       </div>
     </div>
