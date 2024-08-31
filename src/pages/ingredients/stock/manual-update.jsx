@@ -109,7 +109,7 @@ const ManualStockUpdate = () => {
           disabled={disableUpdateButton}
           onClick={updateStock}
         >
-          Update Stock
+          {updateStockLoading ? <Loader /> : "Update Stock"}
         </button>
       </div>
     </div>

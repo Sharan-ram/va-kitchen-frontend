@@ -106,7 +106,7 @@ const ManualBulkOrderUpdate = () => {
           onClick={handleSubmit}
           disabled={disableUpdateButton}
         >
-          Update Price
+          {updateBulkOrderLoading ? <Loader /> : "Update Bulk orders"}
         </button>
       </div>
     </div>

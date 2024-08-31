@@ -106,7 +106,7 @@ const ManualPriceUpdate = () => {
           onClick={updatePrice}
           disabled={disableUpdateButton}
         >
-          Update Price
+          {updatePricesLoading ? <Loader /> : "Update Price"}
         </button>
       </div>
     </div>
