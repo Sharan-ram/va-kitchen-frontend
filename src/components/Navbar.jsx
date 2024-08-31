@@ -52,6 +52,11 @@ let items = [
         roles: ["admin"],
       },
       {
+        title: "Bulk Order",
+        pathname: "/ingredients/bulkOrder/manual-update",
+        roles: ["admin"],
+      },
+      {
         title: "View all",
         pathname: "/ingredients/view",
         roles: ["admin", "user"],
