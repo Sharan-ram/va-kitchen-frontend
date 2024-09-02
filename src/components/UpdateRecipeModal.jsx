@@ -37,7 +37,11 @@ const UpdateRecipeModal = ({
             >
               <option value="Select Ingredient">Select Ingredient</option>
               {Object.keys(ingredients).map((ingredient) => {
-                return <option value={ingredient}>{ingredient}</option>;
+                return (
+                  <option key={ingredient} value={ingredient}>
+                    {ingredient}
+                  </option>
+                );
               })}
             </select>
           </div>
