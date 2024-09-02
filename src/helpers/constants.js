@@ -24,38 +24,42 @@ export const purchaseUnits = [
 ];
 
 export const ingredientType = [
-  { text: "Spices", value: "spices" },
-  { text: "Cereals", value: "cereals" },
-  { text: "Provisions", value: "provisions" },
-  { text: "Special Provisions", value: "special provisions" },
-  { text: "Veg", value: "veg" },
-  { text: "Fruit", value: "fruit" },
-  { text: "Pulses", value: "pulses" },
-  { text: "Herbs", value: "herbs" },
-  { text: "Masalas", value: "masalas" },
-  { text: "Vegan Milk", value: "vegan milk" },
-  { text: "Non Dairy", value: "non dairy" },
-  { text: "Dairy", value: "dairy" },
-  { text: "Preserve", value: "preserve" },
-  { text: "Seasoning/Sweetening", value: "seasoning/sweetening" },
-  { text: "Seeds", value: "seeds" },
+  { text: "Spices", value: "Spices" },
+  { text: "Cereals", value: "Cereals" },
+  { text: "Provisions", value: "Provisions" },
+  { text: "Special Provisions", value: "Special Provisions" },
+  { text: "Veg", value: "Veg" },
+  { text: "Fruit", value: "Fruit" },
+  { text: "Pulses", value: "Pulses" },
+  { text: "Herbs", value: "Herbs" },
+  { text: "Masalas", value: "Masalas" },
+  { text: "Vegan Milk", value: "Vegan Milk" },
+  { text: "Non Dairy", value: "Non Dairy" },
+  { text: "Dairy", value: "Dairy" },
+  { text: "Preserve", value: "Preserve" },
+  { text: "Seasoning/Sweetening", value: "Seasoning/Sweetening" },
+  { text: "Seeds", value: "Seeds" },
 ];
 
 export const storageType = [
-  { text: "Special Provisions", value: "special provisions" },
-  { text: "Provisions", value: "provisions" },
-  { text: "Veg and Fruit", value: "veg and fruit" },
-  { text: "Milk", value: "milk" },
-  { text: "Bulk Provisions", value: "bulk provisions" },
-  { text: "Vegan Milk", value: "vegan milk" },
+  { text: "Special Provisions", value: "Special Provisions" },
+  { text: "Provisions", value: "Provisions" },
+  { text: "Veg & Fruit", value: "Veg & Fruit" },
+  { text: "Milk", value: "Milk" },
+  { text: "Bulk Provisions", value: "Bulk Provisions" },
+  { text: "Vegan Milk", value: "Vegan Milk" },
 ];
 
 export const vendors = [
   { text: "V.K. Stores", value: "V.K. Stores" },
   { text: "Jainam", value: "Jainam" },
   { text: "Locally", value: "Locally" },
-  { text: "Online", value: "Online" },
+  { text: "V.K. Stores / Locally", value: "V.K. Stores / Locally" },
+  { text: "Jainam / Online", value: "Jainam / Online" },
+  { text: "Jainam / Locally", value: "Jainam / Locally" },
+  { text: "Online", value: "Online Shopping" },
   { text: "K.V.M", value: "K.V.M" },
+  { text: "K.V.M / Locally", value: "K.V.M / Locally" },
   { text: "Weikfield", value: "Weikfield" },
   { text: "Two brothers", value: "Two brothers" },
   { text: "Nutririte", value: "Nutririte" },
@@ -67,6 +71,7 @@ export const vendors = [
   { text: "Mill House", value: "Mill House" },
   { text: "Keitan", value: "Keitan" },
   { text: "Chetran", value: "Chetran" },
+  { text: "MTR", value: "MTR" },
 ];
 
 export const years = Array.from({ length: 7 }, (_, i) => ({
@@ -104,4 +109,40 @@ export const dietTypeCounts = [
   "veganCount",
   "nonVeganCount",
   "glutenFreeCount",
+];
+
+export const usualMealTime = [
+  { text: "BF", value: "BF" },
+  { text: "L", value: "L" },
+  { text: "D", value: "D" },
+  { text: "BF, D", value: "BF, D" },
+  { text: "BF, L", value: "BF, L" },
+  { text: "L, D", value: "L, D" },
+];
+
+export const mealType = [
+  { text: "Meal", value: "Meal" },
+  { text: "Rice", value: "Rice" },
+  { text: "Dessert", value: "Dessert" },
+  { text: "Bread / Roti", value: "Bread / Roti" },
+  { text: "Salad", value: "Salad" },
+  { text: "Salad Dressing", value: "Salad Dressing" },
+  { text: "Side", value: "Side" },
+  { text: "Sauce", value: "Sauce" },
+  { text: "Pasta", value: "Pasta" },
+  { text: "Fruit", value: "Fruit" },
+  { text: "Drink", value: "Drink" },
+  { text: "Soup", value: "Soup" },
+  { text: "Spread", value: "Spread" },
+  { text: "Vegetable", value: "Vegetable" },
+  { text: "Curry", value: "Curry" },
+  { text: "Chutney", value: "Chutney" },
+  { text: "Dal", value: "Dal" },
+  { text: "Sprouts", value: "Sprouts" },
+  { text: "Pickle", value: "Pickle" },
+];
+
+export const dietType = [
+  { value: "vegan", text: "Vegan" },
+  { value: "nonVegan", text: "Non-Vegan" },
 ];

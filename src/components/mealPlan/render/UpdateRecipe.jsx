@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import classNames from "classnames";
 import { Trash } from "phosphor-react";
+import { searchIngredient } from "@/services/ingredient";
 
 const UpdateRecipe = ({ recipe, onUpdateRecipe }) => {
   const [ingredients, setIngredients] = useState([]);
@@ -38,10 +38,8 @@ const UpdateRecipe = ({ recipe, onUpdateRecipe }) => {
       if (value.length >= 3) {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(async () => {
-          const res = await axios.get(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient?search=${value}`
-          );
-          setSearchResults(res.data.data);
+          const res = await searchIngredient(value);
+          setSearchResults(res);
         }, 300);
       } else {
         setSearchResults([]);
@@ -70,18 +68,22 @@ const UpdateRecipe = ({ recipe, onUpdateRecipe }) => {
 
   const isIngredientFilled = (ingredient) => {
     // Check if all fields inside the ingredient object are filled
-    return Object.values(ingredient).every((value) => {
-      if (typeof value === "string") {
-        // If the value is a string, check if it's not empty after trimming
-        return value.trim() !== "";
-      } else if (typeof value === "object") {
-        // If the value is an object, recursively check its fields
-        return isIngredientFilled(value);
-      } else {
-        // For other types of values, consider them filled
-        return true;
-      }
-    });
+    // return Object.values(ingredient).every((value) => {
+    //   if (typeof value === "string") {
+    //     // If the value is a string, check if it's not empty after trimming
+    //     return value.trim() !== "";
+    //   } else if (typeof value === "object") {
+    //     // If the value is an object, recursively check its fields
+    //     return isIngredientFilled(value);
+    //   } else {
+    //     // For other types of values, consider them filled
+    //     return true;
+    //   }
+    // });
+    if (ingredient.ingredient.name) {
+      return true;
+    }
+    return false;
   };
 
   const isFormFilled = () => {

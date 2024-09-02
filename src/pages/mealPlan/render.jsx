@@ -1,13 +1,18 @@
 import { useMemo, useState } from "react";
 import Selections from "@/components/mealPlan/render/Selections";
-import axios from "axios";
 import IngredientsTable from "@/components/mealPlan/render/IngredientsTable";
 import Table from "@/components/mealPlan/Table";
-import { format } from "date-fns";
 import { generateDaysForDateRange } from "@/helpers/utils";
 import Tabs from "@/components/Tabs";
 import Modal from "@/components/Modal";
 import UpdateRecipe from "@/components/mealPlan/render/UpdateRecipe";
+import {
+  getMealPlanBetweenDateRange,
+  updateExistingMealPlan,
+} from "@/services/mealPlan";
+import { toast } from "react-toastify";
+import Loader from "@/components/Loader";
+import classNames from "classnames";
 
 const RenderMealPlanPage = () => {
   const [mealPlan, setMealPlan] = useState();
@@ -20,10 +25,14 @@ const RenderMealPlanPage = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
+  const [saveMealPlanLoading, setSaveMealPlanLoading] = useState(false);
+
   const days = useMemo(() => {
     if (!startDate || !endDate) return [];
     return generateDaysForDateRange(startDate, endDate);
   }, [startDate, endDate]);
+
+  // console.log({ days });
 
   const tabs = useMemo(() => {
     return ["Meal Plan", "Ingredients Per Meal"];
@@ -33,16 +42,9 @@ const RenderMealPlanPage = () => {
     // console.log({ startDate, endDate });
     try {
       setMealPlanLoading(true);
-      const res = await axios.get(
-        `${
-          process.env.NEXT_PUBLIC_BACKEND_URL
-        }/mealPlan/date-range?startDate=${format(
-          startDate,
-          "dd-MM-yyyy"
-        )}&endDate=${format(endDate, "dd-MM-yyyy")}`
-      );
+      const res = await getMealPlanBetweenDateRange(startDate, endDate);
       // console.log({ res });
-      setMealPlan(res.data.data);
+      setMealPlan(res);
       setMealPlanLoading(false);
       toggleMealPlan(true);
     } catch (e) {
@@ -57,10 +59,7 @@ const RenderMealPlanPage = () => {
   const createUpdatedMealPlanPromises = async (updatedMealPlans) => {
     try {
       const updateRequests = updatedMealPlans.map(async (mealPlan) => {
-        const response = await axios.put(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/mealPlan/${mealPlan._id}`,
-          mealPlan
-        );
+        const response = await updateExistingMealPlan(mealPlan);
         return response.data;
       });
 
@@ -116,17 +115,24 @@ const RenderMealPlanPage = () => {
       return newMealPlanObj;
     });
 
-    createUpdatedMealPlanPromises(newMealPlan)
+    setMealPlan(newMealPlan);
+    setActiveRecipe(false);
+  };
+
+  const saveMealPlan = async () => {
+    setSaveMealPlanLoading(true);
+    createUpdatedMealPlanPromises(mealPlan)
       .then((updatedResults) => {
         console.log("Meal plans updated successfully:", updatedResults);
-        setMealPlan(newMealPlan);
+        toast.success("Meal plan updated successfully!");
+        setSaveMealPlanLoading(false);
       })
       .catch((error) => {
+        setSaveMealPlanLoading(false);
+        toast.error("Error. Try again later!");
         console.error("Error updating meal plans:", error);
       });
   };
-
-  const saveMealPlan = () => {};
 
   return (
     <div>
@@ -137,6 +143,8 @@ const RenderMealPlanPage = () => {
         setStartDate={setStartDate}
         setEndDate={setEndDate}
         buttonText={"Show meal plan"}
+        toggleMealPlan={toggleMealPlan}
+        mealPlanLoading={mealPlanLoading}
       />
       {showMealPlan && (
         <div className="mt-10">
@@ -176,10 +184,14 @@ const RenderMealPlanPage = () => {
           />
           <div className="mt-6">
             <button
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-5"
+              className={classNames(
+                "px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-5",
+                saveMealPlanLoading && "cursor-not-allowed"
+              )}
               onClick={saveMealPlan}
+              disabled={saveMealPlanLoading}
             >
-              Save Meal Plan
+              {saveMealPlanLoading ? <Loader /> : "Save Meal Plan"}
             </button>
           </div>
         </div>

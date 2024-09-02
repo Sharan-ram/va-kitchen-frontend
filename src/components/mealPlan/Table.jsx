@@ -1,7 +1,9 @@
 import React from "react";
 import RecipeSearchInput from "./RecipeSearchInput";
 import MealCountInput from "./MealCountInput";
-import { weekDays, meals } from "@/helpers/constants";
+import { weekDays, meals, seasons, months } from "@/helpers/constants";
+import { format } from "date-fns";
+import Input from "@/components/Input";
 
 const MealPlanTable = ({
   month,
@@ -19,26 +21,52 @@ const MealPlanTable = ({
     return mealPlanObj || {};
   };
 
+  const setSeasonPerDay = ({ season, selectedDateObjIndex, date }) => {
+    let newMealPlan = JSON.parse(JSON.stringify(mealPlan));
+    console.log({ selectedDateObjIndex });
+    if (selectedDateObjIndex >= 0) {
+      newMealPlan.days[selectedDateObjIndex].season = season;
+    } else {
+      if (newMealPlan.days) {
+        newMealPlan.days.push({
+          date,
+          season,
+        });
+      } else {
+        newMealPlan = {
+          ...newMealPlan,
+          days: [
+            {
+              date,
+              season,
+            },
+          ],
+        };
+      }
+    }
+    setMealPlan(newMealPlan);
+  };
+
   return (
     <div className="meal-plan-table mt-8 max-w-[100%]">
       {page === "create" && (
         <h2 className="text-lg font-semibold mb-4">
-          Meal Plan for {month} {year}
+          Meal Plan for {months[month - 1].text} {year}
         </h2>
       )}
       <table className="min-w-full divide-y divide-gray-200 max-w-[100%]">
         <thead className="bg-gray-50 max-w-[100%]">
           <tr className="bg-gray-200">
-            <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-3 py-2 font-bold uppercase tracking-wider">
               Day
             </th>
-            <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-3 py-2 font-bold uppercase tracking-wider">
               Breakfast
             </th>
-            <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-3 py-2 font-bold uppercase tracking-wider">
               Lunch
             </th>
-            <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-3 py-2 font-bold uppercase tracking-wider">
               Dinner
             </th>
           </tr>
@@ -54,9 +82,46 @@ const MealPlanTable = ({
               page === "create"
                 ? mealPlan
                 : getMealPlanObj(yearRenderPage, monthRenderPage);
+
+            const selectedDateObjIndex = specificMealPlan.days
+              ? specificMealPlan.days?.findIndex((obj) => {
+                  return obj.date === format(day, "dd-MM-yyyy");
+                })
+              : -1;
+
+            // console.log({ specificMealPlan, selectedDateObjIndex });
+
+            const season =
+              selectedDateObjIndex >= 0
+                ? specificMealPlan.days[selectedDateObjIndex].season
+                : specificMealPlan.season;
+
+            // console.log({ season });
             return (
               <tr key={day} className="border-b max-w-[100%]">
-                <td className="px-3 py-2 whitespace-nowrap">{`${date}, ${weekDays[dayName]}`}</td>
+                <td className="px-3 py-2 whitespace-nowrap font-bold">
+                  <div>{`${date}, ${weekDays[dayName]}`}</div>
+                  <div>
+                    <Input
+                      type="select"
+                      selectProps={{
+                        selected: season,
+                        onChange: (e) =>
+                          setSeasonPerDay({
+                            season: e.target.value,
+                            selectedDateObjIndex,
+                            date: format(day, "dd-MM-yyyy"),
+                          }),
+                        options: [
+                          { value: "", text: "Select season" },
+                          ...seasons,
+                        ],
+                        // value: season,
+                      }}
+                      classes={{ wrapper: "w-1/4 mr-4 mb-4" }}
+                    />
+                  </div>
+                </td>
                 {meals.map((meal) => {
                   return (
                     <td
@@ -72,6 +137,7 @@ const MealPlanTable = ({
                         month={month || monthRenderPage}
                         year={year || yearRenderPage}
                         setActiveRecipe={setActiveRecipe}
+                        allowRecipeUpdate={page === "create" ? false : true}
                       />
                       <MealCountInput
                         entireMonthCounts={specificMealPlan.entireMonthCounts}

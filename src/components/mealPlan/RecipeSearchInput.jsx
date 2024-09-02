@@ -1,8 +1,9 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { format } from "date-fns";
 import { Trash } from "phosphor-react";
+import { searchRecipe } from "@/services/recipe";
+import classNames from "classnames";
 
 const RecipeSearchInput = ({
   placeholder,
@@ -13,6 +14,7 @@ const RecipeSearchInput = ({
   year,
   month,
   setActiveRecipe,
+  allowRecipeUpdate,
 }) => {
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
@@ -42,10 +44,8 @@ const RecipeSearchInput = ({
       if (value.length >= 3) {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(async () => {
-          const res = await axios.get(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/recipe?search=${value}`
-          );
-          setSearchResults(res.data.data);
+          const res = await searchRecipe(value);
+          setSearchResults(res);
           setShowSearchResults(true);
         }, 300);
       }
@@ -89,6 +89,7 @@ const RecipeSearchInput = ({
               mealCounts: newMealPlan.entireMonthCounts,
               recipes: [recipe],
             },
+            season: newMealPlan.season,
           });
         } else {
           newMealPlan.days = [
@@ -98,6 +99,7 @@ const RecipeSearchInput = ({
                 mealCounts: newMealPlan.entireMonthCounts,
                 recipes: [recipe],
               },
+              season: newMealPlan.season,
             },
           ];
         }
@@ -114,6 +116,7 @@ const RecipeSearchInput = ({
               mealCounts: newMealPlan.entireMonthCounts,
               recipes: [recipe],
             },
+            season: newMealPlan.season,
           },
         ],
       };
@@ -166,10 +169,20 @@ const RecipeSearchInput = ({
           <div>
             {selectedRecipes.map((recipe, recipeIndex) => {
               return (
-                <div key={recipeIndex} className="flex items-center mb-2">
+                <div
+                  key={recipeIndex}
+                  className="flex items-center mb-2 justify-between w-full"
+                >
                   <div
-                    className=" cursor-pointer block w-full pl-10 pr-4 py-2 border rounded-md bg-[#f3f1f1]"
-                    onClick={() => setActiveRecipe({ recipe, month, year })}
+                    className={classNames(
+                      "border rounded-md bg-[#f3f1f1] px-2 py-1 w-[90%]",
+                      allowRecipeUpdate && "cursor-pointer"
+                    )}
+                    onClick={() => {
+                      allowRecipeUpdate
+                        ? setActiveRecipe({ recipe, month, year })
+                        : () => {};
+                    }}
                   >
                     {recipe.name}
                   </div>
@@ -189,7 +202,7 @@ const RecipeSearchInput = ({
                 onChange={handleInputChange}
                 value={search?.text || ""}
                 type="text"
-                className="block w-full pl-10 pr-4 py-2 border rounded-md"
+                className="border rounded-md w-full pl-2 py-1"
                 placeholder={placeholder}
               />
             </div>
@@ -205,7 +218,7 @@ const RecipeSearchInput = ({
       )}
 
       {showSearchResults && (
-        <div className="absolute left-0 right-0 mt-2 bg-white border border-gray-300 rounded-md shadow-md z-[99999]">
+        <div className="absolute left-0 right-0 mt-2 bg-white border border-gray-300 rounded-md shadow-md z-[99] text-ellipsis overflow-hidden whitespace-nowrap w-full">
           {searchResults.map((result, i) => {
             return (
               <div

@@ -1,8 +1,11 @@
 import CreateForm from "@/components/mealPlan/CreateForm";
 import { useState, useMemo } from "react";
 import Table from "@/components/mealPlan/Table";
-import axios from "axios";
 import { generateDaysOfMonth } from "@/helpers/utils";
+import { saveNewMealPlan, updateExistingMealPlan } from "@/services/mealPlan";
+import classNames from "classnames";
+import Loader from "@/components/Loader";
+import { toast } from "react-toastify";
 
 const CreateMealPlanPage = () => {
   const [showTable, setShowTable] = useState(false);
@@ -11,31 +14,28 @@ const CreateMealPlanPage = () => {
 
   const [isNew, setIsNew] = useState();
 
-  console.log({ mealPlan });
+  const [saveMealPlanLoading, setSaveMealPlanLoading] = useState(false);
+
+  // console.log({ mealPlan });
 
   const saveMealPlan = async () => {
-    console.log({ mealPlan });
+    // console.log({ mealPlan });
     try {
-      let res;
+      setSaveMealPlanLoading(true);
       if (typeof isNew !== "undefined") {
         if (isNew) {
-          res = await axios.post(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/mealPlan`,
-            mealPlan
-          );
-          console.log("new res", res);
+          await saveNewMealPlan(mealPlan);
         } else {
-          res = await axios.put(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/mealPlan/${mealPlan._id}`,
-            mealPlan
-          );
-          console.log("updated res", res);
+          await updateExistingMealPlan(mealPlan);
         }
         setIsNew(false);
-        setMealPlan(res.data.data);
+        setSaveMealPlanLoading(false);
+        toast.success("Meal Plan Saved!");
       }
     } catch (e) {
       console.error(e);
+      setSaveMealPlanLoading(false);
+      toast.error("Error. Try again later!");
     }
   };
 
@@ -58,6 +58,7 @@ const CreateMealPlanPage = () => {
           }
         }
         setIsNew={setIsNew}
+        isNew={isNew}
       />
       {showTable && (
         <Table
@@ -71,10 +72,14 @@ const CreateMealPlanPage = () => {
       )}
       {showTable && (
         <button
-          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-5"
+          className={classNames(
+            "px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-5",
+            saveMealPlanLoading && "opacity-50 cursor-not-allowed"
+          )}
+          disabled={saveMealPlanLoading}
           onClick={saveMealPlan}
         >
-          Save Meal Plan
+          {saveMealPlanLoading ? <Loader /> : "Save Meal Plan"}
         </button>
       )}
     </div>

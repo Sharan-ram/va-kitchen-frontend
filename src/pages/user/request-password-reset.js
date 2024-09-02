@@ -1,31 +1,36 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { requestPasswordReset } from "@/services/user";
+import Loader from "@/components/Loader";
+import classNames from "classnames";
+import { toast } from "react-toastify";
 
 const RequestPasswordReset = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  // const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/request-password-reset`,
-        {
-          username,
-          email,
-        }
-      );
-      setMessage(response.data.message);
+      setLoading(true);
+      await requestPasswordReset({
+        username,
+        email,
+      });
+      // setMessage(response);
+      setLoading(false);
+      toast.success("Password reset email sent!");
     } catch (error) {
-      setMessage(
-        error.response.data.message || "Error requesting password reset"
-      );
+      setLoading(false);
+      toast.error("Error, try again later!");
     }
   };
 
+  const isButtonDisabled = !username || !email || loading;
+
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center">
           Request Password Reset
@@ -65,15 +70,17 @@ const RequestPasswordReset = () => {
               required
             />
           </div>
-          {message && (
-            <p className="text-red-500 text-xs italic mb-4">{message}</p>
-          )}
+          {/* {message && <p className="text-red-500 text-xs mb-4">{message}</p>} */}
           <div className="flex items-center justify-between">
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className={classNames(
+                "bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline",
+                isButtonDisabled && "cursor-not-allowed opacity-50"
+              )}
+              disabled={isButtonDisabled}
             >
-              Request Reset
+              {loading ? <Loader /> : "Request Reset"}
             </button>
           </div>
         </form>

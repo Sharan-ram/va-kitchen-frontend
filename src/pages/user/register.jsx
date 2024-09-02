@@ -1,33 +1,42 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { registerNewUser } from "@/services/user";
+import { toast } from "react-toastify";
+import Loader from "@/components/Loader";
+import classNames from "classnames";
 
 const Register = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("user");
+  const [role, setRole] = useState("");
   const [message, setMessage] = useState("");
+  const [createNewUserLoading, setCreateUserLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/register`,
-        {
-          username,
-          email,
-          password,
-          role,
-        }
-      );
-      setMessage(response.data.message);
+      setCreateUserLoading(true);
+      await registerNewUser({
+        username,
+        email,
+        password,
+        role,
+      });
+      // setMessage(response);
+      setCreateUserLoading(false);
+      toast.success(`New ${role} registered - ${username}!`);
     } catch (error) {
-      setMessage(error.response.data.message || "Error registering user");
+      // setMessage(error.response.data.message || "Error registering user");
+      setCreateUserLoading(false);
+      toast.error(`Error registering user!`);
     }
   };
 
+  const isButtonDisabled =
+    createNewUserLoading || !username || !role || !email || !password;
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
         <form onSubmit={handleSubmit}>
@@ -95,19 +104,24 @@ const Register = () => {
               onChange={(e) => setRole(e.target.value)}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             >
+              <option value="">Select Role</option>
               <option value="user">User</option>
               <option value="admin">Admin</option>
             </select>
           </div>
-          {message && (
+          {/* {message && (
             <p className="text-red-500 text-xs italic mb-4">{message}</p>
-          )}
+          )} */}
           <div className="flex items-center justify-between">
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className={classNames(
+                "bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline",
+                isButtonDisabled && "cursor-not-allowed opacity-50"
+              )}
+              disabled={isButtonDisabled}
             >
-              Register
+              {createNewUserLoading ? <Loader /> : "Register"}
             </button>
           </div>
         </form>

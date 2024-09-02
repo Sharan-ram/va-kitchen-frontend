@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useRouter } from "next/router";
+import { login } from "@/services/user";
+import Link from "next/link";
+import Loader from "@/components/Loader";
+import classNames from "classnames";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [userLoading, setUserLoading] = useState(false);
 
   const router = useRouter();
 
@@ -19,19 +23,21 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/login`,
-        { username, password }
-      );
-      localStorage.setItem("token", response.data.token);
+      setUserLoading(true);
+      const response = await login({ username, password });
+      localStorage.setItem("token", response.token);
+      localStorage.setItem("user", JSON.stringify(response.user));
+      window.dispatchEvent(new Event("userUpdated"));
       router.push("/mealPlan/render");
+      setUserLoading(false);
     } catch (error) {
       setError("Invalid username or password");
+      setUserLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
         <form onSubmit={handleSubmit}>
@@ -52,7 +58,7 @@ const Login = () => {
               required
             />
           </div>
-          <div className="mb-6">
+          <div className="mb-2">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
               htmlFor="password"
@@ -69,13 +75,27 @@ const Login = () => {
               required
             />
           </div>
-          {error && <p className="text-red-500 text-xs italic mb-4">{error}</p>}
+          <div className="mb-2">
+            <Link
+              href="/user/request-password-reset"
+              className="text-sm font-medium text-blue-600 hover:text-blue-800"
+            >
+              Forgot Password?
+            </Link>
+          </div>
+
+          {error && <p className="text-red-500 text-xs mb-4">{error}</p>}
+
           <div className="flex items-center justify-between">
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className={classNames(
+                "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline",
+                userLoading && "cursor-not-allowed opacity-50"
+              )}
+              disabled={userLoading}
             >
-              Login
+              {userLoading ? <Loader /> : "Login"}
             </button>
           </div>
         </form>

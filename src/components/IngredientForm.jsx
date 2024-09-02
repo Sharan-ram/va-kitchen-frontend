@@ -1,5 +1,4 @@
 import { useState } from "react";
-import axios from "axios";
 import {
   purchaseUnits,
   ingredientType,
@@ -7,6 +6,10 @@ import {
   vendors,
 } from "@/helpers/constants";
 import Input from "./Input";
+import { saveIngredient, updateIngredient } from "@/services/ingredient";
+import { toast } from "react-toastify";
+import classNames from "classnames";
+import Loader from "./Loader";
 
 const initialFormState = {
   name: "",
@@ -18,11 +21,22 @@ const initialFormState = {
   purchaseUnit: "",
   cookingUnit: "",
   purchaseUnitPerCookingUnit: "",
-  price: "",
+  // price: "",
+  nuts: false,
+  dairy: false,
+  gluten: false,
+  ingredientSpecificAllergy: "",
+  allergyCode: 0,
+  masterCode: "",
+  todo: "",
 };
 
-const IngredientForm = () => {
-  const [formData, setFormData] = useState(initialFormState);
+const IngredientForm = ({ ingredient, type }) => {
+  const [formData, setFormData] = useState(
+    type === "edit" ? ingredient : initialFormState
+  );
+
+  const [saveIngredientLoading, setSaveIngredientLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -35,25 +49,46 @@ const IngredientForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient`,
-        {
-          ...formData,
-          purchaseUnitPerCookingUnit: Number(
-            formData.purchaseUnitPerCookingUnit
-          ),
-        }
+      setSaveIngredientLoading(true);
+      type !== "edit"
+        ? await saveIngredient({
+            ...formData,
+            purchaseUnitPerCookingUnit: Number(
+              formData.purchaseUnitPerCookingUnit
+            ),
+            allergyCode: Number(formData.allergyCode),
+          })
+        : await updateIngredient({
+            ...formData,
+            purchaseUnitPerCookingUnit: Number(
+              formData.purchaseUnitPerCookingUnit
+            ),
+            allergyCode: Number(formData.allergyCode),
+          });
+      // console.log({ response });
+      type !== "edit" && setFormData(initialFormState);
+      setSaveIngredientLoading(false);
+      toast.success(
+        type === "edit"
+          ? "Ingredient updated successfully"
+          : "Ingredient saved successfully"
       );
-      console.log({ response });
-      setFormData(initialFormState);
     } catch (error) {
       console.error("Error:", error);
+      setSaveIngredientLoading(false);
+      toast.error(
+        type === "edit"
+          ? "Ingredient update failed!"
+          : "Ingredient save failed!"
+      );
     }
   };
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-md shadow-md">
-      <h2 className="text-lg font-semibold mb-4">Add Ingredient</h2>
+      <h2 className="text-lg font-semibold mb-4">
+        {type === "edit" ? "Edit Ingredient" : "Add Ingredient"}
+      </h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label
@@ -160,7 +195,9 @@ const IngredientForm = () => {
               onChange={handleChange}
               className="mr-2"
             />
-            <span className="text-sm font-medium text-gray-700">Sponsored</span>
+            <span className="text-sm font-semibold text-gray-700 cursor-pointer">
+              Sponsored
+            </span>
           </label>
         </div>
         <div className="mb-4">
@@ -187,6 +224,22 @@ const IngredientForm = () => {
         </div>
         <div className="mb-4">
           <label
+            htmlFor="purchaseUnitPerCookingUnit"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Purchase Unit Per Cooking Unit
+          </label>
+          <input
+            type="number"
+            id="purchaseUnitPerCookingUnit"
+            name="purchaseUnitPerCookingUnit"
+            value={formData.purchaseUnitPerCookingUnit}
+            onChange={handleChange}
+            className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+          />
+        </div>
+        <div className="mb-4">
+          <label
             htmlFor="cookingUnit"
             className="block text-sm font-medium text-gray-700"
           >
@@ -208,33 +261,110 @@ const IngredientForm = () => {
           />
         </div>
         <div className="mb-4">
+          <label htmlFor="nuts" className="flex items-center">
+            <input
+              type="checkbox"
+              id="nuts"
+              name="nuts"
+              checked={formData.nuts}
+              onChange={handleChange}
+              className="mr-2"
+            />
+            <span className="text-sm font-semibold text-gray-700 cursor-pointer">
+              Nuts
+            </span>
+          </label>
+        </div>
+        <div className="mb-4">
+          <label htmlFor="dairy" className="flex items-center">
+            <input
+              type="checkbox"
+              id="dairy"
+              name="dairy"
+              checked={formData.dairy}
+              onChange={handleChange}
+              className="mr-2"
+            />
+            <span className="text-sm font-semibold text-gray-700 cursor-pointer">
+              Dairy
+            </span>
+          </label>
+        </div>
+        <div className="mb-4">
+          <label htmlFor="gluten" className="flex items-center">
+            <input
+              type="checkbox"
+              id="gluten"
+              name="gluten"
+              checked={formData.gluten}
+              onChange={handleChange}
+              className="mr-2"
+            />
+            <span className="text-sm font-semibold text-gray-700 cursor-pointer">
+              Gluten
+            </span>
+          </label>
+        </div>
+        <div className="mb-4">
           <label
-            htmlFor="purchaseUnitPerCookingUnit"
+            htmlFor="ingredientSpecificAllergy"
             className="block text-sm font-medium text-gray-700"
           >
-            Purchase Unit Per Cooking Unit
+            Ingredient Specific Allergy
           </label>
           <input
-            type="number"
-            id="purchaseUnitPerCookingUnit"
-            name="purchaseUnitPerCookingUnit"
-            value={formData.purchaseUnitPerCookingUnit}
+            type="text"
+            id="ingredientSpecificAllergy"
+            name="ingredientSpecificAllergy"
+            value={formData.ingredientSpecificAllergy}
             onChange={handleChange}
             className="mt-1 p-2 border border-gray-300 rounded-md w-full"
           />
         </div>
         <div className="mb-4">
           <label
-            htmlFor="price"
+            htmlFor="allergyCode"
             className="block text-sm font-medium text-gray-700"
           >
-            Price
+            Allergy Code
           </label>
           <input
             type="number"
-            id="price"
-            name="price"
-            value={formData.price}
+            id="allergyCode"
+            name="allergyCode"
+            value={formData.allergyCode}
+            onChange={handleChange}
+            className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+          />
+        </div>
+        <div className="mb-4">
+          <label
+            htmlFor="masterCode"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Master Code
+          </label>
+          <input
+            type="text"
+            id="masterCode"
+            name="masterCode"
+            value={formData.masterCode}
+            onChange={handleChange}
+            className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+          />
+        </div>
+        <div className="mb-4">
+          <label
+            htmlFor="todo"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Todo
+          </label>
+          <input
+            type="text"
+            id="todo"
+            name="todo"
+            value={formData.todo}
             onChange={handleChange}
             className="mt-1 p-2 border border-gray-300 rounded-md w-full"
           />
@@ -242,9 +372,19 @@ const IngredientForm = () => {
         <div className="mt-6">
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            className={classNames(
+              "px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-center",
+              saveIngredientLoading && "opacity-50 cursor-not-allowed"
+            )}
+            disabled={saveIngredientLoading}
           >
-            Add Ingredient
+            {saveIngredientLoading ? (
+              <Loader />
+            ) : type === "edit" ? (
+              "Edit Ingredient"
+            ) : (
+              "Add Ingredient"
+            )}
           </button>
         </div>
       </form>

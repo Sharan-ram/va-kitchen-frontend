@@ -1,33 +1,37 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState } from "react";
 import Selections from "@/components/mealPlan/render/Selections";
+import { getWeeklyOrder, generateWeeklyPurchaseOrder } from "@/services/order";
+import Loader from "@/components/Loader";
+import classNames from "classnames";
+import { toast } from "react-toastify";
 import { format } from "date-fns";
+import { getDayBeforeGivenDate } from "@/helpers/utils";
 
-const MonthlyOrder = () => {
+const WeeklyOrder = () => {
   const [ingredients, setIngredients] = useState();
   const [showPurchaseOrder, setShowPurchaseOrder] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const [ingredientsLoading, setIngredientsLoading] = useState(false);
+  const [generatePurchaseOrderLoading, setGeneratePurchaseOrder] =
+    useState(false);
 
   const fetchPurchaseOrder = async () => {
     try {
-      const res = await axios.get(
-        `${
-          process.env.NEXT_PUBLIC_BACKEND_URL
-        }/order/weekly-order?startDate=${format(
-          startDate,
-          "dd-MM-yyyy"
-        )}&endDate=${format(endDate, "dd-MM-yyyy")}`
-      );
-      console.log({ res });
-      setIngredients(res.data.data);
+      setIngredientsLoading(true);
+      const res = await getWeeklyOrder(startDate, endDate);
+      setIngredients(res);
       setShowPurchaseOrder(true);
+      setIngredientsLoading(false);
     } catch (e) {
       console.error(e);
+      setIngredientsLoading(false);
+      toast.error("Fetching Purchase Order Failed!");
     }
   };
 
   const generatePurchaseOrder = async () => {
+    setGeneratePurchaseOrder(true);
     const tableData = [
       [
         "Ingredient",
@@ -63,25 +67,29 @@ const MonthlyOrder = () => {
     ];
 
     try {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/order/generate-monthly-purchase-order`,
-        {
-          data: tableData,
-        }
-      );
+      const res = await generateWeeklyPurchaseOrder({
+        payload: tableData,
+        startDate: format(startDate, "dd-MM-yyyy"),
+        endDate: format(endDate, "dd-MM-yyyy"),
+      });
       if (res.data.success) {
         // Open the Google Sheet in a new tab
         window.open(res.data.sheetUrl, "_blank");
+        setGeneratePurchaseOrder(false);
       }
     } catch (error) {
       console.error("Error generating purchase order:", error);
+      setGeneratePurchaseOrder(false);
+      toast.error("Error generating purchase order!");
       // alert("Failed to generate purchase order.");
     }
   };
 
+  const today = new Date();
+  const dayBeforeStartDate = getDayBeforeGivenDate(startDate);
+
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4">Weekly Order Generation</h2>
       <Selections
         onSubmit={fetchPurchaseOrder}
         startDate={startDate}
@@ -89,34 +97,53 @@ const MonthlyOrder = () => {
         setStartDate={setStartDate}
         setEndDate={setEndDate}
         buttonText={"Show purchase order"}
+        toggleMealPlan={() => setShowPurchaseOrder(false)}
       />
-      {showPurchaseOrder && (
+      <h2 className="text-xl font-semibold my-6">{`Weekly Order Generation: ${format(
+        startDate,
+        "dd-MM-yyyy"
+      )} to ${format(endDate, "dd-MM-yyyy")}`}</h2>
+      {!ingredientsLoading && showPurchaseOrder && (
         <>
           <div className="my-4">
-            <table className="mt-2 text-center border-2 border-black w-full">
-              <thead className="border-b-2 border-b-black">
-                <tr>
-                  <th className="border-r border-r-black py-2">Ingredient</th>
-                  <th className="border-r border-r-black py-2">
-                    Requirement (Next Month)
+            <table className="min-w-full divide-y divide-gray-200 max-w-[100%]">
+              <thead className="bg-gray-50 max-w-[100%] sticky top-[100px]">
+                <tr className="bg-gray-200">
+                  <th className="px-3 py-2 font-bold uppercase tracking-wider">
+                    No.
                   </th>
-                  <th className="border-r border-r-black py-2">
-                    Requirement (Rest)
+                  <th className="px-3 py-2 font-bold uppercase tracking-wider">
+                    Ingredient
                   </th>
-                  <th className="border-r border-r-black py-2">
-                    Current Stock
+                  <th className="px-3 py-2 font-bold uppercase tracking-wider">
+                    {`Requirement (${format(startDate, "dd-MM-yyyy")} to
+                      ${format(endDate, "dd-MM-yyyy")})`}
                   </th>
-                  <th className="border-r border-r-black py-2">
-                    Closing Stock (as on 31st)
+                  <th className="px-3 py-2 font-bold uppercase tracking-wider">
+                    {`Requirement (Tmrw to
+                      ${format(dayBeforeStartDate, "dd-MM-yyyy")})`}
                   </th>
-                  <th className="border-r border-r-black py-2">Bulk order</th>
-                  <th className="border-r border-r-black py-2">Adjustment</th>
-                  <th className="border-r border-r-black py-2">
+                  <th className="px-3 py-2 font-bold uppercase tracking-wider">
+                    Current Stock (by end of today)
+                  </th>
+                  <th className="px-3 py-2 font-bold uppercase tracking-wider">
+                    {`Closing Stock (Tmrw to ${format(
+                      dayBeforeStartDate,
+                      "dd-MM-yyyy"
+                    )})`}
+                  </th>
+                  <th className="px-3 py-2 font-bold uppercase tracking-wider">
+                    Bulk order
+                  </th>
+                  <th className="px-3 py-2 font-bold uppercase tracking-wider">
+                    Adjustment
+                  </th>
+                  <th className="px-3 py-2 font-bold uppercase tracking-wider">
                     Purchase Unit
                   </th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="bg-white divide-y divide-gray-200 max-w-[100%]">
                 {ingredients &&
                   ingredients.map((ingredient, index) => {
                     const {
@@ -131,24 +158,29 @@ const MonthlyOrder = () => {
                       closingStock,
                     } = ingredient;
                     return (
-                      <tr className="border border-black" key={_id}>
-                        <td className="border-r border-r-black p-4">{name}</td>
-                        <td className="border-r border-r-black p-4">
+                      <tr className="border-b max-w-[100%]" key={_id}>
+                        <td className="px-3 py-2 whitespace-nowrap capitalize">
+                          {index + 1}
+                        </td>
+                        <td className="px-3 py-2 whitespace-nowrap font-bold">
+                          {name}
+                        </td>
+                        <td className="px-3 py-2 whitespace-nowrap text-center">
                           {weeklyMealPlan}
                         </td>
-                        <td className="border-r border-r-black p-4">
+                        <td className="px-3 py-2 whitespace-nowrap text-center">
                           {remainingMealPlan}
                         </td>
-                        <td className="border-r border-r-black p-4">
+                        <td className="px-3 py-2 whitespace-nowrap text-center">
                           {currentStock}
                         </td>
-                        <td className="border-r border-r-black p-4">
+                        <td className="px-3 py-2 whitespace-nowrap text-center">
                           {closingStock}
                         </td>
-                        <td className="border-r border-r-black p-4">
+                        <td className="px-3 py-2 whitespace-nowrap text-center">
                           {bulkOrder}
                         </td>
-                        <td className="border-r border-r-black p-4">
+                        <td className="px-3 py-2 whitespace-nowrap text-center">
                           <input
                             type="text"
                             onChange={(e) => {
@@ -170,7 +202,7 @@ const MonthlyOrder = () => {
                             className="pl-10 pr-4 py-2 border rounded-md"
                           />
                         </td>
-                        <td className="border-r border-r-black p-4">
+                        <td className="px-3 py-2 whitespace-nowrap text-center">
                           {purchaseUnit}
                         </td>
                       </tr>
@@ -179,20 +211,39 @@ const MonthlyOrder = () => {
               </tbody>
             </table>
           </div>
-
-          <div className="mt-10">
-            <button
-              type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-              onClick={generatePurchaseOrder}
-            >
-              Generate Purchase order
-            </button>
-          </div>
         </>
       )}
+
+      {ingredientsLoading && (
+        <div className="w-full flex justify-center items-center">
+          <Loader />
+        </div>
+      )}
+
+      <div className="mt-10">
+        <button
+          type="submit"
+          className={classNames(
+            "px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600",
+            (ingredientsLoading ||
+              generatePurchaseOrderLoading ||
+              !ingredients) &&
+              "opacity-50 cursor-not-allowed"
+          )}
+          onClick={generatePurchaseOrder}
+          disabled={
+            ingredientsLoading || generatePurchaseOrderLoading || !ingredients
+          }
+        >
+          {generatePurchaseOrderLoading ? (
+            <Loader />
+          ) : (
+            "Generate Purchase order"
+          )}
+        </button>
+      </div>
     </div>
   );
 };
 
-export default MonthlyOrder;
+export default WeeklyOrder;

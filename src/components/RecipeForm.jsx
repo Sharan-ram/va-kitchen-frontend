@@ -1,18 +1,38 @@
 import { useState } from "react";
-import axios from "axios";
 import Input from "./Input"; // Assuming you have an Input component for text and select fields
 import classNames from "classnames";
+import { searchIngredient } from "@/services/ingredient";
+import { updateRecipe } from "@/services/recipe";
+import { saveRecipe } from "@/services/recipe";
+import { usualMealTime, mealType, dietType } from "@/helpers/constants";
+import { toast } from "react-toastify";
+import Loader from "./Loader";
 
-const RecipeForm = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    type: "",
-    ingredients: [],
-  });
+const RecipeForm = ({ type, recipe }) => {
+  const [formData, setFormData] = useState(
+    type === "edit"
+      ? recipe
+      : {
+          name: "",
+          dietType: "",
+          usualMealTime: "",
+          mealType: "",
+          label: {
+            indian: "",
+            english: "",
+          },
+          tableSetting: {
+            vessels: "",
+            utensils: "",
+          },
+          ingredients: [],
+        }
+  );
 
   const [searchText, setSearchText] = useState([]);
   const [searchResults, setSearchResults] = useState();
   const [showSearchResults, setShowSearchResults] = useState();
+  const [recipeSaveLoading, setRecipeSaveLoading] = useState(false);
 
   const handleChange = (e, index) => {
     const { name, value } = e.target;
@@ -24,7 +44,7 @@ const RecipeForm = () => {
     }));
   };
 
-  // console.log({ formData });
+  console.log({ formData });
 
   const handleAddIngredient = () => {
     setFormData((prevData) => ({
@@ -46,40 +66,57 @@ const RecipeForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { ingredients } = formData;
-    const newIngredients = ingredients.map((ingredient) => {
-      return {
-        ...ingredient,
-        summerQuantity: Number(ingredient.summerQuantity),
-        winterQuantity: Number(ingredient.winterQuantity),
-        monsoonQuantity: Number(ingredient.monsoonQuantity),
-        retreatQuantity: Number(ingredient.retreatQuantity),
-      };
-    });
-    const res = await axios.post(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/recipe`,
-      {
+    try {
+      setRecipeSaveLoading(true);
+      const { ingredients } = formData;
+      const newIngredients = ingredients.map((ingredient) => {
+        return {
+          ...ingredient,
+          summerQuantity: Number(ingredient.summerQuantity),
+          winterQuantity: Number(ingredient.winterQuantity),
+          monsoonQuantity: Number(ingredient.monsoonQuantity),
+          retreatQuantity: Number(ingredient.retreatQuantity),
+        };
+      });
+      const payload = {
         ...formData,
         ingredients: newIngredients,
-      }
-    );
-    console.log({ res });
+      };
+      console.log({ payload });
+      type === "edit" ? await updateRecipe(payload) : await saveRecipe(payload);
+      toast.success(
+        type === "edit"
+          ? "Recipe update successful!"
+          : "Recipe save successful!"
+      );
+      setRecipeSaveLoading(false);
+    } catch (e) {
+      console.error(e);
+      toast.error(
+        type === "edit" ? "Recipe update failed!" : "Recipe save failed!"
+      );
+      setRecipeSaveLoading(false);
+    }
   };
 
   const isIngredientFilled = (ingredient) => {
     // Check if all fields inside the ingredient object are filled
-    return Object.values(ingredient).every((value) => {
-      if (typeof value === "string") {
-        // If the value is a string, check if it's not empty after trimming
-        return value.trim() !== "";
-      } else if (typeof value === "object") {
-        // If the value is an object, recursively check its fields
-        return isIngredientFilled(value);
-      } else {
-        // For other types of values, consider them filled
-        return true;
-      }
-    });
+    // return Object.values(ingredient).every((value) => {
+    //   if (typeof value === "string") {
+    //     // If the value is a string, check if it's not empty after trimming
+    //     return value.trim() !== "";
+    //   } else if (typeof value === "object") {
+    //     // If the value is an object, recursively check its fields
+    //     return isIngredientFilled(value);
+    //   } else {
+    //     // For other types of values, consider them filled
+    //     return true;
+    //   }
+    // });
+    if (ingredient.ingredient.name) {
+      return true;
+    }
+    return false;
   };
 
   const isFormFilled = () => {
@@ -104,10 +141,8 @@ const RecipeForm = () => {
       if (value.length >= 3) {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(async () => {
-          const res = await axios.get(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/ingredient?search=${value}`
-          );
-          setSearchResults(res.data.data);
+          const res = await searchIngredient(value);
+          setSearchResults(res);
           setShowSearchResults(index);
         }, 300);
       } else {
@@ -139,9 +174,18 @@ const RecipeForm = () => {
     setSearchResults([]);
   };
 
+  const submitDisabled =
+    !isFormFilled() ||
+    formData.ingredients.length === 0 ||
+    !formData.name ||
+    !formData.dietType ||
+    recipeSaveLoading;
+
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-md shadow-md">
-      <h2 className="text-lg font-semibold mb-4">Add Recipe</h2>
+      <h2 className="text-lg font-semibold mb-4">
+        {type === "edit" ? "Edit Recipe" : "Add Recipe"}
+      </h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label
@@ -169,31 +213,193 @@ const RecipeForm = () => {
         </div>
         <div className="mb-4">
           <label
-            htmlFor="type"
+            htmlFor="usualMealTime"
             className="block text-sm font-medium text-gray-700"
           >
-            Type
+            Usual Meal Time
           </label>
           <Input
             type="select"
             selectProps={{
-              id: "type",
-              name: "type",
-              value: formData.type,
+              id: "usualMealTime",
+              name: "usualMealTime",
+              selected: formData.usualMealTime,
+              defaultValue: "",
               onChange: (e) =>
                 setFormData((prevFormData) => ({
                   ...prevFormData,
-                  type: e.target.value,
+                  usualMealTime: e.target.value,
                 })),
               options: [
-                { value: "", text: "Select Type" },
-                { value: "vegan", text: "Vegan" },
-                { value: "non-vegan", text: "Non-Vegan" },
+                { value: "", text: "Select Usual Meal Time" },
+                ...usualMealTime,
               ],
             }}
             classes={{
               wrapper:
                 "mt-1 p-2 border border-gray-300 rounded-md w-full cursor-pointer",
+            }}
+          />
+        </div>
+        <div className="mb-4">
+          <label
+            htmlFor="mealType"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Type of Meal
+          </label>
+          <Input
+            type="select"
+            selectProps={{
+              id: "mealType",
+              name: "mealType",
+              selected: formData.mealType,
+              defaultValue: "",
+              onChange: (e) =>
+                setFormData((prevFormData) => ({
+                  ...prevFormData,
+                  mealType: e.target.value,
+                })),
+              options: [{ value: "", text: "Select Meal Type" }, ...mealType],
+            }}
+            classes={{
+              wrapper:
+                "mt-1 p-2 border border-gray-300 rounded-md w-full cursor-pointer",
+            }}
+          />
+        </div>
+        <div className="mb-4">
+          <label
+            htmlFor="dietType"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Diet Type
+          </label>
+          <Input
+            type="select"
+            selectProps={{
+              id: "dietType",
+              name: "dietType",
+              selected: formData.dietType,
+              defaultValue: "",
+              onChange: (e) =>
+                setFormData((prevFormData) => ({
+                  ...prevFormData,
+                  dietType: e.target.value,
+                })),
+              options: [{ value: "", text: "Select Diet Type" }, ...dietType],
+            }}
+            classes={{
+              wrapper:
+                "mt-1 p-2 border border-gray-300 rounded-md w-full cursor-pointer",
+            }}
+          />
+        </div>
+        <div className="mb-4">
+          <label
+            htmlFor="indianLabel"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Indian Label
+          </label>
+          <Input
+            type="text"
+            textInputProps={{
+              id: "indianLabel",
+              name: "indianLabel",
+              value: formData.label.indian,
+              onChange: (e) =>
+                setFormData((prevFormData) => ({
+                  ...prevFormData,
+                  label: {
+                    ...formData.label,
+                    indian: e.target.value,
+                  },
+                })),
+            }}
+            classes={{
+              wrapper: "mt-1 p-2 border border-gray-300 rounded-md w-full",
+            }}
+          />
+        </div>
+        <div className="mb-4">
+          <label
+            htmlFor="englishLabel"
+            className="block text-sm font-medium text-gray-700"
+          >
+            English Label
+          </label>
+          <Input
+            type="text"
+            textInputProps={{
+              id: "englishLabel",
+              name: "englishLabel",
+              value: formData.label.english,
+              onChange: (e) =>
+                setFormData((prevFormData) => ({
+                  ...prevFormData,
+                  label: {
+                    ...formData.label,
+                    english: e.target.value,
+                  },
+                })),
+            }}
+            classes={{
+              wrapper: "mt-1 p-2 border border-gray-300 rounded-md w-full",
+            }}
+          />
+        </div>
+        <div className="mb-4">
+          <label
+            htmlFor="vessels"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Vessels
+          </label>
+          <Input
+            type="text"
+            textInputProps={{
+              id: "vessels",
+              name: "vessels",
+              value: formData.tableSetting.vessels,
+              onChange: (e) =>
+                setFormData((prevFormData) => ({
+                  ...prevFormData,
+                  tableSetting: {
+                    ...formData.tableSetting,
+                    vessels: e.target.value,
+                  },
+                })),
+            }}
+            classes={{
+              wrapper: "mt-1 p-2 border border-gray-300 rounded-md w-full",
+            }}
+          />
+        </div>
+        <div className="mb-4">
+          <label
+            htmlFor="utensils"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Utensils
+          </label>
+          <Input
+            type="text"
+            textInputProps={{
+              id: "utensils",
+              name: "utensils",
+              value: formData.tableSetting.utensils,
+              onChange: (e) =>
+                setFormData((prevFormData) => ({
+                  ...prevFormData,
+                  tableSetting: {
+                    ...formData.tableSetting,
+                    utensils: e.target.value,
+                  },
+                })),
+            }}
+            classes={{
+              wrapper: "mt-1 p-2 border border-gray-300 rounded-md w-full",
             }}
           />
         </div>
@@ -357,13 +563,13 @@ const RecipeForm = () => {
             type="submit"
             className={classNames(
               "px-4 py-2 bg-blue-500 text-white rounded-md",
-              !isFormFilled() || formData.ingredients.length === 0
-                ? "hover:bg-blue-200 cursor-not-allowed"
+              submitDisabled
+                ? "bg-gray-300 text-gray-600 cursor-not-allowed"
                 : "hover:bg-blue-600"
             )}
-            disabled={!isFormFilled() || formData.ingredients.length === 0}
+            disabled={submitDisabled}
           >
-            Submit
+            {recipeSaveLoading ? <Loader /> : "Submit"}
           </button>
         </div>
       </form>
