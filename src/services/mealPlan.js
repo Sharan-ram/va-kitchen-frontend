@@ -42,9 +42,12 @@ export const saveNewMealPlan = async (payload) => {
 
 export const updateExistingMealPlan = async (mealPlan) => {
   try {
+    const { __v, ...rest } = mealPlan;
     const response = await axiosInstance.put(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/mealPlan/${mealPlan._id}`,
-      mealPlan
+      {
+        ...rest,
+      }
     );
     return response;
   } catch (e) {
