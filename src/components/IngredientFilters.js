@@ -8,13 +8,12 @@ const IngredientFilters = ({
   setVendorFilter,
 }) => {
   return (
-    <div>
-      <p>Filters:</p>
+    <div className="flex items-end justify-between">
       <div>
-        <label
-          htmlFor="ingredientType"
-          className="block text-sm font-medium text-gray-700"
-        >
+        <p className="font-bold text-lg">Filters:</p>
+      </div>
+      <div>
+        <label htmlFor="ingredientType" className="block text-sm font-semibold">
           Ingredient Type
         </label>
         <Input
@@ -34,10 +33,7 @@ const IngredientFilters = ({
       </div>
 
       <div>
-        <label
-          htmlFor="vendor"
-          className="block text-sm font-medium text-gray-700"
-        >
+        <label htmlFor="vendor" className="block text-sm font-semibold">
           Vendor
         </label>
         <Input
@@ -52,16 +48,18 @@ const IngredientFilters = ({
           classes={{ wrapper: "mt-1" }}
         />
       </div>
-      <button
-        type="submit"
-        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-center"
-        onClick={() => {
-          setIngredientTypeFilter("");
-          setVendorFilter("");
-        }}
-      >
-        Reset Filters
-      </button>
+      <div>
+        <button
+          type="submit"
+          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-center"
+          onClick={() => {
+            setIngredientTypeFilter("");
+            setVendorFilter("");
+          }}
+        >
+          Reset Filters
+        </button>
+      </div>
     </div>
   );
 };
