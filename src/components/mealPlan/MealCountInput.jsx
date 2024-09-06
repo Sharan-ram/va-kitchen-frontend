@@ -64,8 +64,8 @@ const MealCountInput = ({
                   [dietTypeCount]: Number(value),
                 },
                 recipes: [],
-                season: newMealPlan.season,
               },
+              season: newMealPlan.season,
             },
           ],
         };
@@ -82,8 +82,8 @@ const MealCountInput = ({
                 [dietTypeCount]: Number(value),
               },
               recipes: [],
-              season: newMealPlan.season,
             },
+            season: newMealPlan.season,
           },
         ],
       };
