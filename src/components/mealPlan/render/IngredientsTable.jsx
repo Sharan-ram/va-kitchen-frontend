@@ -43,7 +43,12 @@ const IngredientsTable = ({ mealPlan }) => {
                   Meal: index === 0 ? mealName : "",
                   RecipeName: index === 0 ? recipe.name : "",
                   IngredientName: ingredient.ingredient.name,
-                  Quantity: (ingredient[season] * count).toFixed(3),
+                  QuantityTotal: ingredient[season]
+                    ? (ingredient[season] * count).toFixed(3)
+                    : "",
+                  QuantityPerHead: ingredient[season]
+                    ? ingredient[season].toFixed(4)
+                    : "",
                   VeganCount: index === 0 ? mealCounts.veganCount : "",
                   NonVeganCount: index === 0 ? mealCounts.nonVeganCount : "",
                   ingredientPrice: ingredientPrice.toFixed(2),
@@ -89,7 +94,10 @@ const IngredientsTable = ({ mealPlan }) => {
             Ingredient
           </th>
           <th className="px-3 py-2 font-bold uppercase tracking-wider">
-            Quantity
+            Quantity Total
+          </th>
+          <th className="px-3 py-2 font-bold uppercase tracking-wider">
+            Quantity Per Head
           </th>
           <th className="px-3 py-2 font-bold uppercase tracking-wider">
             Ingredient Price
@@ -124,7 +132,10 @@ const IngredientsTable = ({ mealPlan }) => {
                 {row.IngredientName}
               </td>
               <td className="px-3 py-2 whitespace-nowrap capitalize">
-                {row.Quantity}
+                {row.QuantityTotal}
+              </td>
+              <td className="px-3 py-2 whitespace-nowrap capitalize">
+                {row.QuantityPerHead}
               </td>
               <td className="px-3 py-2 whitespace-nowrap capitalize">
                 {row.ingredientPrice}

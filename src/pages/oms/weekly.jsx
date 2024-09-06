@@ -33,37 +33,14 @@ const WeeklyOrder = () => {
   const generatePurchaseOrder = async () => {
     setGeneratePurchaseOrder(true);
     const tableData = [
-      [
-        "Ingredient",
-        "Requirement (Next Week)",
-        "Requirement (Rest)",
-        "Current Stock",
-        "Closing Stock (as on start date)",
-        "Bulk order",
-        "Adjustment",
-        "Purchase Unit",
-      ], // Headers
-      ...ingredients.map(
-        ({
+      ["Ingredient", "Quantity", "Purchase Unit"], // Headers
+      ...ingredients
+        .filter((ingredient) => ingredient.adjustment > 0)
+        .map(({ name, adjustment, purchaseUnit }) => [
           name,
-          bulkOrder,
-          weeklyMealPlan,
-          remainingMealPlan,
-          currentStock,
           adjustment,
           purchaseUnit,
-          closingStock,
-        }) => [
-          name,
-          weeklyMealPlan,
-          remainingMealPlan,
-          currentStock,
-          closingStock,
-          bulkOrder,
-          adjustment,
-          purchaseUnit,
-        ]
-      ),
+        ]),
     ];
 
     try {
