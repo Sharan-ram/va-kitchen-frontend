@@ -35,37 +35,14 @@ const MonthlyOrder = () => {
   const generatePurchaseOrder = async () => {
     setGenerateOrder(true);
     const tableData = [
-      [
-        "Ingredient",
-        "Requirement (Next Month)",
-        "Requirement (Rest)",
-        "Current Stock",
-        "Closing Stock (as on 31st)",
-        "Bulk order",
-        "Adjustment",
-        "Purchase Unit",
-      ], // Headers
-      ...ingredients.map(
-        ({
+      ["Ingredient", "Quantity", "Purchase Unit"], // Headers
+      ...ingredients
+        .filter((ingredient) => ingredient.adjustment > 0)
+        .map(({ name, adjustment, purchaseUnit }) => [
           name,
-          bulkOrder,
-          monthlyMealPlan,
-          remainingMealPlan,
-          currentStock,
           adjustment,
           purchaseUnit,
-          closingStock,
-        }) => [
-          name,
-          monthlyMealPlan,
-          remainingMealPlan,
-          currentStock,
-          closingStock,
-          bulkOrder,
-          adjustment,
-          purchaseUnit,
-        ]
-      ),
+        ]),
     ];
 
     try {
