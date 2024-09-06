@@ -21,9 +21,14 @@ const MealPlanTable = ({
     return mealPlanObj || {};
   };
 
-  const setSeasonPerDay = ({ season, selectedDateObjIndex, date }) => {
+  const setSeasonPerDay = ({
+    season,
+    selectedDateObjIndex,
+    date,
+    mealPlan,
+  }) => {
     let newMealPlan = JSON.parse(JSON.stringify(mealPlan));
-    console.log({ selectedDateObjIndex });
+    // console.log({ selectedDateObjIndex, newMealPlan });
     if (selectedDateObjIndex >= 0) {
       newMealPlan.days[selectedDateObjIndex].season = season;
     } else {
@@ -111,6 +116,7 @@ const MealPlanTable = ({
                             season: e.target.value,
                             selectedDateObjIndex,
                             date: format(day, "dd-MM-yyyy"),
+                            mealPlan: specificMealPlan,
                           }),
                         options: [
                           { value: "", text: "Select season" },
