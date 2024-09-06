@@ -3,10 +3,13 @@ import { searchIngredient } from "@/services/ingredient";
 import Loader from "@/components/Loader";
 import { toast } from "react-toastify";
 import Link from "next/link";
+import IngredientFilters from "@/components/IngredientFilters";
 
 const Ingredients = () => {
   const [ingredients, setIngredients] = useState();
   const [ingredientsLoading, setIngredientsLoading] = useState(false);
+  const [ingredientTypeFilter, setIngredientTypeFilter] = useState();
+  const [vendorFilter, setVendorFilter] = useState();
 
   useEffect(() => {
     const fetchIngredients = async () => {
@@ -25,12 +28,47 @@ const Ingredients = () => {
     fetchIngredients();
   }, []);
 
+  const getFilteredIngredients = () => {
+    if (ingredientsLoading || !ingredients) return [];
+    if (ingredientTypeFilter && vendorFilter) {
+      return ingredients.filter(
+        (ingredient) =>
+          ingredient.ingredientType === ingredientTypeFilter &&
+          ingredient.vendor === vendorFilter
+      );
+    }
+
+    if (ingredientTypeFilter) {
+      return ingredients.filter(
+        (ingredient) => ingredient.ingredientType === ingredientTypeFilter
+      );
+    }
+
+    if (vendorFilter) {
+      return ingredients.filter(
+        (ingredient) => ingredient.vendor === vendorFilter
+      );
+    }
+
+    return ingredients;
+  };
+
+  const filteredIngredients = getFilteredIngredients();
+
   return !ingredients || ingredientsLoading ? (
     <div className="w-full flex justify-center items-center">
       <Loader />
     </div>
   ) : (
     <div className="">
+      <div>
+        <IngredientFilters
+          ingredientTypeFilter={ingredientTypeFilter}
+          setIngredientTypeFilter={setIngredientTypeFilter}
+          vendorFilter={vendorFilter}
+          setVendorFilter={setVendorFilter}
+        />
+      </div>
       <table className="min-w-full divide-y divide-gray-200 max-w-[100%] mr-[40px]">
         <thead className="bg-gray-50 max-w-[100%]">
           <tr className="bg-gray-200">
@@ -88,7 +126,7 @@ const Ingredients = () => {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200 max-w-[100%]">
-          {ingredients.map((ingredient, index) => {
+          {filteredIngredients.map((ingredient, index) => {
             const {
               name,
               englishEquivalent,
