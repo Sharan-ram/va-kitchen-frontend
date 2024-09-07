@@ -1,8 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  getMonthlyOrder,
-  generateMonthlyPurchaseOrder,
-} from "@/services/order";
+import { getMonthlyOrder, generateGoogleSheet } from "@/services/order";
 
 import { getCurrentMonth, getNextMonth } from "@/helpers/utils";
 import Loader from "@/components/Loader";
@@ -46,7 +43,10 @@ const MonthlyOrder = () => {
     ];
 
     try {
-      const res = await generateMonthlyPurchaseOrder(tableData);
+      const res = await generateGoogleSheet({
+        payload: tableData,
+        title: `${nextMonth} Purchase Order`,
+      });
       if (res.data.success) {
         // Open the Google Sheet in a new tab
         window.open(res.data.sheetUrl, "_blank");
