@@ -12,11 +12,23 @@ export const getMonthlyOrder = async () => {
   }
 };
 
-export const generateMonthlyPurchaseOrder = async (payload) => {
+// export const generateMonthlyPurchaseOrder = async (payload) => {
+//   try {
+//     const response = await axiosInstance.post(
+//       `${process.env.NEXT_PUBLIC_BACKEND_URL}/order/generate-monthly-purchase-order`,
+//       payload
+//     );
+//     return response;
+//   } catch (e) {
+//     throw new Error(e);
+//   }
+// };
+
+export const generateGoogleSheet = async ({ payload, title }) => {
   try {
     const response = await axiosInstance.post(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/order/generate-monthly-purchase-order`,
-      payload
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/order/generate-googlesheet/`,
+      { data: payload, title }
     );
     return response;
   } catch (e) {
@@ -24,21 +36,21 @@ export const generateMonthlyPurchaseOrder = async (payload) => {
   }
 };
 
-export const generateWeeklyPurchaseOrder = async ({
-  payload,
-  startDate,
-  endDate,
-}) => {
-  try {
-    const response = await axiosInstance.post(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/order/generate-weekly-purchase-order/${startDate}/${endDate}`,
-      payload
-    );
-    return response;
-  } catch (e) {
-    throw new Error(e);
-  }
-};
+// export const generateWeeklyPurchaseOrder = async ({
+//   payload,
+//   startDate,
+//   endDate,
+// }) => {
+//   try {
+//     const response = await axiosInstance.post(
+//       `${process.env.NEXT_PUBLIC_BACKEND_URL}/order/generate-weekly-purchase-order/${startDate}/${endDate}`,
+//       payload
+//     );
+//     return response;
+//   } catch (e) {
+//     throw new Error(e);
+//   }
+// };
 
 export const getWeeklyOrder = async (startDate, endDate) => {
   try {

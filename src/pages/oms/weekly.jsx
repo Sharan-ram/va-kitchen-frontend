@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Selections from "@/components/mealPlan/render/Selections";
-import { getWeeklyOrder, generateWeeklyPurchaseOrder } from "@/services/order";
+import { getWeeklyOrder, generateGoogleSheet } from "@/services/order";
 import Loader from "@/components/Loader";
 import classNames from "classnames";
 import { toast } from "react-toastify";
@@ -44,10 +44,13 @@ const WeeklyOrder = () => {
     ];
 
     try {
-      const res = await generateWeeklyPurchaseOrder({
+      const title = `Weekly order ${format(startDate, "dd-MM-yyyy")} - ${format(
+        endDate,
+        "dd-MM-yyyy"
+      )}`;
+      const res = await generateGoogleSheet({
         payload: tableData,
-        startDate: format(startDate, "dd-MM-yyyy"),
-        endDate: format(endDate, "dd-MM-yyyy"),
+        title,
       });
       if (res.data.success) {
         // Open the Google Sheet in a new tab
