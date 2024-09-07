@@ -10,9 +10,11 @@ import {
   getMealPlanBetweenDateRange,
   updateExistingMealPlan,
 } from "@/services/mealPlan";
+import { generateGoogleSheet } from "@/services/order";
 import { toast } from "react-toastify";
 import Loader from "@/components/Loader";
 import classNames from "classnames";
+import { format } from "date-fns";
 
 const RenderMealPlanPage = () => {
   const [mealPlan, setMealPlan] = useState();
@@ -26,6 +28,7 @@ const RenderMealPlanPage = () => {
   const [endDate, setEndDate] = useState(new Date());
 
   const [saveMealPlanLoading, setSaveMealPlanLoading] = useState(false);
+  const [gSheetExportLoading, setGSheetExportLoading] = useState(false);
 
   const days = useMemo(() => {
     if (!startDate || !endDate) return [];
@@ -134,6 +137,64 @@ const RenderMealPlanPage = () => {
       });
   };
 
+  const exportToGSheets = async () => {
+    setGSheetExportLoading(true);
+    const data = [];
+    mealPlan.forEach((mealPlanObj) => {
+      mealPlanObj.days.forEach((dayObj) => {
+        let dayArr = [dayObj.date];
+        ["breakfast", "lunch", "dinner"].forEach((meal, mealIndex) => {
+          if (dayObj[meal]) {
+            // Use a Set to ensure unique recipe names
+            const uniqueRecipes = new Set();
+
+            dayObj[meal].recipes?.forEach((recipeObj) => {
+              // Remove ' - Vegan' or ' - Non Vegan' from the recipe name
+              const recipeName = recipeObj.name.replace(
+                / - Vegan| - Non Vegan/,
+                ""
+              );
+
+              // Add the recipe name to the Set if it hasn't been added already
+              uniqueRecipes.add(recipeName);
+            });
+
+            // Join all unique recipe names with newlines
+            dayArr[mealIndex + 1] = Array.from(uniqueRecipes).join("\n");
+          } else {
+            dayArr[mealIndex + 1] = ""; // No meal data
+          }
+        });
+
+        data.push(dayArr);
+      });
+    });
+
+    // console.log({ data });
+    const tableData = [["Date", "Breakfast", "Lunch", "Dinner"], ...data];
+
+    try {
+      const title = `${format(startDate, "dd-MM-yyyy")} to ${format(
+        endDate,
+        "dd-MM-yyyy"
+      )} Meal Plan`;
+      const res = await generateGoogleSheet({
+        payload: tableData,
+        title,
+      });
+      if (res.data.success) {
+        // Open the Google Sheet in a new tab
+        window.open(res.data.sheetUrl, "_blank");
+        setGSheetExportLoading(false);
+      }
+    } catch (error) {
+      console.error("Error exporting to Google Sheet:", error);
+      setGSheetExportLoading(false);
+      toast.error("Error exporting to Google Sheet!");
+      // alert("Failed to generate purchase order.");
+    }
+  };
+
   return (
     <div>
       <Selections
@@ -157,6 +218,18 @@ const RenderMealPlanPage = () => {
       )}
       {showMealPlan && selectedTab === "Meal Plan" && (
         <div className="mt-10">
+          <div>
+            <button
+              className={classNames(
+                "px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-5",
+                gSheetExportLoading && "cursor-not-allowed"
+              )}
+              onClick={exportToGSheets}
+              disabled={gSheetExportLoading}
+            >
+              {gSheetExportLoading ? <Loader /> : "Export to Google Sheets"}
+            </button>
+          </div>
           <Table
             page="render"
             days={days}
