@@ -79,6 +79,16 @@ let items = [
     ],
   },
   {
+    title: "Reminders",
+    subItems: [
+      {
+        title: "Schedule a mail",
+        pathname: "/reminders/schedule-mail",
+        roles: ["admin", "user"],
+      },
+    ],
+  },
+  {
     title: "Username",
     subItems: [
       {
