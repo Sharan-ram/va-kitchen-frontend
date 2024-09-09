@@ -181,7 +181,9 @@ const Navbar = () => {
               <div
                 className={classNames(
                   "absolute bg-[#8E7576] rounded-[5px] border-y-8 border-[#735E5F] min-w-[200px] text-left",
-                  item.title === "Username" || item.title === "Recipes"
+                  item.title === "Username" ||
+                    item.title === "Recipes" ||
+                    item.title === "Reminders"
                     ? "right-0"
                     : "left-0"
                 )}
