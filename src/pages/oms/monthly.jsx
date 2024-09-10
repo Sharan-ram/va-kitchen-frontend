@@ -39,7 +39,9 @@ const MonthlyOrder = () => {
     const tableData = [
       ["Ingredient", "Quantity", "Purchase Unit"], // Headers
       ...ingredients[selectedTab.toLowerCase()][vendor]
-        .filter((ingredient) => ingredient.adjustment > 0)
+        .filter(
+          (ingredient) => ingredient.adjustment > 0 && !ingredient.sponsored
+        )
         .map(({ name, adjustment, purchaseUnit }) => [
           name,
           adjustment,
@@ -91,9 +93,9 @@ const MonthlyOrder = () => {
           Object.keys(ingredients[selectedTab.toLowerCase()]).map((vendor) => {
             return (
               <div className="my-14" key={vendor}>
-                <div className="flex items-center justify-between w-full">
+                <div className="flex items-end justify-between w-full">
                   <div>
-                    <h2 className="font-bold text-lg">{vendor}</h2>
+                    <h2 className="font-bold text-xl">{vendor}</h2>
                   </div>
                   <div>
                     <button
@@ -202,21 +204,6 @@ const MonthlyOrder = () => {
           </div>
         )}
       </div>
-
-      {/* <div className="mt-10">
-        <button
-          type="submit"
-          className={classNames(
-            "px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600",
-            (loading || generateOrderInProgress || !ingredients) &&
-              "cursor-not-allowed opacity-50"
-          )}
-          onClick={generatePurchaseOrder}
-          disabled={loading || generateOrderInProgress || !ingredients}
-        >
-          {generateOrderInProgress ? <Loader /> : "Generate Purchase order"}
-        </button>
-      </div> */}
     </div>
   );
 };
