@@ -32,11 +32,13 @@ const MonthlyOrder = () => {
     fetchData();
   }, []);
 
-  const generatePurchaseOrder = async () => {
-    setGenerateOrder(true);
+  // console.log({ ing: ingredients[selectedTab][vendor] });
+
+  const generatePurchaseOrder = async (vendor) => {
+    setGenerateOrder(vendor);
     const tableData = [
       ["Ingredient", "Quantity", "Purchase Unit"], // Headers
-      ...ingredients
+      ...ingredients[selectedTab.toLowerCase()][vendor]
         .filter((ingredient) => ingredient.adjustment > 0)
         .map(({ name, adjustment, purchaseUnit }) => [
           name,
@@ -75,20 +77,53 @@ const MonthlyOrder = () => {
         Current Month - {currentMonth}, Monthly Order Generation for -{" "}
         {nextMonth}
       </h2>
-      <div classNma>
-        <Tabs
-          tabs={tabs}
-          selected={selectedTab}
-          setSelectedTab={(tab) => setSelectedTab(tab)}
-        />
-      </div>
+      {ingredients && (
+        <div>
+          <Tabs
+            tabs={tabs}
+            selected={selectedTab}
+            setSelectedTab={(tab) => setSelectedTab(tab)}
+          />
+        </div>
+      )}
       <div className="my-4">
         {ingredients ? (
           Object.keys(ingredients[selectedTab.toLowerCase()]).map((vendor) => {
             return (
               <div className="my-14" key={vendor}>
-                <h2 className="font-bold text-lg">{vendor}</h2>
-                <table className="min-w-full divide-y divide-gray-200 max-w-[100%]">
+                <div className="flex items-center justify-between w-full">
+                  <div>
+                    <h2 className="font-bold text-lg">{vendor}</h2>
+                  </div>
+                  <div>
+                    <button
+                      type="submit"
+                      className={classNames(
+                        "px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600",
+                        (loading ||
+                          (generateOrderInProgress &&
+                            generateOrderInProgress === vendor) ||
+                          !ingredients) &&
+                          "cursor-not-allowed opacity-50"
+                      )}
+                      onClick={() => generatePurchaseOrder(vendor)}
+                      disabled={
+                        loading ||
+                        (generateOrderInProgress &&
+                          generateOrderInProgress === vendor) ||
+                        !ingredients
+                      }
+                    >
+                      {generateOrderInProgress &&
+                      generateOrderInProgress === vendor ? (
+                        <Loader />
+                      ) : (
+                        "Generate Purchase order"
+                      )}
+                    </button>
+                  </div>
+                </div>
+                <table className="min-w-full divide-y divide-gray-200 max-w-[100%] mt-4">
                   <MonthlyOrderTableHeader />
                   <tbody className="bg-white divide-y divide-gray-200 max-w-[100%]">
                     {ingredients[selectedTab.toLowerCase()][vendor].map(
