@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import Loader from "@/components/Loader";
 import classNames from "classnames";
 import { format } from "date-fns";
+import TotalIngredientsQuantity from "@/components/mealPlan/render/TotalIngredientsQuantity";
 
 const RenderMealPlanPage = () => {
   const [mealPlan, setMealPlan] = useState();
@@ -38,7 +39,7 @@ const RenderMealPlanPage = () => {
   // console.log({ days });
 
   const tabs = useMemo(() => {
-    return ["Meal Plan", "Ingredients Per Meal"];
+    return ["Meal Plan", "Ingredients Per Meal", "Total Ingredients Quantity"];
   }, []);
 
   const fetchMealPlan = async ({ startDate, endDate }) => {
@@ -272,6 +273,11 @@ const RenderMealPlanPage = () => {
       {showMealPlan && selectedTab === "Ingredients Per Meal" && (
         <div className="mt-10">
           <IngredientsTable mealPlan={mealPlan} />
+        </div>
+      )}
+      {showMealPlan && selectedTab === "Total Ingredients Quantity" && (
+        <div className="mt-10">
+          <TotalIngredientsQuantity mealPlan={mealPlan} />
         </div>
       )}
 
