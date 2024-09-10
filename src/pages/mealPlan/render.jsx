@@ -143,11 +143,12 @@ const RenderMealPlanPage = () => {
     const data = [];
     mealPlan.forEach((mealPlanObj) => {
       mealPlanObj.days.forEach((dayObj) => {
-        let dayArr = [dayObj.date];
         ["breakfast", "lunch", "dinner"].forEach((meal, mealIndex) => {
+          let mealArr = [dayObj.date, meal.toUpperCase()];
+          let uniqueRecipes;
           if (dayObj[meal]) {
             // Use a Set to ensure unique recipe names
-            const uniqueRecipes = new Set();
+            uniqueRecipes = new Set();
 
             dayObj[meal].recipes?.forEach((recipeObj) => {
               // Remove ' - Vegan' or ' - Non Vegan' from the recipe name
@@ -159,20 +160,22 @@ const RenderMealPlanPage = () => {
               // Add the recipe name to the Set if it hasn't been added already
               uniqueRecipes.add(recipeName);
             });
+            const cell = Array.from(uniqueRecipes).join(", ");
 
             // Join all unique recipe names with newlines
-            dayArr[mealIndex + 1] = Array.from(uniqueRecipes).join("\n");
+            mealArr.push(cell);
           } else {
-            dayArr[mealIndex + 1] = ""; // No meal data
+            mealArr.push("");
           }
+          data.push(mealArr);
         });
 
-        data.push(dayArr);
+        data.push(["", "", "", ""]);
       });
     });
 
     // console.log({ data });
-    const tableData = [["Date", "Breakfast", "Lunch", "Dinner"], ...data];
+    const tableData = [["Date", "Meal", "Menu", "Bungalow Menu"], ...data];
 
     try {
       const title = `${format(startDate, "dd-MM-yyyy")} to ${format(
