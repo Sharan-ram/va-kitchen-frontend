@@ -151,14 +151,13 @@ const RenderMealPlanPage = () => {
             uniqueRecipes = new Set();
 
             dayObj[meal].recipes?.forEach((recipeObj) => {
-              // Remove ' - Vegan' or ' - Non Vegan' from the recipe name
-              const recipeName = recipeObj.name.replace(
-                / - Vegan| - Non Vegan/,
-                ""
-              );
+              // Remove ' - Vegan', ' - Non Vegan', and parentheses with content
+              const recipeName = recipeObj.name
+                .replace(/ - Vegan| - Non Vegan/, "") // Remove Vegan/Non-Vegan tags
+                .replace(/\s*\(.*?\)/g, ""); // Remove anything inside parentheses, including the parentheses
 
-              // Add the recipe name to the Set if it hasn't been added already
-              uniqueRecipes.add(recipeName);
+              // Add the cleaned recipe name to the Set
+              uniqueRecipes.add(recipeName.trim());
             });
             const cell = Array.from(uniqueRecipes).join(", ");
 
