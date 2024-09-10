@@ -87,6 +87,7 @@ const WeeklyOrder = () => {
         setEndDate={setEndDate}
         buttonText={"Show purchase order"}
         toggleMealPlan={() => setShowPurchaseOrder(false)}
+        mealPlanLoading={ingredientsLoading}
       />
       {!ingredientsLoading && showPurchaseOrder && (
         <h2 className="text-xl font-semibold my-6">{`Weekly Order Generation: ${format(
