@@ -111,7 +111,7 @@ const MealCountInput = ({
     <div className="flex mt-2 justify-between">
       {dietTypeCounts.map((dietTypeCount) => {
         return (
-          <div className="w-[30%]" key={dietTypeCount}>
+          <div className="mr-1" key={dietTypeCount}>
             <div>
               <p className="text-sm font-semibold">
                 {dietTypeCount === "veganCount"
