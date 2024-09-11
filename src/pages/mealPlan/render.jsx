@@ -83,6 +83,18 @@ const RenderMealPlanPage = () => {
       let newMealPlanObj = { ...mealPlanObj };
       newMealPlanObj.days = newMealPlanObj.days.map((day) => {
         let newDayObj = { ...day };
+        if (day.earlyMorning && day.earlyMorning.recipes) {
+          newDayObj.earlyMorning.recipes = newDayObj.earlyMorning.recipes.map(
+            (r) => {
+              if (r._id === recipe._id) {
+                return recipe;
+              } else {
+                return r;
+              }
+            }
+          );
+        }
+
         if (day.breakfast && day.breakfast.recipes) {
           newDayObj.breakfast.recipes = newDayObj.breakfast.recipes.map((r) => {
             if (r._id === recipe._id) {
@@ -95,6 +107,16 @@ const RenderMealPlanPage = () => {
 
         if (day.lunch && day.lunch.recipes) {
           newDayObj.lunch.recipes = newDayObj.lunch.recipes.map((r) => {
+            if (r._id === recipe._id) {
+              return recipe;
+            } else {
+              return r;
+            }
+          });
+        }
+
+        if (day.evening && day.evening.recipes) {
+          newDayObj.evening.recipes = newDayObj.evening.recipes.map((r) => {
             if (r._id === recipe._id) {
               return recipe;
             } else {
