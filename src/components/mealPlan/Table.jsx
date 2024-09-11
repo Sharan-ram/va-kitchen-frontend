@@ -138,7 +138,7 @@ const MealPlanTable = ({
                   return (
                     <td
                       key={meal}
-                      className="px-3 py-2 whitespace-nowrap capitalize min-w-[300px] max-w-[300px]"
+                      className="px-3 py-2 whitespace-nowrap capitalize min-w-[300px] max-w-[450px]"
                     >
                       <RecipeSearchInput
                         placeholder={`Search for ${meal} recipe`}
