@@ -4,64 +4,67 @@ const IngredientsTable = ({ mealPlan }) => {
     mealPlan.forEach((mealPlanObj) => {
       mealPlanObj.days.forEach((day) => {
         const date = day.date;
-        ["breakfast", "lunch", "dinner"].forEach((mealType) => {
-          const meal = day[mealType];
-          if (meal) {
-            const mealCounts = meal.mealCounts;
-            const mealName =
-              mealType.charAt(0).toUpperCase() + mealType.slice(1);
+        ["earlyMorning", "breakfast", "lunch", "evening", "dinner"].forEach(
+          (mealType) => {
+            const meal = day[mealType];
+            if (meal) {
+              const mealCounts = meal.mealCounts;
+              const mealName =
+                mealType.charAt(0).toUpperCase() + mealType.slice(1);
 
-            const season = day.season || mealPlanObj.season;
+              const season = day.season || mealPlanObj.season;
 
-            meal.recipes.forEach((recipe) => {
-              const recipeName = recipe.name;
-              const splitRecipe = recipeName.split("-");
-              // console.log({ splitRecipe });
+              meal.recipes.forEach((recipe) => {
+                const recipeName = recipe.name;
+                const splitRecipe = recipeName.split("-");
+                // console.log({ splitRecipe });
 
-              let count;
-              if (splitRecipe[1]) {
-                count =
-                  splitRecipe[1].trim().toLowerCase() === "Vegan".toLowerCase()
-                    ? mealCounts.veganCount
-                    : mealCounts.nonVeganCount;
-              } else {
-                count = mealCounts.veganCount + mealCounts.nonVeganCount;
-              }
+                let count;
+                if (splitRecipe[1]) {
+                  count =
+                    splitRecipe[1].trim().toLowerCase() ===
+                    "Vegan".toLowerCase()
+                      ? mealCounts.veganCount
+                      : mealCounts.nonVeganCount;
+                } else {
+                  count = mealCounts.veganCount + mealCounts.nonVeganCount;
+                }
 
-              let recipePrice = 0;
+                let recipePrice = 0;
 
-              recipe.ingredients.forEach((ingredient, index) => {
-                const ingredientPrice =
-                  ingredient[season] *
-                  count *
-                  (ingredient.ingredient.price || 0);
+                recipe.ingredients.forEach((ingredient, index) => {
+                  const ingredientPrice =
+                    ingredient[season] *
+                    count *
+                    (ingredient.ingredient.price || 0);
 
-                recipePrice = recipePrice + ingredientPrice;
+                  recipePrice = recipePrice + ingredientPrice;
 
-                const row = {
-                  Date: index === 0 ? date : "",
-                  Meal: index === 0 ? mealName : "",
-                  RecipeName: index === 0 ? recipe.name : "",
-                  IngredientName: ingredient.ingredient.name,
-                  QuantityTotal: ingredient[season]
-                    ? (ingredient[season] * count).toFixed(3)
-                    : "",
-                  QuantityPerHead: ingredient[season]
-                    ? ingredient[season].toFixed(4)
-                    : "",
-                  VeganCount: index === 0 ? mealCounts.veganCount : "",
-                  NonVeganCount: index === 0 ? mealCounts.nonVeganCount : "",
-                  ingredientPrice: ingredientPrice.toFixed(2),
-                  recipePrice:
-                    index === recipe.ingredients.length - 1
-                      ? recipePrice.toFixed(2)
+                  const row = {
+                    Date: index === 0 ? date : "",
+                    Meal: index === 0 ? mealName : "",
+                    RecipeName: index === 0 ? recipe.name : "",
+                    IngredientName: ingredient.ingredient.name,
+                    QuantityTotal: ingredient[season]
+                      ? (ingredient[season] * count).toFixed(3)
                       : "",
-                };
-                rows.push(row);
+                    QuantityPerHead: ingredient[season]
+                      ? ingredient[season].toFixed(4)
+                      : "",
+                    VeganCount: index === 0 ? mealCounts.veganCount : "",
+                    NonVeganCount: index === 0 ? mealCounts.nonVeganCount : "",
+                    ingredientPrice: ingredientPrice.toFixed(2),
+                    recipePrice:
+                      index === recipe.ingredients.length - 1
+                        ? recipePrice.toFixed(2)
+                        : "",
+                  };
+                  rows.push(row);
+                });
               });
-            });
+            }
           }
-        });
+        );
       });
     });
     let totalPrice = 0;

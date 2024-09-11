@@ -101,7 +101,13 @@ export const seasons = [
   { text: "Retreat", value: "retreatQuantity" },
 ];
 
-export const meals = ["breakfast", "lunch", "dinner"];
+export const meals = [
+  "earlyMorning",
+  "breakfast",
+  "lunch",
+  "evening",
+  "dinner",
+];
 
 export const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 

@@ -66,10 +66,16 @@ const MealPlanTable = ({
               Day
             </th>
             <th className="px-3 py-2 font-bold uppercase tracking-wider">
+              Early Morning
+            </th>
+            <th className="px-3 py-2 font-bold uppercase tracking-wider">
               Breakfast
             </th>
             <th className="px-3 py-2 font-bold uppercase tracking-wider">
               Lunch
+            </th>
+            <th className="px-3 py-2 font-bold uppercase tracking-wider">
+              Evening
             </th>
             <th className="px-3 py-2 font-bold uppercase tracking-wider">
               Dinner
