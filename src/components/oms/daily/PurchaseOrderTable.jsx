@@ -11,6 +11,7 @@ const PurchaseOrderTable = ({ mealPlan, selectedRecipes, selectAll }) => {
         } else {
           ingredients[ingredientObj.ingredient] = {
             quantity: ingredientObj.totalQuantity,
+            purchaseUnit: ingredientObj.purchaseUnit,
           };
         }
       });
@@ -47,7 +48,7 @@ const PurchaseOrderTable = ({ mealPlan, selectedRecipes, selectAll }) => {
                 {ingredients[ingredientName].quantity}
               </td>
               <td className="px-3 py-2 whitespace-nowrap capitalize text-center">
-                {}
+                {ingredients[ingredientName].purchaseUnit}
               </td>
             </tr>
           ))}

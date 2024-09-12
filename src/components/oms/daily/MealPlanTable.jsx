@@ -56,6 +56,7 @@ const MealPlanTable = ({
       ];
       setSelectedRecipes(newSelectedRecipes);
     }
+    setSelectAll(false);
   };
 
   return (
