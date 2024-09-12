@@ -161,7 +161,7 @@ const RecipeSearchInput = ({
             placeholder={placeholder}
             onChange={handleInputChange}
             value={search?.text || ""}
-            className="block w-full pl-10 pr-4 py-2 border rounded-md"
+            className="block w-full pl-2 pr-4 py-2 border rounded-md"
           />
         </div>
       ) : (

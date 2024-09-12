@@ -4,50 +4,53 @@ const TotalIngredientsQuantity = ({ mealPlan }) => {
     mealPlan.forEach((mealPlanObj) => {
       //   console.log({ mealPlanObj });
       mealPlanObj.days?.forEach((dayObj) => {
-        ["breakfast", "lunch", "dinner"].forEach((meal) => {
-          //   console.log({ dayObj, meal });
-          if (dayObj[meal]) {
-            dayObj[meal].recipes?.forEach((recipeObj) => {
-              //   console.log({ recipeObj });
-              recipeObj.ingredients.forEach((ingredientObj) => {
-                // console.log({ ingredientObj });
-                const recipeName = recipeObj.name;
-                const splitRecipe = recipeName.split("-");
-                const season = dayObj.season;
-                const mealCounts = dayObj[meal].mealCounts;
-                let count;
-                if (splitRecipe[1]) {
-                  count =
-                    splitRecipe[1].trim().toLowerCase() ===
-                    "Vegan".toLowerCase()
-                      ? mealCounts.veganCount
-                      : mealCounts.nonVeganCount;
-                } else {
-                  count = mealCounts.veganCount + mealCounts.nonVeganCount;
-                }
+        ["earlyMorning", "breakfast", "lunch", "evening", "dinner"].forEach(
+          (meal) => {
+            //   console.log({ dayObj, meal });
+            if (dayObj[meal]) {
+              dayObj[meal].recipes?.forEach((recipeObj) => {
+                //   console.log({ recipeObj });
+                recipeObj.ingredients.forEach((ingredientObj) => {
+                  // console.log({ ingredientObj });
+                  const recipeName = recipeObj.name;
+                  const splitRecipe = recipeName.split("-");
+                  const season = dayObj.season;
+                  const mealCounts = dayObj[meal].mealCounts;
+                  let count;
+                  if (splitRecipe.length > 1) {
+                    count =
+                      splitRecipe[splitRecipe.length - 1]
+                        .trim()
+                        .toLowerCase() === "Vegan".toLowerCase()
+                        ? mealCounts.veganCount
+                        : mealCounts.nonVeganCount;
+                  } else {
+                    count = mealCounts.veganCount + mealCounts.nonVeganCount;
+                  }
 
-                if (
-                  Object.keys(ingredients).includes(
-                    ingredientObj.ingredient.name
-                  )
-                ) {
-                  ingredients[ingredientObj.ingredient.name].quantity =
-                    ingredientObj[season]
-                      ? ingredientObj[season] * count +
-                        ingredients[ingredientObj.ingredient.name].quantity
-                      : ingredients[ingredientObj.ingredient.name].quantity;
-                } else {
-                  ingredients[ingredientObj.ingredient.name] = {
-                    quantity: ingredientObj[season]
-                      ? ingredientObj[season] * count
-                      : 0,
-                    cookingUnit: ingredientObj.ingredient.cookingUnit,
-                  };
-                }
+                  if (
+                    Object.keys(ingredients).includes(
+                      ingredientObj.ingredient.name
+                    )
+                  ) {
+                    ingredients[ingredientObj.ingredient.name].quantity =
+                      ingredientObj[season]
+                        ? ingredientObj[season] * count +
+                          ingredients[ingredientObj.ingredient.name].quantity
+                        : ingredients[ingredientObj.ingredient.name].quantity;
+                  } else {
+                    ingredients[ingredientObj.ingredient.name] = {
+                      quantity: ingredientObj[season]
+                        ? ingredientObj[season] * count
+                        : 0,
+                      cookingUnit: ingredientObj.ingredient.cookingUnit,
+                    };
+                  }
+                });
               });
-            });
+            }
           }
-        });
+        );
       });
     });
 

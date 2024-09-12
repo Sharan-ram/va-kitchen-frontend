@@ -31,6 +31,11 @@ let items = [
         pathname: "/oms/weekly",
         roles: ["admin", "user"],
       },
+      {
+        title: "Daily order",
+        pathname: "/oms/daily",
+        roles: ["admin", "user"],
+      },
     ],
   },
   {

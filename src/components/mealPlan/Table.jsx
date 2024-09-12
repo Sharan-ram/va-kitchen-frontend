@@ -59,11 +59,14 @@ const MealPlanTable = ({
           Meal Plan for {months[month - 1].text} {year}
         </h2>
       )}
-      <table className="min-w-full divide-y divide-gray-200 max-w-[100%]">
-        <thead className="bg-gray-50 max-w-[100%]">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
           <tr className="bg-gray-200">
             <th className="px-3 py-2 font-bold uppercase tracking-wider">
               Day
+            </th>
+            <th className="px-3 py-2 font-bold uppercase tracking-wider">
+              Early Morning
             </th>
             <th className="px-3 py-2 font-bold uppercase tracking-wider">
               Breakfast
@@ -72,11 +75,14 @@ const MealPlanTable = ({
               Lunch
             </th>
             <th className="px-3 py-2 font-bold uppercase tracking-wider">
+              Evening
+            </th>
+            <th className="px-3 py-2 font-bold uppercase tracking-wider">
               Dinner
             </th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200 max-w-[100%]">
+        <tbody className="bg-white divide-y divide-gray-200">
           {days.map((day) => {
             const date = day.getDate();
             const dayName = day.getDay();
@@ -103,8 +109,8 @@ const MealPlanTable = ({
 
             // console.log({ season });
             return (
-              <tr key={day} className="border-b max-w-[100%]">
-                <td className="px-3 py-2 whitespace-nowrap font-bold">
+              <tr key={day} className="border-b">
+                <td className="px-3 py-2 whitespace-nowrap font-bold min-w-[150px]">
                   <div>{`${date}, ${weekDays[dayName]}`}</div>
                   <div>
                     <Input
@@ -132,7 +138,7 @@ const MealPlanTable = ({
                   return (
                     <td
                       key={meal}
-                      className="px-3 py-2 whitespace-nowrap capitalize"
+                      className="px-3 py-2 whitespace-nowrap capitalize min-w-[300px] max-w-[450px]"
                     >
                       <RecipeSearchInput
                         placeholder={`Search for ${meal} recipe`}
