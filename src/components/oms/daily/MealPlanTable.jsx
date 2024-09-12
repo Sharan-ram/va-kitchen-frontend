@@ -34,7 +34,6 @@ const MealPlanTable = ({
     let rows = [];
     bungalowMilkRecipes.forEach((recipeObj) => {
       recipeObj.ingredients.forEach((ingredientObj) => {
-        // console.log({ ingredientObj, recipeObj });
         let row = {
           date: recipeObj.date,
           meal: recipeObj.meal,
@@ -78,7 +77,6 @@ const MealPlanTable = ({
       const index = selectedRecipes.findIndex(
         (obj) => obj.recipe === "Bungalow" && obj.date === date
       );
-      console.log({ index });
       const newSelectedRecipes = [
         ...selectedRecipes.slice(0, index),
         ...selectedRecipes.slice(index + 1),
@@ -113,19 +111,6 @@ const MealPlanTable = ({
     <table className="min-w-full divide-y divide-gray-200 max-w-[100%] mt-2">
       <thead className="bg-gray-50 max-w-[100%]">
         <th className="px-3 py-2 font-bold uppercase tracking-wider">
-          {/* <label htmlFor="selectAll" className="flex items-center">
-            <input
-              type="checkbox"
-              id="selectAll"
-              name="selectAll"
-              checked={selectAll}
-              onChange={(e) => setSelectAll(e.target.checked)}
-              className="mr-2 cursor-pointer"
-            />
-            <span className="text-sm font-semibold text-gray-700 cursor-pointer">
-              Select All
-            </span>
-          </label> */}
           Select
         </th>
         <th className="px-3 py-2 font-bold uppercase tracking-wider">Date</th>
