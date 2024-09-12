@@ -5,6 +5,8 @@ import { getDailyOrder } from "@/services/order";
 import Loader from "@/components/Loader";
 import MealPlanTable from "@/components/oms/daily/MealPlanTable";
 import PurchaseOrderTable from "@/components/oms/daily/PurchaseOrderTable";
+import { generateDaysForDateRange } from "@/helpers/utils";
+import format from "date-fns/format";
 
 const DailyOrder = () => {
   const [mealPlan, setMealPlan] = useState();
@@ -32,6 +34,29 @@ const DailyOrder = () => {
       toggleMealPlan(false);
     }
   };
+
+  const getBungalowMilkRecipes = () => {
+    let rows = [];
+    const datesForDateRange = generateDaysForDateRange(startDate, endDate);
+    datesForDateRange.forEach((dateObj) => {
+      rows.push({
+        date: format(dateObj, "dd-MM-yyyy"),
+        meal: "",
+        recipe: "Bungalow",
+        ingredients: [
+          {
+            ingredient: "Milk",
+            purchaseUnit: "L",
+            quantityPerHead: 0,
+            totalQuantity: 0.5,
+          },
+        ],
+      });
+    });
+    return rows;
+  };
+
+  const bungalowMilkRecipes = getBungalowMilkRecipes();
 
   //   console.log({ selectedRecipes });
 
@@ -63,16 +88,18 @@ const DailyOrder = () => {
             setSelectedRecipes={setSelectedRecipes}
             selectAll={selectAll}
             setSelectAll={setSelectAll}
+            bungalowMilkRecipes={bungalowMilkRecipes}
           />
         </div>
       )}
       {showMealPlan && (selectAll || selectedRecipes.length > 0) && (
-        <div className="mt-10">
+        <div className="mt-10 w-1/2">
           <h2 className="font-semibold text-lg">Purchase Order Table</h2>
           <PurchaseOrderTable
             mealPlan={mealPlan}
             selectedRecipes={selectedRecipes}
             selectAll={selectAll}
+            bungalowMilkRecipes={bungalowMilkRecipes}
           />
         </div>
       )}

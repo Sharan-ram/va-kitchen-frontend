@@ -4,6 +4,7 @@ const MealPlanTable = ({
   setSelectedRecipes,
   selectAll,
   setSelectAll,
+  bungalowMilkRecipes,
 }) => {
   const getRows = () => {
     if (!mealPlan) return [];
@@ -29,6 +30,36 @@ const MealPlanTable = ({
     return rows;
   };
 
+  const getBungalowMilkRows = () => {
+    let rows = [];
+    bungalowMilkRecipes.forEach((recipeObj) => {
+      recipeObj.ingredients.forEach((ingredientObj) => {
+        console.log({ ingredientObj, recipeObj });
+        let row = {
+          date: recipeObj.date,
+          meal: recipeObj.meal,
+          recipe: recipeObj.recipe,
+          ingredient: ingredientObj.ingredient,
+          quantityTotal: ingredientObj.totalQuantity,
+          quantityPerHead: "",
+          count: "",
+        };
+        rows.push(row);
+      });
+    });
+
+    return rows;
+  };
+
+  const isBungalowMilkSelected = (date) => {
+    if (selectAll) return true;
+    const bungalowMilkObj = selectedRecipes.find(
+      (obj) => obj.date === date && obj.recipe === "Bungalow"
+    );
+    if (bungalowMilkObj) return true;
+    return false;
+  };
+
   const isRecipeSelected = (recipeName) => {
     if (selectAll) return true;
     const recipe = selectedRecipes.find(
@@ -36,6 +67,24 @@ const MealPlanTable = ({
     );
     if (recipe) return true;
     return false;
+  };
+
+  const selectBungalowRecipe = (date, val) => {
+    if (val) {
+      const recipe = bungalowMilkRecipes.find((obj) => obj.date === date);
+      //   console.log({ recipe });
+      setSelectedRecipes([...selectedRecipes, recipe]);
+    } else {
+      const index = selectedRecipes.findIndex(
+        (obj) => obj.recipe === "Bungalow" && obj.date === date
+      );
+      const newSelectedRecipes = [
+        ...selectedRecipes.slice(0, index),
+        ...selectedRecipes.slice(index + 1),
+      ];
+      setSelectedRecipes(newSelectedRecipes);
+    }
+    setSelectAll(false);
   };
 
   const selectRecipe = (recipeName, val) => {
@@ -131,6 +180,49 @@ const MealPlanTable = ({
             </td>
           </tr>
         ))}
+
+        {getBungalowMilkRows().map((obj, index) => {
+          return (
+            <tr key={index} className="border-b max-w-[100%]">
+              <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold text-center">
+                {
+                  <input
+                    type="checkbox"
+                    id={obj.date}
+                    name={obj.date}
+                    checked={isBungalowMilkSelected(obj.date)}
+                    onChange={(e) =>
+                      selectBungalowRecipe(obj.date, e.target.checked)
+                    }
+                    className="mr-2 cursor-pointer"
+                  />
+                }
+              </td>
+
+              <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold text-center">
+                {obj.date}
+              </td>
+              <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold">
+                {}
+              </td>
+              <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold">
+                {obj.recipe}
+              </td>
+              <td className="px-3 py-2 whitespace-nowrap capitalize text-center">
+                {}
+              </td>
+              <td className="px-3 py-2 whitespace-nowrap capitalize text-center">
+                {obj.ingredient}
+              </td>
+              <td className="px-3 py-2 whitespace-nowrap capitalize text-center">
+                {}
+              </td>
+              <td className="px-3 py-2 whitespace-nowrap capitalize text-center">
+                {obj.quantityTotal}
+              </td>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );

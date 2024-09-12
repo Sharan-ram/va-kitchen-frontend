@@ -1,7 +1,14 @@
-const PurchaseOrderTable = ({ mealPlan, selectedRecipes, selectAll }) => {
+const PurchaseOrderTable = ({
+  mealPlan,
+  selectedRecipes,
+  selectAll,
+  bungalowMilkRecipes,
+}) => {
   const getIngredients = () => {
     let ingredients = {};
-    const source = selectAll ? mealPlan : selectedRecipes;
+    const source = selectAll
+      ? [...mealPlan, ...bungalowMilkRecipes]
+      : selectedRecipes;
     source.forEach((obj) => {
       obj.ingredients.forEach((ingredientObj) => {
         if (ingredients[ingredientObj.ingredient]) {
