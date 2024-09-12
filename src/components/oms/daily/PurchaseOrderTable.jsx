@@ -4,6 +4,7 @@ const PurchaseOrderTable = ({
   selectAll,
   bungalowMilkRecipes,
 }) => {
+  console.log({ selectedRecipes });
   const getIngredients = () => {
     let ingredients = {};
     const source = selectAll
