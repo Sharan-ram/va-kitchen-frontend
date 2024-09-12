@@ -67,3 +67,17 @@ export const getWeeklyOrder = async (startDate, endDate) => {
     throw new Error(e);
   }
 };
+
+export const getDailyOrder = async (startDate, endDate) => {
+  try {
+    const response = await axiosInstance.get(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/order/daily?startDate=${format(
+        startDate,
+        "dd-MM-yyyy"
+      )}&endDate=${format(endDate, "dd-MM-yyyy")}`
+    );
+    return response.data.data;
+  } catch (e) {
+    throw new Error(e);
+  }
+};

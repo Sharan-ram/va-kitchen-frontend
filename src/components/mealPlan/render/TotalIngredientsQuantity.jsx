@@ -17,10 +17,11 @@ const TotalIngredientsQuantity = ({ mealPlan }) => {
                   const season = dayObj.season;
                   const mealCounts = dayObj[meal].mealCounts;
                   let count;
-                  if (splitRecipe[1]) {
+                  if (splitRecipe.length > 1) {
                     count =
-                      splitRecipe[1].trim().toLowerCase() ===
-                      "Vegan".toLowerCase()
+                      splitRecipe[splitRecipe.length - 1]
+                        .trim()
+                        .toLowerCase() === "Vegan".toLowerCase()
                         ? mealCounts.veganCount
                         : mealCounts.nonVeganCount;
                   } else {
