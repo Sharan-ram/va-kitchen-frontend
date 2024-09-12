@@ -1,0 +1,138 @@
+const MealPlanTable = ({
+  mealPlan,
+  selectedRecipes,
+  setSelectedRecipes,
+  selectAll,
+  setSelectAll,
+}) => {
+  const getRows = () => {
+    if (!mealPlan) return [];
+    let rows = [];
+    mealPlan.forEach((recipeObj) => {
+      recipeObj.ingredients.forEach((ingredientObj, index) => {
+        let row = {
+          select: index === 0 ? true : false,
+          date: index === 0 ? recipeObj.date : "",
+          meal: index === 0 ? recipeObj.meal : "",
+          recipe: index === 0 ? recipeObj.recipe : "",
+          ingredient: ingredientObj.ingredient,
+          quantityTotal: ingredientObj.totalQuantity,
+          quantityPerHead: ingredientObj.quantityPerHead,
+          count: ingredientObj.count,
+          // VeganCount: index === 0 ? mealCounts.veganCount : "",
+          // NonVeganCount: index === 0 ? mealCounts.nonVeganCount : "",
+        };
+        rows.push(row);
+      });
+    });
+
+    return rows;
+  };
+
+  const isRecipeSelected = (recipeName) => {
+    if (selectAll) return true;
+    const recipe = selectedRecipes.find(
+      (recipeObj) => recipeObj.recipe === recipeName
+    );
+    if (recipe) return true;
+    return false;
+  };
+
+  const selectRecipe = (recipeName, val) => {
+    // console.log({ recipeName, val });
+    if (val) {
+      const recipe = mealPlan.find(
+        (recipeObj) => recipeObj.recipe === recipeName
+      );
+      //   console.log({ recipe });
+      setSelectedRecipes([...selectedRecipes, recipe]);
+    } else {
+      const index = selectedRecipes.findIndex(
+        (recipeObj) => recipeObj.recipe === recipeName
+      );
+      const newSelectedRecipes = [
+        ...selectedRecipes.slice(0, index),
+        ...selectedRecipes.slice(index + 1),
+      ];
+      setSelectedRecipes(newSelectedRecipes);
+    }
+  };
+
+  return (
+    <table className="min-w-full divide-y divide-gray-200 max-w-[100%] mt-2">
+      <thead className="bg-gray-50 max-w-[100%]">
+        <th className="px-3 py-2 font-bold uppercase tracking-wider">
+          <label htmlFor="selectAll" className="flex items-center">
+            <input
+              type="checkbox"
+              id="selectAll"
+              name="selectAll"
+              checked={selectAll}
+              onChange={(e) => setSelectAll(e.target.checked)}
+              className="mr-2 cursor-pointer"
+            />
+            <span className="text-sm font-semibold text-gray-700 cursor-pointer">
+              Select All
+            </span>
+          </label>
+        </th>
+        <th className="px-3 py-2 font-bold uppercase tracking-wider">Date</th>
+        <th className="px-3 py-2 font-bold uppercase tracking-wider">Meal</th>
+        <th className="px-3 py-2 font-bold uppercase tracking-wider">Recipe</th>
+        <th className="px-3 py-2 font-bold uppercase tracking-wider">Count</th>
+        <th className="px-3 py-2 font-bold uppercase tracking-wider">
+          Ingredient
+        </th>
+        <th className="px-3 py-2 font-bold uppercase tracking-wider">
+          Quantity Per Head
+        </th>
+        <th className="px-3 py-2 font-bold uppercase tracking-wider">
+          Quantity Total
+        </th>
+      </thead>
+
+      <tbody className="bg-white divide-y divide-gray-200 max-w-[100%]">
+        {getRows().map((row, index) => (
+          <tr key={index} className="border-b max-w-[100%]">
+            <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold text-center">
+              {row.select && (
+                <input
+                  type="checkbox"
+                  id={row.recipe}
+                  name={row.recipe}
+                  checked={isRecipeSelected(row.recipe)}
+                  onChange={(e) => selectRecipe(row.recipe, e.target.checked)}
+                  className="mr-2 cursor-pointer"
+                />
+              )}
+            </td>
+
+            <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold text-center">
+              {row.date && row.date}
+            </td>
+            <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold">
+              {row.meal && row.meal}
+            </td>
+            <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold">
+              {row.recipe && row.recipe}
+            </td>
+            <td className="px-3 py-2 whitespace-nowrap capitalize text-center">
+              {row.count}
+            </td>
+            <td className="px-3 py-2 whitespace-nowrap capitalize text-center">
+              {row.ingredient}
+            </td>
+            <td className="px-3 py-2 whitespace-nowrap capitalize text-center">
+              {row.quantityPerHead}
+            </td>
+            <td className="px-3 py-2 whitespace-nowrap capitalize text-center">
+              {row.quantityTotal}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+};
+
+export default MealPlanTable;
