@@ -3,6 +3,8 @@ import { toast } from "react-toastify";
 import { addComment } from "@/services/mealPlan";
 import classNames from "classnames";
 import Loader from "@/components/Loader";
+import { format } from "date-fns";
+import { Trash } from "phosphor-react";
 
 const CommentsModal = ({
   mealPlanId,
@@ -43,27 +45,51 @@ const CommentsModal = ({
   console.log({ val: commentRef.current?.value });
 
   return (
-    <div className="">
-      <h2 className="text-lg font-bold mb-4">
+    <div className="pb-[200px]">
+      <h2 className="text-lg font-bold">
         {meal === "earlyMorning"
           ? "Early Morning".toUpperCase()
           : meal.toUpperCase()}
       </h2>
-      <textarea
-        ref={commentRef}
-        rows="4"
-        placeholder="Add your comment here"
-        className="w-full p-2 border border-gray-300 rounded-md"
-      ></textarea>
-      <button
-        onClick={handleSubmit}
-        className={classNames(
-          "text-white font-semibold py-2 px-4 rounded mr-2",
-          disabled ? "bg-[#bbacac] cursor-not-allowed" : "bg-[#8e7576]"
-        )}
-      >
-        {commentSaveLoading ? <Loader /> : "Add Comment"}
-      </button>
+
+      {comments.map((commentObj, index) => {
+        const { username, date, comment } = commentObj;
+        return (
+          <div key={index} className="w-full mt-4">
+            <div className="flex justify-between items-center">
+              <div className="text-sm font-semibold">{username}</div>
+              <div className="text-xs">
+                {format(new Date(date), "dd-MM-yyyy")}
+              </div>
+            </div>
+
+            <div className="w-full flex justify-between items-center mt-2">
+              <div className="text-sm">{comment}</div>
+              <div className="cursor-pointer">
+                <Trash size={20} color="#bb2124" />
+              </div>
+            </div>
+          </div>
+        );
+      })}
+
+      <div className="fixed bottom-0 pb-3">
+        <button
+          onClick={handleSubmit}
+          className={classNames(
+            "text-white font-semibold py-2 px-4 rounded mr-2",
+            disabled ? "bg-[#bbacac] cursor-not-allowed" : "bg-[#8e7576]"
+          )}
+        >
+          {commentSaveLoading ? <Loader /> : "Add Comment"}
+        </button>
+        <textarea
+          ref={commentRef}
+          rows="4"
+          placeholder="Add your comment here"
+          className="w-full p-2 border border-gray-300 rounded-md mt-2"
+        ></textarea>
+      </div>
     </div>
   );
 };

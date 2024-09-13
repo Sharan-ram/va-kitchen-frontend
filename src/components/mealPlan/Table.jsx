@@ -55,6 +55,7 @@ const MealPlanTable = ({
 
   const getComments = ({ mealPlan, date, meal }) => {
     const dayObj = mealPlan.days.find((dateObj) => dateObj.date === date);
+    // console.log({ date, meal, dayObj });
     if (!dayObj) return [];
     if (!dayObj[meal]) return [];
     return dayObj[meal].comments || [];
@@ -92,6 +93,7 @@ const MealPlanTable = ({
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {days.map((day) => {
+            // console.log({ day, formattedDay: format(day, "dd-MM-yyyy") });
             const date = day.getDate();
             const dayName = day.getDay();
             const monthRenderPage =
@@ -176,7 +178,7 @@ const MealPlanTable = ({
                                 date: format(day, "dd-MM-yyyy"),
                                 comments: getComments({
                                   mealPlan: specificMealPlan,
-                                  date,
+                                  date: format(day, "dd-MM-yyyy"),
                                   meal,
                                 }),
                               });
