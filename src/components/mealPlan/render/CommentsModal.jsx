@@ -15,7 +15,7 @@ const CommentsModal = ({
   fetchMealPlan,
 }) => {
   const [commentSaveLoading, setCommentSaveLoading] = useState(false);
-  const [_, setDeleteCommentLoading] = useState(false);
+  const [deleteCommentLoading, setDeleteCommentLoading] = useState(false);
   const commentRef = useRef(null); // Create a ref for the textarea
 
   // console.log({ mealPlanId, date, meal, comments });
@@ -88,9 +88,15 @@ const CommentsModal = ({
                   <Trash
                     size={18}
                     color="#bb2124"
-                    className="cursor-pointer"
+                    className={classNames(
+                      deleteCommentLoading
+                        ? "cursor-not-allowed"
+                        : "cursor-pointer"
+                    )}
                     onClick={() => {
-                      handleDeleteComment(commentObj._id);
+                      deleteCommentLoading
+                        ? () => {}
+                        : handleDeleteComment(commentObj._id);
                     }}
                   />
                 </div>
