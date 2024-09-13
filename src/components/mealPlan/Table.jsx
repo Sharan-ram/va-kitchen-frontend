@@ -145,6 +145,11 @@ const MealPlanTable = ({
                   </div>
                 </td>
                 {meals.map((meal) => {
+                  const comments = getComments({
+                    mealPlan: specificMealPlan,
+                    date: format(day, "dd-MM-yyyy"),
+                    meal,
+                  });
                   return (
                     <td
                       key={meal}
@@ -176,16 +181,13 @@ const MealPlanTable = ({
                                 mealPlanId: specificMealPlan._id,
                                 meal,
                                 date: format(day, "dd-MM-yyyy"),
-                                comments: getComments({
-                                  mealPlan: specificMealPlan,
-                                  date: format(day, "dd-MM-yyyy"),
-                                  meal,
-                                }),
+                                comments,
                               });
                             }}
-                            className="px-3 py-2 rounded mr-2 bg-[#8e7576] text-white"
+                            className="px-3 py-2 rounded mr-2 bg-[#e8e3e3] text-sm hover:bg-[#dfd8d8]"
                           >
-                            Comments
+                            Comments{" "}
+                            {comments.length > 0 && `- ${comments.length}`}
                           </button>
                         </div>
                       )}

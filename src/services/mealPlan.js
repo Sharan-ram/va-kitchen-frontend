@@ -66,3 +66,15 @@ export const addComment = async (payload) => {
     throw new Error(e);
   }
 };
+
+export const deleteComment = async (payload) => {
+  try {
+    const response = await axiosInstance.delete(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/comment/delete-comment`,
+      { data: payload }
+    );
+    return response;
+  } catch (e) {
+    throw new Error(e);
+  }
+};

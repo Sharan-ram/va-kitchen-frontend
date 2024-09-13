@@ -332,6 +332,9 @@ const RenderMealPlanPage = () => {
           <CommentsModal
             {...activeMealForComments}
             setActiveMealForComments={setActiveMealForComments}
+            fetchMealPlan={() => fetchMealPlan({ startDate, endDate })}
+            startDate={startDate}
+            endDate={endDate}
           />
         </Modal>
       )}

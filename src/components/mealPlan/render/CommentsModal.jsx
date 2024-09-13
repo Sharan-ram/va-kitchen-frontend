@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { addComment } from "@/services/mealPlan";
+import { addComment, deleteComment } from "@/services/mealPlan";
 import classNames from "classnames";
 import Loader from "@/components/Loader";
 import { format } from "date-fns";
@@ -12,11 +12,13 @@ const CommentsModal = ({
   meal,
   comments,
   setActiveMealForComments,
+  fetchMealPlan,
 }) => {
   const [commentSaveLoading, setCommentSaveLoading] = useState(false);
+  const [_, setDeleteCommentLoading] = useState(false);
   const commentRef = useRef(null); // Create a ref for the textarea
 
-  console.log({ mealPlanId, date, meal, comments });
+  // console.log({ mealPlanId, date, meal, comments });
 
   const handleSubmit = async () => {
     const comment = commentRef.current.value; // Access the value of the textarea
@@ -31,6 +33,7 @@ const CommentsModal = ({
       await addComment({ mealPlanId, date, meal, comment });
       toast.success("Comment added successfully!");
       commentRef.current.value = ""; // Clear the textarea after submission
+      fetchMealPlan();
       setCommentSaveLoading(false);
       setActiveMealForComments(null);
     } catch (error) {
@@ -40,9 +43,24 @@ const CommentsModal = ({
     }
   };
 
+  const handleDeleteComment = async (commentId) => {
+    try {
+      setDeleteCommentLoading(true);
+      await deleteComment({ mealPlanId, date, meal, commentId });
+      fetchMealPlan();
+      toast.success("Comment deleted successfully!");
+      setDeleteCommentLoading(false);
+      setActiveMealForComments(null);
+    } catch (e) {
+      console.error(e);
+      toast.error("Failed to delete comment.");
+      setDeleteCommentLoading(false);
+    }
+  };
+
   const disabled = commentSaveLoading;
 
-  console.log({ val: commentRef.current?.value });
+  // console.log({ val: commentRef.current?.value });
 
   return (
     <div className="pb-[200px]">
@@ -55,7 +73,7 @@ const CommentsModal = ({
       {comments.map((commentObj, index) => {
         const { username, date, comment } = commentObj;
         return (
-          <div key={index} className="w-full mt-4">
+          <div key={index} className="w-full mt-5">
             <div className="flex justify-between items-center">
               <div className="text-sm font-semibold">{username}</div>
               <div className="text-xs">
@@ -63,17 +81,26 @@ const CommentsModal = ({
               </div>
             </div>
 
-            <div className="w-full flex justify-between items-center mt-2">
-              <div className="text-sm">{comment}</div>
-              <div className="cursor-pointer">
-                <Trash size={20} color="#bb2124" />
+            <div className="w-full flex justify-between items-center mt-1">
+              <div className="text-sm w-[87%]">{comment}</div>
+              <div className="w-[10%] flex justify-end">
+                <div className="flex justify-end">
+                  <Trash
+                    size={18}
+                    color="#bb2124"
+                    className="cursor-pointer"
+                    onClick={() => {
+                      handleDeleteComment(commentObj._id);
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>
         );
       })}
 
-      <div className="fixed bottom-0 pb-3">
+      <div className="fixed bottom-0 pb-3 z-[99]">
         <button
           onClick={handleSubmit}
           className={classNames(
