@@ -13,6 +13,7 @@ const MealPlanTable = ({
   days,
   page,
   setActiveRecipe,
+  setActiveMealForComments,
 }) => {
   const getMealPlanObj = (year, month) => {
     const mealPlanObj = mealPlan.find(
@@ -52,6 +53,13 @@ const MealPlanTable = ({
     setMealPlan(newMealPlan);
   };
 
+  const getComments = ({ mealPlan, date, meal }) => {
+    const dayObj = mealPlan.days.find((dateObj) => dateObj.date === date);
+    if (!dayObj) return [];
+    if (!dayObj[meal]) return [];
+    return dayObj[meal].comments || [];
+  };
+
   return (
     <div className="meal-plan-table mt-8 max-w-[100%]">
       {page === "create" && (
@@ -61,7 +69,7 @@ const MealPlanTable = ({
       )}
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
-          <tr className="bg-gray-200">
+          <tr>
             <th className="px-3 py-2 font-bold uppercase tracking-wider">
               Day
             </th>
@@ -158,6 +166,27 @@ const MealPlanTable = ({
                         meal={meal}
                         date={day}
                       />
+                      {page === "render" && (
+                        <div className="mt-2">
+                          <button
+                            onClick={() => {
+                              setActiveMealForComments({
+                                mealPlanId: specificMealPlan._id,
+                                meal,
+                                date: format(day, "dd-MM-yyyy"),
+                                comments: getComments({
+                                  mealPlan: specificMealPlan,
+                                  date,
+                                  meal,
+                                }),
+                              });
+                            }}
+                            className="px-3 py-2 rounded mr-2 bg-[#8e7576] text-white"
+                          >
+                            Comments
+                          </button>
+                        </div>
+                      )}
                     </td>
                   );
                 })}
