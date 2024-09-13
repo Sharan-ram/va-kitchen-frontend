@@ -16,6 +16,7 @@ import Loader from "@/components/Loader";
 import classNames from "classnames";
 import { format } from "date-fns";
 import TotalIngredientsQuantity from "@/components/mealPlan/render/TotalIngredientsQuantity";
+import CommentsModal from "@/components/mealPlan/render/CommentsModal";
 
 const RenderMealPlanPage = () => {
   const [mealPlan, setMealPlan] = useState();
@@ -30,6 +31,8 @@ const RenderMealPlanPage = () => {
 
   const [saveMealPlanLoading, setSaveMealPlanLoading] = useState(false);
   const [gSheetExportLoading, setGSheetExportLoading] = useState(false);
+
+  const [activeMealForComments, setActiveMealForComments] = useState();
 
   const days = useMemo(() => {
     if (!startDate || !endDate) return [];
@@ -279,6 +282,7 @@ const RenderMealPlanPage = () => {
               setActiveMealPlan(selectedMealPlan);
               setActiveRecipe(recipe);
             }}
+            setActiveMealForComments={setActiveMealForComments}
           />
           <div className="mt-6">
             <button
@@ -315,6 +319,22 @@ const RenderMealPlanPage = () => {
           <UpdateRecipe
             recipe={activeRecipe}
             onUpdateRecipe={handleRecipeUpdate}
+          />
+        </Modal>
+      )}
+
+      {activeMealForComments && (
+        <Modal
+          closeModal={() => {
+            setActiveMealForComments(null);
+          }}
+        >
+          <CommentsModal
+            {...activeMealForComments}
+            setActiveMealForComments={setActiveMealForComments}
+            fetchMealPlan={() => fetchMealPlan({ startDate, endDate })}
+            startDate={startDate}
+            endDate={endDate}
           />
         </Modal>
       )}

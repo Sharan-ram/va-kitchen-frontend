@@ -73,12 +73,6 @@ const DailyOrder = () => {
         mealPlanLoading={mealPlanLoading}
       />
 
-      {mealPlanLoading && (
-        <div className="w-full flex justify-center mt-10">
-          <Loader />
-        </div>
-      )}
-
       {showMealPlan && (
         <div className="mt-10">
           <h2 className="font-semibold text-lg">Meal Plan Table</h2>

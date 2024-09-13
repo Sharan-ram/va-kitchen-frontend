@@ -54,3 +54,27 @@ export const updateExistingMealPlan = async (mealPlan) => {
     throw new Error(e);
   }
 };
+
+export const addComment = async (payload) => {
+  try {
+    const response = await axiosInstance.post(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/comment/add-comment`,
+      payload
+    );
+    return response;
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+
+export const deleteComment = async (payload) => {
+  try {
+    const response = await axiosInstance.delete(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/comment/delete-comment`,
+      { data: payload }
+    );
+    return response;
+  } catch (e) {
+    throw new Error(e);
+  }
+};
