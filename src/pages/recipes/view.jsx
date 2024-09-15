@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { searchRecipe } from "@/services/recipe";
+import { generateGoogleSheet } from "@/services/order";
 import Link from "next/link";
 import Loader from "@/components/Loader";
 import { toast } from "react-toastify";
+import classNames from "classnames";
 
 const Recipes = () => {
   const [recipes, setRecipes] = useState();
   const [recipesLoading, setRecipesLoading] = useState(false);
+  const [exportInProgress, setExportInProgress] = useState(false);
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -73,13 +76,99 @@ const Recipes = () => {
 
   const rows = getRows();
 
+  console.log({ rows: rows.slice(0, 100) });
+
+  const exportToGSheet = async () => {
+    setExportInProgress(true);
+    const tableData = [
+      [
+        "No.",
+        "Recipe",
+        "Ingredient",
+        "Summer Quantity",
+        "Winter Quantity",
+        "Monsson Quantity",
+        "Retreat Quantity",
+        "Usual Meal Time",
+        "Type of Meal",
+        "Vegan or Non vegan",
+        "Indian Label",
+        "English Label",
+        "Vessels",
+        "Utensils",
+      ],
+      ...rows.map(
+        ({
+          num,
+          name,
+          ingredientName,
+          summerQuantity,
+          winterQuantity,
+          monsoonQuantity,
+          retreatQuantity,
+          usualMealTime,
+          mealType,
+          dietType,
+          labelIndian,
+          labelEnglish,
+          tableSettingVessels,
+          tableSettingUtensils,
+        }) => [
+          num,
+          name,
+          ingredientName,
+          summerQuantity,
+          winterQuantity,
+          monsoonQuantity,
+          retreatQuantity,
+          usualMealTime,
+          mealType,
+          dietType,
+          labelIndian,
+          labelEnglish,
+          tableSettingVessels,
+          tableSettingUtensils,
+        ]
+      ),
+    ];
+
+    try {
+      const res = await generateGoogleSheet({
+        payload: tableData,
+        title: `Recipes Databse`,
+      });
+      if (res.data.success) {
+        // Open the Google Sheet in a new tab
+        window.open(res.data.sheetUrl, "_blank");
+        setExportInProgress(false);
+        toast.success("Export successful!");
+      }
+    } catch (error) {
+      console.error("Export exporting!", error);
+      setExportInProgress(false);
+      toast.error("Error exporting!");
+    }
+  };
+
   return !recipes || recipesLoading ? (
     <div className="w-full flex justify-center items-center">
       <Loader />
     </div>
   ) : (
     <div className="">
-      <table className="min-w-full divide-y divide-gray-200 max-w-[100%] mr-[40px]">
+      <button
+        type="submit"
+        className={classNames(
+          "px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600",
+          recipesLoading ||
+            (exportInProgress && "cursor-not-allowed opacity-50")
+        )}
+        onClick={() => exportToGSheet()}
+        disabled={recipesLoading || exportInProgress || !recipes}
+      >
+        Export to Google Sheets
+      </button>
+      <table className="min-w-full divide-y divide-gray-200 max-w-[100%] mr-[40px] mt-6">
         <thead className="bg-gray-50 max-w-[100%] sticky top-[100px]">
           <tr className="bg-gray-200">
             <th className="px-3 py-2 font-bold uppercase tracking-wider">
