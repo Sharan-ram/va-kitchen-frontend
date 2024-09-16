@@ -184,10 +184,10 @@ const Recipes = () => {
               Summer Quantity
             </th>
             <th className="px-3 py-2 font-bold uppercase tracking-wider">
-              Winter Quantity
+              Monsoon Quantity
             </th>
             <th className="px-3 py-2 font-bold uppercase tracking-wider">
-              Monsoon Quantity
+              Winter Quantity
             </th>
             <th className="px-3 py-2 font-bold uppercase tracking-wider">
               Retreat Quantity
@@ -254,10 +254,10 @@ const Recipes = () => {
                   {summerQuantity}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden text-center">
-                  {winterQuantity}
+                  {monsoonQuantity}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden text-center">
-                  {monsoonQuantity}
+                  {winterQuantity}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden text-center">
                   {retreatQuantity}
