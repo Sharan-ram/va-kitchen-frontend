@@ -1,4 +1,5 @@
 import axiosInstance from "@/utils/axiosInstance";
+import axios from "axios";
 
 export const saveRecipe = async (payload) => {
   try {
@@ -18,7 +19,7 @@ export const searchRecipe = async (searchText) => {
     let url = searchText
       ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/recipe?search=${searchText}`
       : `${process.env.NEXT_PUBLIC_BACKEND_URL}/recipe`;
-    response = await axiosInstance.get(url);
+    response = await axios.get(url);
     return response.data.data;
   } catch (e) {
     throw new Error(e);

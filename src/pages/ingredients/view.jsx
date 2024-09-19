@@ -5,28 +5,28 @@ import { toast } from "react-toastify";
 import Link from "next/link";
 import IngredientFilters from "@/components/IngredientFilters";
 
-const Ingredients = () => {
-  const [ingredients, setIngredients] = useState();
+const Ingredients = ({ ingredients }) => {
+  // const [ingredients, setIngredients] = useState();
   const [ingredientsLoading, setIngredientsLoading] = useState(false);
   const [ingredientTypeFilter, setIngredientTypeFilter] = useState();
   const [vendorFilter, setVendorFilter] = useState();
 
-  useEffect(() => {
-    const fetchIngredients = async () => {
-      try {
-        setIngredientsLoading(true);
-        const response = await searchIngredient();
-        setIngredients(response);
-        setIngredientsLoading(false);
-      } catch (e) {
-        console.error(e);
-        setIngredientsLoading(false);
-        toast.error("Error fetching ingredients");
-      }
-    };
+  // useEffect(() => {
+  //   const fetchIngredients = async () => {
+  //     try {
+  //       setIngredientsLoading(true);
+  //       const response = await searchIngredient();
+  //       setIngredients(response);
+  //       setIngredientsLoading(false);
+  //     } catch (e) {
+  //       console.error(e);
+  //       setIngredientsLoading(false);
+  //       toast.error("Error fetching ingredients");
+  //     }
+  //   };
 
-    fetchIngredients();
-  }, []);
+  //   fetchIngredients();
+  // }, []);
 
   const getFilteredIngredients = () => {
     if (ingredientsLoading || !ingredients) return [];
@@ -214,5 +214,11 @@ const Ingredients = () => {
     </div>
   );
 };
+
+export async function getStaticProps() {
+  const ingredients = await searchIngredient();
+
+  return { props: { ingredients }, revalidate: 3600 };
+}
 
 export default Ingredients;

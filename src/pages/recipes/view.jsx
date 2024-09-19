@@ -6,28 +6,29 @@ import Loader from "@/components/Loader";
 import { toast } from "react-toastify";
 import classNames from "classnames";
 
-const Recipes = () => {
-  const [recipes, setRecipes] = useState();
+const Recipes = ({ recipes }) => {
+  // const [recipes, setRecipes] = useState();
   const [recipesLoading, setRecipesLoading] = useState(false);
   const [exportInProgress, setExportInProgress] = useState(false);
+  // console.log({ recipes });
 
-  useEffect(() => {
-    const fetchRecipes = async () => {
-      try {
-        setRecipesLoading(true);
-        const response = await searchRecipe();
-        console.log({ response });
-        setRecipes(response);
-        setRecipesLoading(false);
-      } catch (e) {
-        console.error(e);
-        setRecipesLoading(false);
-        toast.error("Error fetching recipes!");
-      }
-    };
+  // useEffect(() => {
+  //   const fetchRecipes = async () => {
+  //     try {
+  //       setRecipesLoading(true);
+  //       const response = await searchRecipe();
+  //       console.log({ response });
+  //       setRecipes(response);
+  //       setRecipesLoading(false);
+  //     } catch (e) {
+  //       console.error(e);
+  //       setRecipesLoading(false);
+  //       toast.error("Error fetching recipes!");
+  //     }
+  //   };
 
-    fetchRecipes();
-  }, []);
+  //   fetchRecipes();
+  // }, []);
 
   const getRows = () => {
     if (recipesLoading || !recipes) return [];
@@ -295,5 +296,11 @@ const Recipes = () => {
     </div>
   );
 };
+
+export async function getStaticProps() {
+  const recipes = await searchRecipe();
+
+  return { props: { recipes }, revalidate: 3600 };
+}
 
 export default Recipes;
