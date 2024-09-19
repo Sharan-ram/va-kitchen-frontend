@@ -4,6 +4,7 @@ import Layout from "@/components/Layout";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { ToastContainer } from "react-toastify";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const unprotectedRoutes = [
   "/user/login",
