@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { ToastContainer } from "react-toastify";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/react";
 
 const unprotectedRoutes = [
   "/user/login",
@@ -31,6 +32,7 @@ export default function App({ Component, pageProps }) {
       <div className="max-w-[1500px] 2xl:mx-auto pt-[120px] pb-10 xl:mx-[40px]">
         <Component {...pageProps} />
         <SpeedInsights />
+        <Analytics />
         <ToastContainer />
       </div>
     </main>
