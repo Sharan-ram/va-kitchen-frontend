@@ -26,14 +26,13 @@ export default function App({ Component, pageProps }) {
   }, [router.pathname]);
 
   return (
-    <SpeedInsights>
-      <main>
-        <Layout />
-        <div className="max-w-[1500px] 2xl:mx-auto pt-[120px] pb-10 xl:mx-[40px]">
-          <Component {...pageProps} />
-          <ToastContainer />
-        </div>
-      </main>
-    </SpeedInsights>
+    <main>
+      <Layout />
+      <div className="max-w-[1500px] 2xl:mx-auto pt-[120px] pb-10 xl:mx-[40px]">
+        <Component {...pageProps} />
+        <SpeedInsights />
+        <ToastContainer />
+      </div>
+    </main>
   );
 }
