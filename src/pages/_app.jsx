@@ -1,11 +1,11 @@
 import "../global.css";
 import "react-toastify/dist/ReactToastify.css";
-import Layout from "@/components/Layout";
+// import Layout from "@/components/Layout";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { ToastContainer } from "react-toastify";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Analytics } from "@vercel/analytics/react";
+// import { Analytics } from "@vercel/analytics/react";
 
 const unprotectedRoutes = [
   "/user/login",
@@ -28,12 +28,12 @@ export default function App({ Component, pageProps }) {
 
   return (
     <main>
-      <Layout />
+      {/* <Layout /> */}
       <div className="max-w-[1500px] 2xl:mx-auto pt-[120px] pb-10 xl:mx-[40px]">
         <Component {...pageProps} />
         <SpeedInsights />
-        <Analytics />
-        <ToastContainer />
+        {/* <Analytics />
+          <ToastContainer /> */}
       </div>
     </main>
   );
