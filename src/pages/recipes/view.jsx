@@ -273,7 +273,9 @@ const Recipes = ({ recipes }) => {
                   {dietType
                     ? dietType === "vegan"
                       ? "Vegan"
-                      : "Non Vegan"
+                      : dietType === "nonVegan"
+                      ? "Non Vegan"
+                      : "Gluten Free"
                     : ""}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden text-center max-w-[300px] text-ellipsis">
