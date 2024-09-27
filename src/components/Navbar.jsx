@@ -77,6 +77,11 @@ let items = [
         roles: ["admin"],
       },
       {
+        title: "Update Diet Type",
+        pathname: "/recipes/update-diet-type",
+        roles: ["admin"],
+      },
+      {
         title: "View all",
         pathname: "/recipes/view",
         roles: ["admin", "user"],

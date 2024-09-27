@@ -44,7 +44,7 @@ const RecipeForm = ({ type, recipe }) => {
     }));
   };
 
-  console.log({ formData });
+  // console.log({ formData });
 
   const handleAddIngredient = () => {
     setFormData((prevData) => ({
@@ -82,7 +82,7 @@ const RecipeForm = ({ type, recipe }) => {
         ...formData,
         ingredients: newIngredients,
       };
-      console.log({ payload });
+      // console.log({ payload });
       type === "edit" ? await updateRecipe(payload) : await saveRecipe(payload);
       toast.success(
         type === "edit"
@@ -128,7 +128,7 @@ const RecipeForm = ({ type, recipe }) => {
 
   let debounceTimer;
 
-  console.log({ searchText });
+  // console.log({ searchText });
 
   const handleIngredientSearch = (e, index) => {
     const { value } = e.target;
@@ -154,10 +154,10 @@ const RecipeForm = ({ type, recipe }) => {
     }
   };
 
-  console.log({ formData });
+  // console.log({ formData });
 
   const selectIngredient = (ingredient, index) => {
-    console.log({ index });
+    // console.log({ index });
     setFormData((prevData) => ({
       ...prevData,
       ingredients: [

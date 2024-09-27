@@ -81,7 +81,7 @@ const UpdateRecipeModal = ({
                     value:
                       recipes[activeRecipe].ingredients[ingredient][season],
                     onChange: (e) => {
-                      console.log("e", e.target.value);
+                      // console.log("e", e.target.value);
                       const newRecipesData = {
                         ...recipes,
                         [activeRecipe]: {
@@ -95,7 +95,7 @@ const UpdateRecipeModal = ({
                           },
                         },
                       };
-                      console.log({ newRecipesData });
+                      // console.log({ newRecipesData });
                       setRecipes(newRecipesData);
                     },
                   }}
@@ -124,7 +124,7 @@ const UpdateRecipeModal = ({
             onClick={() => {
               let newRecipes = { ...recipes };
               dropdownIngredient.forEach((ingredient, index) => {
-                console.log({ ingredient });
+                // console.log({ ingredient });
                 const updatedRecipe = {
                   ...newRecipes[activeRecipe],
                   ingredients: {
@@ -136,7 +136,7 @@ const UpdateRecipeModal = ({
                   },
                 };
 
-                console.log({ updatedRecipe, ingredientQuantity });
+                // console.log({ updatedRecipe, ingredientQuantity });
 
                 // Update the newRecipes object with the updated recipe
                 newRecipes = {

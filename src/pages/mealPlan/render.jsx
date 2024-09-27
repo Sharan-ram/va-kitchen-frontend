@@ -62,7 +62,7 @@ const RenderMealPlanPage = () => {
   };
 
   // console.log({ activeRecipe, activeMealPlan });
-  console.log({ mealPlan });
+  // console.log({ mealPlan });
   const createUpdatedMealPlanPromises = async (updatedMealPlans) => {
     try {
       const updateRequests = updatedMealPlans.map(async (mealPlan) => {
@@ -152,7 +152,7 @@ const RenderMealPlanPage = () => {
     setSaveMealPlanLoading(true);
     createUpdatedMealPlanPromises(mealPlan)
       .then((updatedResults) => {
-        console.log("Meal plans updated successfully:", updatedResults);
+        // console.log("Meal plans updated successfully:", updatedResults);
         toast.success("Meal plan updated successfully!");
         setSaveMealPlanLoading(false);
       })
@@ -178,7 +178,7 @@ const RenderMealPlanPage = () => {
             dayObj[meal].recipes?.forEach((recipeObj) => {
               // Remove ' - Vegan', ' - Non Vegan', and parentheses with content
               const recipeName = recipeObj.name
-                .replace(/ - Vegan| - Non Vegan/, "") // Remove Vegan/Non-Vegan tags
+                .replace(/ - Vegan| - Non Vegan| - Gluten Free/, "") // Remove Vegan/Non-Vegan tags
                 .replace(/\s*\(.*?\)/g, ""); // Remove anything inside parentheses, including the parentheses
 
               // Add the cleaned recipe name to the Set

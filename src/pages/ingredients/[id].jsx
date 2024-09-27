@@ -31,7 +31,7 @@ const EditIngredient = () => {
     }
   }, [query?.id]);
 
-  console.log({ ingredient });
+  // console.log({ ingredient });
 
   return !ingredientLoading && ingredient ? (
     <IngredientForm ingredient={ingredient} type="edit" />

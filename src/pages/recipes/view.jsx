@@ -77,7 +77,7 @@ const Recipes = ({ recipes }) => {
 
   const rows = getRows();
 
-  console.log({ rows: rows.slice(0, 100) });
+  // console.log({ rows: rows.slice(0, 100) });
 
   const exportToGSheet = async () => {
     setExportInProgress(true);
@@ -92,7 +92,7 @@ const Recipes = ({ recipes }) => {
         "Retreat Quantity",
         "Usual Meal Time",
         "Type of Meal",
-        "Vegan or Non vegan",
+        "Diet Type",
         "Indian Label",
         "English Label",
         "Vessels",
@@ -124,7 +124,9 @@ const Recipes = ({ recipes }) => {
           retreatQuantity,
           usualMealTime,
           mealType,
-          dietType,
+          dietType.map(
+            (str, index) => `${str}${index !== dietType.length - 1 ? "," : ""} `
+          ),
           labelIndian,
           labelEnglish,
           tableSettingVessels,
@@ -200,7 +202,7 @@ const Recipes = ({ recipes }) => {
               Type of Meal
             </th>
             <th className="px-3 py-2 font-bold uppercase tracking-wider text-center">
-              Vegan or Non Vegan
+              Diet Type
             </th>
             <th className="px-3 py-2 font-bold uppercase tracking-wider text-center">
               Indian Label
@@ -270,13 +272,20 @@ const Recipes = ({ recipes }) => {
                   {mealType}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden text-center">
-                  {dietType
-                    ? dietType === "vegan"
-                      ? "Vegan"
-                      : dietType === "nonVegan"
-                      ? "Non Vegan"
-                      : "Gluten Free"
-                    : ""}
+                  {dietType &&
+                    dietType.map((str, index) => {
+                      let text = str;
+                      if (str === "nonVegan") {
+                        text = "Non Vegan";
+                      } else if (str === "glutenFree") {
+                        text = "Gluten Free";
+                      }
+                      return (
+                        <p key={str}>{`${text}${
+                          index !== dietType.length - 1 ? "," : ""
+                        } `}</p>
+                      );
+                    })}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden text-center max-w-[300px] text-ellipsis">
                   {labelIndian}

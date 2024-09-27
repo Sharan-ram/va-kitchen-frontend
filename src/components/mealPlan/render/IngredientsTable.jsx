@@ -15,20 +15,16 @@ const IngredientsTable = ({ mealPlan }) => {
               const season = day.season || mealPlanObj.season;
 
               meal.recipes.forEach((recipe) => {
-                const recipeName = recipe.name;
-                const splitRecipe = recipeName.split("-");
-                // console.log({ splitRecipe });
-
-                let count;
-                if (splitRecipe.length > 1) {
-                  count =
-                    splitRecipe[splitRecipe.length - 1].trim().toLowerCase() ===
-                    "Vegan".toLowerCase()
-                      ? mealCounts.veganCount
-                      : mealCounts.nonVeganCount;
-                } else {
-                  count = mealCounts.veganCount + mealCounts.nonVeganCount;
-                }
+                let count = 0;
+                recipe.dietType.forEach((str) => {
+                  if (str === "vegan") {
+                    count = count + mealCounts.veganCount;
+                  } else if (str === "nonVegan") {
+                    count = count + mealCounts.nonVeganCount;
+                  } else {
+                    count = count + mealCounts.glutenFreeCount;
+                  }
+                });
 
                 let recipePrice = 0;
 
@@ -53,6 +49,8 @@ const IngredientsTable = ({ mealPlan }) => {
                       : "",
                     VeganCount: index === 0 ? mealCounts.veganCount : "",
                     NonVeganCount: index === 0 ? mealCounts.nonVeganCount : "",
+                    GlutenFreeCount:
+                      index === 0 ? mealCounts.glutenFreeCount : "",
                     ingredientPrice: ingredientPrice.toFixed(2),
                     recipePrice:
                       index === recipe.ingredients.length - 1
@@ -94,6 +92,9 @@ const IngredientsTable = ({ mealPlan }) => {
             Non Vegan Count
           </th>
           <th className="px-3 py-2 font-bold uppercase tracking-wider">
+            Gluten Free Count
+          </th>
+          <th className="px-3 py-2 font-bold uppercase tracking-wider">
             Ingredient
           </th>
           <th className="px-3 py-2 font-bold uppercase tracking-wider">
@@ -130,6 +131,9 @@ const IngredientsTable = ({ mealPlan }) => {
               </td>
               <td className="px-3 py-2 whitespace-nowrap capitalize">
                 {row.NonVeganCount}
+              </td>
+              <td className="px-3 py-2 whitespace-nowrap capitalize">
+                {row.GlutenFreeCount}
               </td>
               <td className="px-3 py-2 whitespace-nowrap capitalize">
                 {row.IngredientName}
