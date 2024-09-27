@@ -112,11 +112,11 @@ const UpdateRecipe = ({ recipe, onUpdateRecipe }) => {
         };
       }),
     };
-    console.log({ newRecipe });
+    // console.log({ newRecipe });
     onUpdateRecipe(newRecipe);
   };
 
-  console.log({ recipe, ingredients });
+  // console.log({ recipe, ingredients });
 
   return (
     <div>

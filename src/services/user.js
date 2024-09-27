@@ -60,7 +60,7 @@ export const resetPasswordLoggedIn = async (payload) => {
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/change-password`,
       payload
     );
-    console.log({ response });
+    // console.log({ response });
     return response;
   } catch (e) {
     throw new Error(e);

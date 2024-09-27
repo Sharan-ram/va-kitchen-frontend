@@ -31,7 +31,7 @@ const EditRecipe = () => {
     }
   }, [query?.id]);
 
-  console.log({ recipe });
+  // console.log({ recipe });
 
   return !recipeLoading && recipe ? (
     <RecipeForm recipe={recipe} type="edit" />

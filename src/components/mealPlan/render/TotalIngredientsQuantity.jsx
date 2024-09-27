@@ -12,21 +12,19 @@ const TotalIngredientsQuantity = ({ mealPlan }) => {
                 //   console.log({ recipeObj });
                 recipeObj.ingredients.forEach((ingredientObj) => {
                   // console.log({ ingredientObj });
-                  const recipeName = recipeObj.name;
-                  const splitRecipe = recipeName.split("-");
                   const season = dayObj.season;
                   const mealCounts = dayObj[meal].mealCounts;
-                  let count;
-                  if (splitRecipe.length > 1) {
-                    count =
-                      splitRecipe[splitRecipe.length - 1]
-                        .trim()
-                        .toLowerCase() === "Vegan".toLowerCase()
-                        ? mealCounts.veganCount
-                        : mealCounts.nonVeganCount;
-                  } else {
-                    count = mealCounts.veganCount + mealCounts.nonVeganCount;
-                  }
+
+                  let count = 0;
+                  recipeObj.dietType.forEach((str) => {
+                    if (str === "vegan") {
+                      count = count + mealCounts.veganCount;
+                    } else if (str === "nonVegan") {
+                      count = count + mealCounts.nonVeganCount;
+                    } else {
+                      count = count + mealCounts.glutenFreeCount;
+                    }
+                  });
 
                   if (
                     Object.keys(ingredients).includes(
@@ -59,7 +57,7 @@ const TotalIngredientsQuantity = ({ mealPlan }) => {
 
   const ingredients = getIngredients();
 
-  console.log({ ingredients });
+  // console.log({ ingredients });
 
   return (
     <div className="w-1/2">

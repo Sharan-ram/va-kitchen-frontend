@@ -151,4 +151,5 @@ export const mealType = [
 export const dietType = [
   { value: "vegan", text: "Vegan" },
   { value: "nonVegan", text: "Non-Vegan" },
+  { value: "glutenFree", text: "Gluten-Free" },
 ];

@@ -20,8 +20,6 @@ const MealPlanTable = ({
           quantityTotal: ingredientObj.totalQuantity,
           quantityPerHead: ingredientObj.quantityPerHead,
           count: ingredientObj.count,
-          // VeganCount: index === 0 ? mealCounts.veganCount : "",
-          // NonVeganCount: index === 0 ? mealCounts.nonVeganCount : "",
         };
         rows.push(row);
       });
@@ -110,9 +108,7 @@ const MealPlanTable = ({
   return (
     <table className="min-w-full divide-y divide-gray-200 max-w-[100%] mt-2">
       <thead className="bg-gray-50 max-w-[100%]">
-        <th className="px-3 py-2 font-bold uppercase tracking-wider">
-          Select
-        </th>
+        <th className="px-3 py-2 font-bold uppercase tracking-wider">Select</th>
         <th className="px-3 py-2 font-bold uppercase tracking-wider">Date</th>
         <th className="px-3 py-2 font-bold uppercase tracking-wider">Meal</th>
         <th className="px-3 py-2 font-bold uppercase tracking-wider">Recipe</th>

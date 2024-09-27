@@ -18,9 +18,9 @@ export default function App({ Component, pageProps }) {
   useEffect(() => {
     const token = localStorage.getItem("token");
     const user = JSON.parse(localStorage.getItem("user"));
-    console.log({ token });
+    // console.log({ token });
     if (!token && !unprotectedRoutes.includes(router.pathname)) {
-      console.log("unprotected routes");
+      // console.log("unprotected routes");
       router.push("/user/login");
     }
   }, [router.pathname]);
