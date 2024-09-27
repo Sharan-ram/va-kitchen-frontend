@@ -49,3 +49,26 @@ export const updateRecipe = async (recipe) => {
     throw new Error(e);
   }
 };
+
+export const getRecipesDietType = async () => {
+  try {
+    const response = await axiosInstance.get(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/recipe/diet-type`
+    );
+    return response.data.data;
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+
+export const updateRecipesDietType = async (payload) => {
+  try {
+    const response = await axiosInstance.post(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/recipe/update-diet-type`,
+      payload
+    );
+    return response;
+  } catch (e) {
+    throw new Error(e);
+  }
+};
