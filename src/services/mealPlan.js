@@ -34,7 +34,7 @@ export const saveNewMealPlan = async (payload) => {
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/mealPlan`,
       payload
     );
-    return response;
+    return response.data.data;
   } catch (e) {
     throw new Error(e);
   }

@@ -24,7 +24,9 @@ const CreateMealPlanPage = () => {
       setSaveMealPlanLoading(true);
       if (typeof isNew !== "undefined") {
         if (isNew) {
-          await saveNewMealPlan(mealPlan);
+          const res = await saveNewMealPlan(mealPlan);
+          setMealPlan(res);
+          setIsNew(false);
         } else {
           await updateExistingMealPlan(mealPlan);
         }
