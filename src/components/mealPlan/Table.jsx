@@ -54,7 +54,7 @@ const MealPlanTable = ({
   };
 
   const getComments = ({ mealPlan, date, meal }) => {
-    const dayObj = mealPlan.days.find((dateObj) => dateObj.date === date);
+    const dayObj = mealPlan?.days?.find((dateObj) => dateObj.date === date);
     // console.log({ date, meal, dayObj });
     if (!dayObj) return [];
     if (!dayObj[meal]) return [];
