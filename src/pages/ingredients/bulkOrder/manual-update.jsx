@@ -15,7 +15,12 @@ const ManualBulkOrderUpdate = () => {
       try {
         setBulkOrderLoading(true);
         const res = await getIngredientBulkOrder();
-        setIngredients(res);
+        // console.log({ res });
+        let ingredientObj = {};
+        res.forEach((ing) => {
+          ingredientObj[ing._id] = ing;
+        });
+        setIngredients(ingredientObj);
         setBulkOrderLoading(false);
       } catch (e) {
         console.error(e);
@@ -27,25 +32,38 @@ const ManualBulkOrderUpdate = () => {
     fetchIngredients();
   }, []);
 
+  // console.log({ ingredients });
+
   //   console.log({ ingredients });
   const handleSubmit = async () => {
     try {
       setUpdateBulkOrderLoading(true);
-      const newIngredients = ingredients.map((ing) => {
+      const newIngredients = Object.keys(ingredients).map((ingId) => {
+        // console.log({
+        //   id: ingId,
+        //   summerQuantity: ingredients[ingId].summerQuantity,
+        // });
         return {
-          ...ing,
-          bulkOrder: Number(ing.bulkOrder),
+          _id: ingId,
+          bulkOrder: {
+            summerQuantity:
+              parseFloat(ingredients[ingId].bulkOrder.summerQuantity) || null,
+            monsoonQuantity:
+              parseFloat(ingredients[ingId].bulkOrder.monsoonQuantity) || null,
+            winterQuantity:
+              parseFloat(ingredients[ingId].bulkOrder.winterQuantity) || null,
+          },
         };
       });
       await updateBulkOrder({
         ingredients: newIngredients,
       });
       setUpdateBulkOrderLoading(false);
-      toast.success("Prices updated successfully!");
+      toast.success("Bulk orders updated successfully!");
     } catch (e) {
       console.error(e);
       setUpdateBulkOrderLoading(false);
-      toast.error("Error updating prices!");
+      toast.error("Error updating bulk orders!");
     }
   };
 
@@ -70,7 +88,8 @@ const ManualBulkOrderUpdate = () => {
         </div>
       </div>
       {ingredients && !bulkOrderLoading ? (
-        ingredients.map((ingredient) => {
+        Object.keys(ingredients).map((ingredientId) => {
+          const ingredient = ingredients[ingredientId];
           return (
             <div key={ingredient._id} className="flex items-center w-full my-4">
               <div className="w-[40%]">
@@ -84,19 +103,16 @@ const ManualBulkOrderUpdate = () => {
                         <input
                           type="text"
                           onChange={(e) => {
-                            const updatedIngredients = ingredients.map(
-                              (ing) => {
-                                // console.log({ ingredient, ing });
-                                if (ing._id === ingredient._id) {
-                                  return {
-                                    ...ingredient,
-                                    bulkOrder: e.target.value,
-                                  };
-                                }
-                                return ing;
-                              }
-                            );
-                            setIngredients(updatedIngredients);
+                            setIngredients({
+                              ...ingredients,
+                              [ingredientId]: {
+                                ...ingredients[ingredientId],
+                                bulkOrder: {
+                                  ...ingredients[ingredientId].bulkOrder,
+                                  [quantity]: e.target.value,
+                                },
+                              },
+                            });
                           }}
                           value={ingredient.bulkOrder[quantity] || ""}
                           className="pl-10 pr-4 py-2 border rounded-md"
