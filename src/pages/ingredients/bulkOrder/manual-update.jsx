@@ -72,7 +72,26 @@ const ManualBulkOrderUpdate = () => {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4">Manual Bulk Order Update</h2>
+      <div className="w-full flex items-center justify-between">
+        <div className="w-[40%]">
+          <h2 className="text-xl font-semibold mb-4">
+            Manual Bulk Order Update
+          </h2>
+        </div>
+        <div className="w-[60%]">
+          <button
+            type="submit"
+            className={classNames(
+              "px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600",
+              disableUpdateButton && "cursor-not-allowed opacity-50"
+            )}
+            onClick={handleSubmit}
+            disabled={disableUpdateButton}
+          >
+            {updateBulkOrderLoading ? <Loader /> : "Update Bulk orders"}
+          </button>
+        </div>
+      </div>
       <div className="my-10 flex items-center justify-between">
         <div className="w-[40%]"></div>
         <div className="w-[60%] flex items-center justify-between">
