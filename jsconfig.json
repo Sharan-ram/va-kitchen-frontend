@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    },
     "skipLibCheck": true, // Skip type checking for libraries in node_modules
     "checkJs": false, // Disable type checking for JS files
     "noEmit": true, // Ensure no files are emitted
