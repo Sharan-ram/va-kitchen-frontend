@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { addComment, deleteComment } from "@/services/mealPlan";
 import classNames from "classnames";
@@ -16,7 +16,13 @@ const CommentsModal = ({
 }) => {
   const [commentSaveLoading, setCommentSaveLoading] = useState(false);
   const [deleteCommentLoading, setDeleteCommentLoading] = useState(false);
+  const [user, setUser] = useState();
   const commentRef = useRef(null); // Create a ref for the textarea
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    setUser(user.username);
+  }, []);
 
   // console.log({ mealPlanId, date, meal, comments });
 
@@ -85,20 +91,22 @@ const CommentsModal = ({
               <div className="text-sm w-[87%]">{comment}</div>
               <div className="w-[10%] flex justify-end">
                 <div className="flex justify-end">
-                  <Trash
-                    size={18}
-                    color="#bb2124"
-                    className={classNames(
-                      deleteCommentLoading
-                        ? "cursor-not-allowed"
-                        : "cursor-pointer"
-                    )}
-                    onClick={() => {
-                      deleteCommentLoading
-                        ? () => {}
-                        : handleDeleteComment(commentObj._id);
-                    }}
-                  />
+                  {user === username && (
+                    <Trash
+                      size={18}
+                      color="#bb2124"
+                      className={classNames(
+                        deleteCommentLoading
+                          ? "cursor-not-allowed"
+                          : "cursor-pointer"
+                      )}
+                      onClick={() => {
+                        deleteCommentLoading
+                          ? () => {}
+                          : handleDeleteComment(commentObj._id);
+                      }}
+                    />
+                  )}
                 </div>
               </div>
             </div>

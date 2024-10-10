@@ -9,14 +9,21 @@ const PurchaseOrderTable = ({
     const source = selectAll
       ? [...mealPlan, ...bungalowMilkRecipes]
       : selectedRecipes;
+
+    // console.log({ source });
     source.forEach((obj) => {
       obj.ingredients.forEach((ingredientObj) => {
-        if (ingredients[ingredientObj.ingredient]) {
-          ingredients[ingredientObj.ingredient].quantity =
-            ingredients[ingredientObj.ingredient].quantity +
-            ingredientObj.totalQuantity;
+        let ingredientName = ingredientObj.ingredient;
+
+        // If the ingredient is "Milk for Curd", treat it as "Milk"
+        if (ingredientName === "Milk for Curd") {
+          ingredientName = "Milk";
+        }
+
+        if (ingredients[ingredientName]) {
+          ingredients[ingredientName].quantity += ingredientObj.totalQuantity;
         } else {
-          ingredients[ingredientObj.ingredient] = {
+          ingredients[ingredientName] = {
             quantity: ingredientObj.totalQuantity,
             purchaseUnit: ingredientObj.purchaseUnit,
           };

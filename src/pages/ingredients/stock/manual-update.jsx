@@ -18,7 +18,11 @@ const ManualStockUpdate = () => {
       try {
         setStockLoading(true);
         const res = await getIngredientStock();
-        setIngredients(res);
+        const ingredientObj = {};
+        res.forEach((ing) => {
+          ingredientObj[ing._id] = ing;
+        });
+        setIngredients(ingredientObj);
         setStockLoading(false);
       } catch (e) {
         console.error(e);
@@ -34,10 +38,10 @@ const ManualStockUpdate = () => {
   const updateStock = async () => {
     try {
       setUpdateStockLoading(true);
-      const newIngredients = ingredients.map((ing) => {
+      const newIngredients = Object.keys(ingredients).map((ingredientId) => {
         return {
-          ...ing,
-          stock: Number(ing.stock),
+          ...ingredients[ingredientId],
+          stock: Number(ingredients[ingredientId].stock),
         };
       });
       await updateStockToDB({
@@ -57,48 +61,67 @@ const ManualStockUpdate = () => {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4">Manual Stock Update</h2>
-      {ingredients && !stockLoading ? (
-        ingredients.map((ingredient) => {
-          return (
-            <div key={ingredient._id} className="flex items-center w-1/2 my-4">
-              <div className="w-1/2">
-                <p className="font-semibold">{ingredient.name}</p>
-              </div>
-              <div className="w-1/2 flex items-center">
-                <div>
-                  <input
-                    type="text"
-                    onChange={(e) => {
-                      const updatedIngredients = ingredients.map((ing) => {
-                        // console.log({ ingredient, ing });
-                        if (ing._id === ingredient._id) {
-                          return {
-                            ...ingredient,
-                            stock: e.target.value,
-                          };
-                        }
-                        return ing;
-                      });
-                      setIngredients(updatedIngredients);
-                    }}
-                    value={ingredient.stock}
-                    className="pl-10 pr-4 py-2 border rounded-md"
-                  />
-                </div>
-
-                <div className="ml-2">
-                  <p>{ingredient.purchaseUnit}</p>
-                </div>
-              </div>
-            </div>
-          );
-        })
-      ) : (
-        <div className="flex items-center justify-center">
-          <Loader />
+      <div className="flex items-center justify-between w-1/2">
+        <div className="w-1/2">
+          <h2 className="text-xl font-semibold mb-4">Manual Stock Update</h2>
         </div>
-      )}
+        <div className="w-1/2">
+          <button
+            type="submit"
+            className={classNames(
+              "px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600",
+              disableUpdateButton && "cursor-not-allowed opacity-50"
+            )}
+            disabled={disableUpdateButton}
+            onClick={updateStock}
+          >
+            {updateStockLoading ? <Loader /> : "Update Stock"}
+          </button>
+        </div>
+      </div>
+      <div className="mt-10">
+        {ingredients && !stockLoading ? (
+          Object.keys(ingredients).map((ingredientId) => {
+            const ingredient = ingredients[ingredientId];
+            return (
+              <div
+                key={ingredient._id}
+                className="flex items-center w-1/2 my-4"
+              >
+                <div className="w-1/2">
+                  <p className="font-semibold">{ingredient.name}</p>
+                </div>
+                <div className="w-1/2 flex items-center">
+                  <div>
+                    <input
+                      type="text"
+                      onChange={(e) => {
+                        setIngredients({
+                          ...ingredients,
+                          [ingredientId]: {
+                            ...ingredients[ingredientId],
+                            stock: e.target.value,
+                          },
+                        });
+                      }}
+                      value={ingredient.stock}
+                      className="pl-10 pr-4 py-2 border rounded-md"
+                    />
+                  </div>
+
+                  <div className="ml-2">
+                    <p>{ingredient.purchaseUnit}</p>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <div className="flex items-center justify-center">
+            <Loader />
+          </div>
+        )}
+      </div>
       <div className="mt-10">
         <button
           type="submit"
