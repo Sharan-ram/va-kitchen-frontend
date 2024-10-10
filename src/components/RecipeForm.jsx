@@ -14,7 +14,7 @@ const RecipeForm = ({ type, recipe }) => {
       ? recipe
       : {
           name: "",
-          dietType: "",
+          dietType: [],
           usualMealTime: "",
           mealType: "",
           label: {
@@ -268,32 +268,47 @@ const RecipeForm = ({ type, recipe }) => {
             }}
           />
         </div>
-        <div className="mb-4">
-          <label
-            htmlFor="dietType"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Diet Type
-          </label>
-          <Input
-            type="select"
-            selectProps={{
-              id: "dietType",
-              name: "dietType",
-              selected: formData.dietType,
-              defaultValue: "",
-              onChange: (e) =>
-                setFormData((prevFormData) => ({
-                  ...prevFormData,
-                  dietType: e.target.value,
-                })),
-              options: [{ value: "", text: "Select Diet Type" }, ...dietType],
-            }}
-            classes={{
-              wrapper:
-                "mt-1 p-2 border border-gray-300 rounded-md w-full cursor-pointer",
-            }}
-          />
+        <label className="block text-sm font-medium text-gray-700">
+          Diet Type
+        </label>
+        <div className="mt-3">
+          {dietType.map((dietTypeObj) => {
+            return (
+              <div className="mb-4" key={dietTypeObj.text}>
+                <label
+                  htmlFor={dietTypeObj.value}
+                  className="flex items-center"
+                >
+                  <input
+                    type="checkbox"
+                    id={dietTypeObj.value}
+                    name={dietTypeObj.text}
+                    checked={formData.dietType.includes(dietTypeObj.value)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setFormData({
+                          ...formData,
+                          dietType: [...formData.dietType, dietTypeObj.value],
+                        });
+                      } else {
+                        const newDietType = formData.dietType.filter(
+                          (dt) => dt !== dietTypeObj.value
+                        );
+                        setFormData({
+                          ...formData,
+                          dietType: newDietType,
+                        });
+                      }
+                    }}
+                    className="mr-2"
+                  />
+                  <span className="text-sm font-semibold text-gray-700 cursor-pointer">
+                    {dietTypeObj.text}
+                  </span>
+                </label>
+              </div>
+            );
+          })}
         </div>
         <div className="mb-4">
           <label
