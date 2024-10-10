@@ -8,25 +8,25 @@ import { usualMealTime, mealType, dietType } from "@/helpers/constants";
 import { toast } from "react-toastify";
 import Loader from "./Loader";
 
+const initialState = {
+  name: "",
+  dietType: [],
+  usualMealTime: "",
+  mealType: "",
+  label: {
+    indian: "",
+    english: "",
+  },
+  tableSetting: {
+    vessels: "",
+    utensils: "",
+  },
+  ingredients: [],
+};
+
 const RecipeForm = ({ type, recipe }) => {
   const [formData, setFormData] = useState(
-    type === "edit"
-      ? recipe
-      : {
-          name: "",
-          dietType: [],
-          usualMealTime: "",
-          mealType: "",
-          label: {
-            indian: "",
-            english: "",
-          },
-          tableSetting: {
-            vessels: "",
-            utensils: "",
-          },
-          ingredients: [],
-        }
+    type === "edit" ? recipe : initialState
   );
 
   const [searchText, setSearchText] = useState([]);
@@ -90,6 +90,7 @@ const RecipeForm = ({ type, recipe }) => {
           : "Recipe save successful!"
       );
       setRecipeSaveLoading(false);
+      type !== "edit" && setFormData(initialState);
     } catch (e) {
       console.error(e);
       toast.error(
