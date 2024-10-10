@@ -29,6 +29,7 @@
     "react-toastify": "^10.0.5"
   },
   "devDependencies": {
+    "@types/whatwg-url": "^11.0.5",
     "autoprefixer": "^10.4.15",
     "postcss": "^8.4.29",
     "tailwindcss": "^3.3.3"
