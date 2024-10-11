@@ -23,7 +23,7 @@ export default async function handler(req, res) {
       break;
 
     case "POST":
-      // Update diet type for multiple recipes
+      // Update diet type for muxltiple recipes
       try {
         if (!authMiddleware(req, res, ["admin", "user"])) {
           return;
