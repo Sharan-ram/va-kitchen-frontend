@@ -3,31 +3,17 @@ import format from "date-fns/format";
 
 export const getMonthlyOrder = async () => {
   try {
-    const response = await axiosInstance.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/order/monthly-order`
-    );
+    const response = await axiosInstance.get(`/api/order/monthly`);
     return response.data.data;
   } catch (e) {
     throw new Error(e);
   }
 };
 
-// export const generateMonthlyPurchaseOrder = async (payload) => {
-//   try {
-//     const response = await axiosInstance.post(
-//       `${process.env.NEXT_PUBLIC_BACKEND_URL}/order/generate-monthly-purchase-order`,
-//       payload
-//     );
-//     return response;
-//   } catch (e) {
-//     throw new Error(e);
-//   }
-// };
-
 export const generateGoogleSheet = async ({ payload, title }) => {
   try {
     const response = await axiosInstance.post(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/order/generate-googlesheet/`,
+      `/api/google/generate-googlesheet`,
       { data: payload, title }
     );
     return response;
@@ -36,28 +22,10 @@ export const generateGoogleSheet = async ({ payload, title }) => {
   }
 };
 
-// export const generateWeeklyPurchaseOrder = async ({
-//   payload,
-//   startDate,
-//   endDate,
-// }) => {
-//   try {
-//     const response = await axiosInstance.post(
-//       `${process.env.NEXT_PUBLIC_BACKEND_URL}/order/generate-weekly-purchase-order/${startDate}/${endDate}`,
-//       payload
-//     );
-//     return response;
-//   } catch (e) {
-//     throw new Error(e);
-//   }
-// };
-
 export const getWeeklyOrder = async (startDate, endDate) => {
   try {
     const response = await axiosInstance.get(
-      `${
-        process.env.NEXT_PUBLIC_BACKEND_URL
-      }/order/weekly-order?startDate=${format(
+      `/api/order/weekly?startDate=${format(
         startDate,
         "dd-MM-yyyy"
       )}&endDate=${format(endDate, "dd-MM-yyyy")}`
@@ -71,7 +39,7 @@ export const getWeeklyOrder = async (startDate, endDate) => {
 export const getDailyOrder = async (startDate, endDate) => {
   try {
     const response = await axiosInstance.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/order/daily?startDate=${format(
+      `/api/order/daily?startDate=${format(
         startDate,
         "dd-MM-yyyy"
       )}&endDate=${format(endDate, "dd-MM-yyyy")}`

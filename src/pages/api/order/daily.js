@@ -1,5 +1,5 @@
 import dbConnect from "../../../../lib/dbConnect";
-import MealPlan from "../../../../models/MealPlan";
+import MealPlan from "../../../../models/mealPlan";
 import {
   dailyOrderIngredients,
   getMealPlanForDateRange,
@@ -37,7 +37,7 @@ export default async function handler(req, res) {
               (meal) => {
                 if (dayObj[meal]) {
                   const mealCounts = dayObj[meal].mealCounts;
-                  dayObj[meal].recipes.forEach((recipeObj) => {
+                  dayObj[meal]?.recipes.forEach((recipeObj) => {
                     let recipeData = {
                       date: dayObj.date,
                       meal,

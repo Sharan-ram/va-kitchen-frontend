@@ -1,5 +1,5 @@
 import dbConnect from "../../../../lib/dbConnect";
-import MealPlan from "../../../../models/MealPlan";
+import MealPlan from "../../../../models/mealPlan";
 import Ingredient from "../../../../models/Ingredient";
 import {
   monthlyOrderTotalQuantity,
@@ -45,20 +45,30 @@ export default async function handler(req, res) {
 
         // Process and generate the response
         const response = ingredients
-          .filter((ingredient) => ingredient.ingredientType !== "Dairy")
+          .filter((ingredient) => {
+            return (
+              ingredient.ingredientType !== "Dairy" &&
+              ingredient.ingredientType !== "Vegan Milk" &&
+              ingredient.ingredientType !== "Fruit" &&
+              ingredient.ingredientType !== "Veg and Fruit" &&
+              ingredient.ingredientType !== "Veg"
+            );
+          })
           .map((ingredient) => {
             const isLastDayOfMonthVar = isLastDayOfMonth(currentDate);
+            const ingredientName = ingredient.name;
             const { totalQuantity, bulkValue } = monthlyOrderTotalQuantity(
               nextMonthMealPlan,
-              ingredient.name,
+              ingredientName,
               ingredient.bulkOrder
             );
+            // console.log({ currentDate: currentDate.toISOString().split("T")[0] });
             const currentStock = ingredient.stock || 0;
             const remainingMealPlan = isLastDayOfMonthVar
               ? 0
               : monthlyOrderRemainingQuantity(
                   currentMonthMealPlan,
-                  ingredient.name,
+                  ingredientName,
                   currentDate
                 );
             const closingStock = currentStock - remainingMealPlan;
@@ -67,19 +77,53 @@ export default async function handler(req, res) {
 
             return {
               _id: ingredient._id,
-              name: ingredient.name,
+              name: ingredientName,
               bulkOrder: bulkValue.toFixed(2),
               monthlyMealPlan: totalQuantity.toFixed(2),
               remainingMealPlan: remainingMealPlan.toFixed(2),
               currentStock: currentStock.toFixed(2),
               adjustment: adjustment.toFixed(2),
               purchaseUnit: ingredient.purchaseUnit,
+              closingStock: closingStock.toFixed(2),
               vendor: ingredient.vendor,
               sponsored: ingredient.sponsored,
             };
           });
 
-        res.status(200).json({ success: true, data: response });
+        let finalResponse = { all: {}, buy: {}, sell: {}, redundant: {} };
+        response.forEach((ingredient) => {
+          // Push to all filters
+          if (finalResponse.all[ingredient.vendor]) {
+            finalResponse.all[ingredient.vendor].push(ingredient);
+          } else {
+            finalResponse.all[ingredient.vendor] = [ingredient];
+          }
+
+          // condition to push to sell
+          if (
+            Number(ingredient.monthlyMealPlan) < Number(ingredient.closingStock)
+          ) {
+            if (finalResponse.sell[ingredient.vendor]) {
+              finalResponse.sell[ingredient.vendor].push(ingredient);
+            } else {
+              finalResponse.sell[ingredient.vendor] = [ingredient];
+            }
+          } else if (!Number(ingredient.monthlyMealPlan)) {
+            if (finalResponse.redundant[ingredient.vendor]) {
+              finalResponse.redundant[ingredient.vendor].push(ingredient);
+            } else {
+              finalResponse.redundant[ingredient.vendor] = [ingredient];
+            }
+          } else {
+            if (finalResponse.buy[ingredient.vendor]) {
+              finalResponse.buy[ingredient.vendor].push(ingredient);
+            } else {
+              finalResponse.buy[ingredient.vendor] = [ingredient];
+            }
+          }
+        });
+
+        res.status(200).json({ success: true, data: finalResponse });
       } catch (error) {
         res.status(500).json({ success: false, message: error.message });
       }

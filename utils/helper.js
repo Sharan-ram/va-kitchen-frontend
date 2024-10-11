@@ -38,7 +38,7 @@ export const monthlyOrderTotalQuantity = (
     ["earlyMorning", "breakfast", "lunch", "evening", "dinner"].forEach(
       (meal) => {
         if (day[meal]) {
-          day[meal].recipes.forEach((recipe) => {
+          day[meal]?.recipes.forEach((recipe) => {
             recipe.ingredients.forEach((ing) => {
               if (ing.ingredient.name === ingredientName) {
                 const mealCounts = day[meal].mealCounts;
@@ -88,7 +88,7 @@ export const monthlyOrderRemainingQuantity = (
         (meal) => {
           // console.log({ dayDate });
           if (day[meal]) {
-            day[meal].recipes.forEach((recipe) => {
+            day[meal]?.recipes.forEach((recipe) => {
               // console.log({ splitRecipe });
               recipe.ingredients.forEach((ing) => {
                 if (ing.ingredient.name === ingredientName) {
@@ -139,13 +139,14 @@ export const weeklyOrderTotalQuantity = (
   //   console.log({ startTotal: start, endTotal: end });
 
   //   console.log({ mealPlan });
+  console.log({ days: mealPlan.days, mealPlan });
   mealPlan?.days.forEach((day) => {
     const dayDate = parseDate(day.date);
     if (dayDate >= start && dayDate <= end) {
       ["earlyMorning", "breakfast", "lunch", "evening", "dinner"].forEach(
         (meal) => {
           if (day[meal]) {
-            day[meal].recipes.forEach((recipe) => {
+            day[meal]?.recipes.forEach((recipe) => {
               recipe.ingredients.forEach((ing) => {
                 if (ing.ingredient.name === ingredientName) {
                   const mealCounts = day[meal].mealCounts;
@@ -202,7 +203,7 @@ export const weeklyOrderRemainingQuantity = (
     ["earlyMorning", "breakfast", "lunch", "evening", "dinner"].forEach(
       (meal) => {
         if (day[meal]) {
-          day[meal].recipes.forEach((recipe) => {
+          day[meal]?.recipes.forEach((recipe) => {
             recipe.ingredients.forEach((ing) => {
               if (ing.ingredient.name === ingredientName) {
                 const mealCounts = day[meal].mealCounts;

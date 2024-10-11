@@ -8,7 +8,7 @@ const authMiddleware = (req, res, roles = []) => {
   const token =
     req.headers.authorization && req.headers.authorization.split(" ")[1];
 
-  console.log({ token });
+  // console.log({ token });
 
   if (!token) {
     res.status(401).json({ message: "Access denied: No token provided" });
