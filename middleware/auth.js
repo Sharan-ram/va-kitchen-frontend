@@ -1,29 +1,36 @@
 import jwt from "jsonwebtoken";
 
-export default function authMiddleware(roles = []) {
+const authMiddleware = (req, res, roles = []) => {
   if (typeof roles === "string") {
     roles = [roles];
   }
 
-  return (req, res, next) => {
-    const token =
-      req.headers.authorization && req.headers.authorization.split(" ")[1];
+  const token =
+    req.headers.authorization && req.headers.authorization.split(" ")[1];
 
-    if (!token) {
-      return res.status(401).json({ message: "Access denied" });
+  console.log({ token });
+
+  if (!token) {
+    res.status(401).json({ message: "Access denied: No token provided" });
+    return false; // Stop further execution
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+
+    if (roles.length && !roles.includes(req.user.role)) {
+      res
+        .status(403)
+        .json({ message: "Forbidden: You don't have access to this resource" });
+      return false; // Stop further execution
     }
 
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = decoded;
+    return true; // Successful authentication
+  } catch (error) {
+    res.status(401).json({ message: "Access denied: Invalid token" });
+    return false; // Stop further execution
+  }
+};
 
-      if (roles.length && !roles.includes(req.user.role)) {
-        return res.status(403).json({ message: "Forbidden" });
-      }
-
-      next();
-    } catch (error) {
-      return res.status(401).json({ message: "Invalid token" });
-    }
-  };
-}
+export default authMiddleware;

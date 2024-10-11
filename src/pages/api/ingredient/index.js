@@ -29,7 +29,9 @@ export default async function handler(req, res) {
     case "POST":
       // Create a new ingredient
       try {
-        authMiddleware(req, res, ["admin"]); // Only admin can create
+        if (!authMiddleware(req, res, ["admin", "user"])) {
+          return;
+        }
         const newIngredient = new Ingredient(req.body);
         const savedIngredient = await newIngredient.save();
         res.status(201).json(savedIngredient);

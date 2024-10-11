@@ -25,7 +25,9 @@ export default async function handler(req, res) {
     case "POST":
       // Update diet type for multiple recipes
       try {
-        await authMiddleware(req, res, ["admin"]); // Protect route with middleware
+        if (!authMiddleware(req, res, ["admin", "user"])) {
+          return;
+        }
         const updates = req.body.recipes;
 
         if (!Array.isArray(updates) || updates.length === 0) {

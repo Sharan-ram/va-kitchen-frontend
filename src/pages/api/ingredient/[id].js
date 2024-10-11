@@ -23,7 +23,9 @@ export default async function handler(req, res) {
       break;
     case "PUT":
       try {
-        authMiddleware(req, res, ["admin"]); // Only admin can update
+        if (!authMiddleware(req, res, ["admin"])) {
+          return;
+        }
         const updatedIngredient = await Ingredient.findByIdAndUpdate(
           id,
           req.body,
@@ -40,7 +42,9 @@ export default async function handler(req, res) {
       break;
     case "DELETE":
       try {
-        authMiddleware(req, res, ["admin"]); // Only admin can delete
+        if (!authMiddleware(req, res, ["admin"])) {
+          return;
+        }
         const deletedIngredient = await Ingredient.findByIdAndDelete(id);
         if (!deletedIngredient)
           return res

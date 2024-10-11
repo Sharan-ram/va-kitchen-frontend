@@ -8,7 +8,10 @@ export default async function handler(req, res) {
   switch (req.method) {
     case "GET": // Bulk order summary
       try {
-        authMiddleware(req, res, ["admin", "user"]);
+        if (!authMiddleware(req, res, ["admin", "user"])) {
+          return;
+        }
+        console.log({ user: req.user });
         const ingredients = await Ingredient.find(
           {},
           "_id name bulkOrder purchaseUnit"
@@ -21,7 +24,9 @@ export default async function handler(req, res) {
 
     case "POST": // Update bulk order
       try {
-        authMiddleware(req, res, ["admin"]);
+        if (!authMiddleware(req, res, ["admin", "user"])) {
+          return;
+        }
         const updates = req.body.ingredients;
 
         if (!Array.isArray(updates) || updates.length === 0) {

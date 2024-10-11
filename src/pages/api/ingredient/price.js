@@ -8,7 +8,9 @@ export default async function handler(req, res) {
   switch (req.method) {
     case "GET": // Price summary
       try {
-        authMiddleware(req, res, ["admin", "user"]);
+        if (!authMiddleware(req, res, ["admin", "user"])) {
+          return;
+        }
         const ingredients = await Ingredient.find(
           {},
           "_id name price purchaseUnit"
@@ -21,7 +23,9 @@ export default async function handler(req, res) {
 
     case "POST": // Update price
       try {
-        authMiddleware(req, res, ["admin"]);
+        if (!authMiddleware(req, res, ["admin"])) {
+          return;
+        }
         const updates = req.body.ingredients;
 
         if (!Array.isArray(updates) || updates.length === 0) {

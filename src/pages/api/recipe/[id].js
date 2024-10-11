@@ -12,7 +12,9 @@ export default async function handler(req, res) {
     case "GET":
       // GET recipe by ID
       try {
-        await authMiddleware(req, res, ["admin", "user"]); // Ensure proper authentication
+        if (!authMiddleware(req, res, ["admin", "user"])) {
+          return;
+        }
 
         const recipe = await Recipe.findById(id);
 
@@ -38,7 +40,9 @@ export default async function handler(req, res) {
     case "PUT":
       // Update a recipe by ID
       try {
-        await authMiddleware(req, res, ["admin"]); // Only allow admin to update
+        if (!authMiddleware(req, res, ["admin", "user"])) {
+          return;
+        }
 
         const updatedRecipe = await Recipe.findByIdAndUpdate(id, req.body, {
           new: true,
