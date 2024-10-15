@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     case "GET":
       // Get all ingredients
       try {
-        console.log(".................API is called");
+        // console.log(".................API is called");
         const searchText = req.query.search || "";
         const query = searchText
           ? { name: { $regex: new RegExp(searchText, "i") } }
