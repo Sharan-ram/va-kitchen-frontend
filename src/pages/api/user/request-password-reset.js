@@ -23,7 +23,7 @@ export default async function handler(req, res) {
       await user.save();
 
       // Send email
-      const resetUrl = `${process.env.FRONTEND_URL}/user/reset-password?token=${resetPasswordToken}`;
+      const resetUrl = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/user/reset-password?token=${resetPasswordToken}`;
       const mailOptions = {
         to: user.email,
         from: process.env.EMAIL,
