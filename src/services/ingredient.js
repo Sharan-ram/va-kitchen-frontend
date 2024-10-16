@@ -27,6 +27,8 @@ export const searchIngredient = async (searchText) => {
         : `/api/ingredient`;
     }
 
+    console.log({ url });
+
     // console.log({ url });
     const response = await axios.get(url);
     // console.log({ response });
