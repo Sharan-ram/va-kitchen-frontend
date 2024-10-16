@@ -215,12 +215,12 @@ const Ingredients = ({ ingredients }) => {
   );
 };
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   const ingredients = await searchIngredient();
 
   return {
     props: { ingredients },
-    // revalidate: 3600
+    revalidate: 3600,
   };
 }
 
