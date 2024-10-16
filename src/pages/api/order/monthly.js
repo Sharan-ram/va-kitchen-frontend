@@ -48,7 +48,7 @@ export default async function handler(req, res) {
           .filter((ingredient) => {
             return (
               ingredient.ingredientType !== "Dairy" &&
-              ingredient.ingredientType !== "Vegan Milk" &&
+              // ingredient.ingredientType !== "Vegan Milk" &&
               ingredient.ingredientType !== "Fruit" &&
               ingredient.ingredientType !== "Veg and Fruit" &&
               ingredient.ingredientType !== "Veg"
