@@ -3,10 +3,7 @@ import axios from "axios";
 
 export const saveRecipe = async (payload) => {
   try {
-    const response = await axiosInstance.post(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/recipe`,
-      payload
-    );
+    const response = await axiosInstance.post(`/api/recipe`, payload);
     return response;
   } catch (e) {
     throw new Error(e);
@@ -16,9 +13,16 @@ export const saveRecipe = async (payload) => {
 export const searchRecipe = async (searchText) => {
   try {
     let response;
-    let url = searchText
-      ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/recipe?search=${searchText}`
-      : `${process.env.NEXT_PUBLIC_BACKEND_URL}/recipe`;
+    let url;
+    if (typeof window === "undefined") {
+      // Server-side: Use absolute URL
+      url = searchText
+        ? `${process.env.NEXT_PUBLIC_FRONTEND_URL}/api/recipe?search=${searchText}`
+        : `${process.env.NEXT_PUBLIC_FRONTEND_URL}/api/recipe`;
+    } else {
+      // Client-side: Use relative URL
+      url = searchText ? `/api/recipe?search=${searchText}` : `/api/recipe`;
+    }
     response = await axios.get(url);
     return response.data.data;
   } catch (e) {
@@ -29,9 +33,7 @@ export const searchRecipe = async (searchText) => {
 export const getRecipeById = async (recipeId) => {
   try {
     let response;
-    response = await axiosInstance.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/recipe/${recipeId}`
-    );
+    response = await axiosInstance.get(`/api/recipe/${recipeId}`);
     return response.data.data;
   } catch (e) {
     throw new Error(e);
@@ -41,7 +43,7 @@ export const getRecipeById = async (recipeId) => {
 export const updateRecipe = async (recipe) => {
   try {
     const response = await axiosInstance.put(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/recipe/${recipe._id}`,
+      `/api/recipe/${recipe._id}`,
       recipe
     );
     return response;
@@ -52,9 +54,7 @@ export const updateRecipe = async (recipe) => {
 
 export const getRecipesDietType = async () => {
   try {
-    const response = await axiosInstance.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/recipe/diet-type`
-    );
+    const response = await axiosInstance.get(`/api/recipe/diet-type`);
     return response.data.data;
   } catch (e) {
     throw new Error(e);
@@ -63,10 +63,7 @@ export const getRecipesDietType = async () => {
 
 export const updateRecipesDietType = async (payload) => {
   try {
-    const response = await axiosInstance.post(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/recipe/update-diet-type`,
-      payload
-    );
+    const response = await axiosInstance.post(`/api/recipe/diet-type`, payload);
     return response;
   } catch (e) {
     throw new Error(e);

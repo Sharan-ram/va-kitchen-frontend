@@ -11,11 +11,16 @@
   "dependencies": {
     "@vercel/speed-insights": "^1.0.12",
     "axios": "^1.6.8",
+    "bcrypt": "^5.1.1",
     "classnames": "^2.5.1",
     "date-fns": "^2.30.0",
     "eslint": "8.46.0",
     "eslint-config-next": "13.4.12",
+    "googleapis": "^144.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.7.1",
     "next": "13.5",
+    "nodemailer": "^6.9.15",
     "phosphor-react": "^1.4.1",
     "react": "18.2.0",
     "react-date-picker": "^10.5.0",
@@ -24,6 +29,7 @@
     "react-toastify": "^10.0.5"
   },
   "devDependencies": {
+    "@types/whatwg-url": "^11.0.5",
     "autoprefixer": "^10.4.15",
     "postcss": "^8.4.29",
     "tailwindcss": "^3.3.3"
