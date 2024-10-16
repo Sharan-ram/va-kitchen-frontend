@@ -14,15 +14,8 @@ export const searchRecipe = async (searchText) => {
   try {
     let response;
     let url;
-    if (typeof window === "undefined") {
-      // Server-side: Use absolute URL
-      url = searchText
-        ? `${process.env.NEXT_PUBLIC_FRONTEND_URL}/api/recipe?search=${searchText}`
-        : `${process.env.NEXT_PUBLIC_FRONTEND_URL}/api/recipe`;
-    } else {
-      // Client-side: Use relative URL
-      url = searchText ? `/api/recipe?search=${searchText}` : `/api/recipe`;
-    }
+    // Client-side: Use relative URL
+    url = searchText ? `/api/recipe?search=${searchText}` : `/api/recipe`;
     response = await axios.get(url);
     return response.data.data;
   } catch (e) {
