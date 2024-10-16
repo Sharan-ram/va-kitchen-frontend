@@ -215,7 +215,7 @@ const Ingredients = ({ ingredients }) => {
   );
 };
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   const ingredients = await searchIngredient();
 
   return {
