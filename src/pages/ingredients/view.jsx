@@ -220,7 +220,7 @@ export async function getStaticProps() {
 
   return {
     props: { ingredients },
-    // revalidate: 3600
+    revalidate: 3600,
   };
 }
 
