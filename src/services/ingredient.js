@@ -13,10 +13,19 @@ export const saveIngredient = async (payload) => {
 export const searchIngredient = async (searchText) => {
   try {
     let url;
-    // Client-side: Use relative URL
-    url = searchText
-      ? `/api/ingredient?search=${searchText}`
-      : `/api/ingredient`;
+
+    // Check if running on the server (no window object) or client
+    if (typeof window === "undefined") {
+      // Server-side: Use absolute URL
+      url = searchText
+        ? `${process.env.NEXT_PUBLIC_FRONTEND_URL}/api/ingredient?search=${searchText}`
+        : `${process.env.NEXT_PUBLIC_FRONTEND_URL}/api/ingredient`;
+    } else {
+      // Client-side: Use relative URL
+      url = searchText
+        ? `/api/ingredient?search=${searchText}`
+        : `/api/ingredient`;
+    }
 
     // console.log({ url });
     const response = await axios.get(url);
