@@ -122,7 +122,8 @@ export const weeklyOrderTotalQuantity = (
   mealPlan,
   ingredientName,
   startDate,
-  endDate
+  endDate,
+  bulkOrder
 ) => {
   let totalQuantity = 0;
   let bulkValue = 0;
