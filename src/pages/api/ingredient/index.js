@@ -1,7 +1,7 @@
 console.log("Ingredient API file loaded"); // Add this at the very top
 
 import dbConnect from "../../../../lib/dbConnect";
-import Ingredient from "../../../../models/Ingredient";
+import Ingredient from "../../../../models/ingredient";
 import authMiddleware from "../../../../middleware/auth";
 
 export default async function handler(req, res) {

@@ -1,5 +1,5 @@
 import dbConnect from "../../../../lib/dbConnect";
-import Recipe from "../../../../models/Recipe";
+import Recipe from "../../../../models/recipe";
 import authMiddleware from "../../../../middleware/auth";
 
 export default async function handler(req, res) {

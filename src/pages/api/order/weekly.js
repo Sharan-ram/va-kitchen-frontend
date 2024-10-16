@@ -1,6 +1,6 @@
 import dbConnect from "../../../../lib/dbConnect";
 import MealPlan from "../../../../models/mealPlan";
-import Ingredient from "../../../../models/Ingredient";
+import Ingredient from "../../../../models/ingredient";
 import {
   parseDate,
   weeklyOrderTotalQuantity,

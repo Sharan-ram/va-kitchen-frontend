@@ -1,6 +1,6 @@
 import dbConnect from "../../../../lib/dbConnect";
-import MealPlan from "../../../../models/MealPlan";
-import User from "../../../../models/User";
+import MealPlan from "../../../../models/mealPlan";
+import User from "../../../../models/user";
 import authMiddleware from "../../../../middleware/auth";
 
 export default async function handler(req, res) {
