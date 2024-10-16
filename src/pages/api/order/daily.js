@@ -1,5 +1,5 @@
 import dbConnect from "../../../../lib/dbConnect";
-import MealPlan from "../../../../models/mealPlan";
+import MealPlan from "../../../../models/MealPlan";
 import {
   dailyOrderIngredients,
   getMealPlanForDateRange,

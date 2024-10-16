@@ -1,5 +1,5 @@
 // const MealPlan = require("../models/mealPlan");
-import MealPlan from "../models/mealPlan";
+import MealPlan from "../models/MealPlan";
 
 export const monthNames = [
   "January",

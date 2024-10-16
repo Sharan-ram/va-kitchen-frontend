@@ -1,6 +1,6 @@
 import dbConnect from "../../../../lib/dbConnect";
-import MealPlan from "../../../../models/mealPlan";
-import Ingredient from "../../../../models/ingredient";
+import MealPlan from "../../../../models/MealPlan";
+import Ingredient from "../../../../models/Ingredient";
 import {
   monthlyOrderTotalQuantity,
   monthlyOrderRemainingQuantity,
