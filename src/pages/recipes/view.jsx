@@ -308,12 +308,12 @@ const Recipes = ({ recipes }) => {
   );
 };
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const recipes = await searchRecipe();
 
   return {
     props: { recipes },
-    revalidate: 3600,
+    // revalidate: 3600,
   };
 }
 
