@@ -14,8 +14,9 @@ export const generateGoogleSheet = async ({ payload, title }) => {
   try {
     const response = await axiosInstance.post(
       `/api/google/generate-googlesheet`,
-      { data: payload, title }
+      { data: payload, title, username: "user1" }
     );
+    console.log({ response });
     return response;
   } catch (e) {
     throw new Error(e);
