@@ -3,6 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const { google } = require("googleapis");
+import authMiddleware from "../../../../middleware/auth";
 
 const ROOT_PATH = process.cwd();
 
@@ -86,6 +87,7 @@ async function getNewToken(username) {
       "https://www.googleapis.com/auth/drive",
     ],
     prompt: "consent",
+    state: username,
   });
 
   return authUrl; // Instead of console logging, return the URL
@@ -161,11 +163,19 @@ export default async function handler(req, res) {
 
   if (method === "POST") {
     try {
-      const { data, title, username } = req.body; // Assume data comes from the request body
+      const { data, title } = req.body; // Assume data comes from the request body
+
+      if (!authMiddleware(req, res, ["admin", "user"])) {
+        return;
+      }
+
+      // console.log({ user: req.user, session: req.session });
+
+      const username = req.user.userId;
 
       // Authorize and get the redirect URL if needed
       const authUrl = await authorizeClient(username);
-      console.log({ authUrl });
+      // console.log({ authUrl });
       if (authUrl) {
         res.status(200).json({ authUrl }); // Redirect the user to the authorization URL
       }

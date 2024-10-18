@@ -2,6 +2,7 @@
 import { google } from "googleapis";
 import fs from "fs";
 import path from "path";
+import authMiddleware from "../../../../middleware/auth";
 
 // Define paths for token and credentials
 const TOKEN_PATH = (username) =>
@@ -42,7 +43,8 @@ const initializeOAuthClient = () => {
 // API route handler
 export default async function handler(req, res) {
   if (req.method === "GET") {
-    const { code } = req.query;
+    const { code, state: username } = req.query;
+    console.log({ username });
 
     // Initialize the OAuth2 client
     initializeOAuthClient();
@@ -53,7 +55,9 @@ export default async function handler(req, res) {
       oAuth2Client.setCredentials(tokens);
 
       // Store the token securely
-      const username = "user1"; // Replace with actual user identification
+      // console.log({ user: req.user });
+
+      // const username = "user1";
       fs.writeFileSync(TOKEN_PATH(username), JSON.stringify(tokens));
 
       // Redirect or respond with success

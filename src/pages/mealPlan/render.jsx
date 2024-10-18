@@ -205,26 +205,14 @@ const RenderMealPlanPage = () => {
         "dd-MM-yyyy"
       )} Meal Plan`;
 
-      console.log({ tableData });
+      // console.log({ tableData });
 
       // Call the API to generate the Google Sheet
-      const res = await generateGoogleSheet({
+      await generateGoogleSheet({
         payload: tableData,
         title,
       });
-
-      console.log({ res });
-
-      if (res.data.authUrl) {
-        // Redirect the user to the authorization URL
-        window.open(res.data.authUrl, "_blank");
-      } else if (res.data.url) {
-        // Open the Google Sheet in a new tab
-        window.open(res.data.url, "_blank");
-        setGSheetExportLoading(false);
-      } else {
-        throw new Error("No URL returned from the server.");
-      }
+      setGSheetExportLoading(false);
     } catch (error) {
       console.error("Error exporting to Google Sheet:", error);
       setGSheetExportLoading(false);
