@@ -34,3 +34,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# .gitignore
+/src/pages/api/google/token_*.json
+/src/pages/api/google/credentials.json
+

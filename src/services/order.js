@@ -12,11 +12,21 @@ export const getMonthlyOrder = async () => {
 
 export const generateGoogleSheet = async ({ payload, title }) => {
   try {
-    const response = await axiosInstance.post(
-      `/api/google/generate-googlesheet`,
-      { data: payload, title }
-    );
-    return response;
+    const res = await axiosInstance.post(`/api/google/generate-googlesheet`, {
+      data: payload,
+      title,
+      username: "user1",
+    });
+    if (res.data.authUrl) {
+      // Redirect the user to the authorization URL
+      window.open(res.data.authUrl, "_blank");
+    } else if (res.data.url) {
+      // Open the Google Sheet in a new tab
+      window.open(res.data.url, "_blank");
+    } else {
+      throw new Error("No URL returned from the server.");
+    }
+    return res;
   } catch (e) {
     throw new Error(e);
   }

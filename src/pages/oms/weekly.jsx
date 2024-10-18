@@ -37,15 +37,9 @@ const WeeklyOrder = () => {
     setGeneratePurchaseOrder(vendor);
     const tableData = [
       ["Ingredient", "Quantity", "Purchase Unit"], // Headers
-      ...ingredients[selectedTab.toLowerCase()][vendor]
-        .filter(
-          (ingredient) => ingredient.adjustment > 0 && !ingredient.sponsored
-        )
-        .map(({ name, adjustment, purchaseUnit }) => [
-          name,
-          adjustment,
-          purchaseUnit,
-        ]),
+      ...ingredients[selectedTab.toLowerCase()][vendor].map(
+        ({ name, adjustment, purchaseUnit }) => [name, adjustment, purchaseUnit]
+      ),
     ];
 
     try {
@@ -53,15 +47,11 @@ const WeeklyOrder = () => {
         endDate,
         "dd-MM-yyyy"
       )}`;
-      const res = await generateGoogleSheet({
+      await generateGoogleSheet({
         payload: tableData,
         title,
       });
-      if (res.data.success) {
-        // Open the Google Sheet in a new tab
-        window.open(res.data.sheetUrl, "_blank");
-        setGeneratePurchaseOrder(false);
-      }
+      setGeneratePurchaseOrder(false);
     } catch (error) {
       console.error("Error generating purchase order:", error);
       setGeneratePurchaseOrder(false);

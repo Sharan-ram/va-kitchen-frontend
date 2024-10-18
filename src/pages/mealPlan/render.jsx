@@ -166,31 +166,30 @@ const RenderMealPlanPage = () => {
   const exportToGSheets = async () => {
     setGSheetExportLoading(true);
     const data = [];
+
     mealPlan.forEach((mealPlanObj) => {
       mealPlanObj.days.forEach((dayObj) => {
         ["breakfast", "lunch", "dinner"].forEach((meal, mealIndex) => {
           let mealArr = [dayObj.date, meal.toUpperCase()];
           let uniqueRecipes;
+
           if (dayObj[meal]) {
-            // Use a Set to ensure unique recipe names
             uniqueRecipes = new Set();
 
             dayObj[meal].recipes?.forEach((recipeObj) => {
-              // Remove ' - Vegan', ' - Non Vegan', and parentheses with content
               const recipeName = recipeObj.name
-                .replace(/ - Vegan| - Non Vegan| - Gluten Free/, "") // Remove Vegan/Non-Vegan tags
-                .replace(/\s*\(.*?\)/g, ""); // Remove anything inside parentheses, including the parentheses
+                .replace(/ - Vegan| - Non Vegan| - Gluten Free/, "")
+                .replace(/\s*\(.*?\)/g, "");
 
-              // Add the cleaned recipe name to the Set
               uniqueRecipes.add(recipeName.trim());
             });
-            const cell = Array.from(uniqueRecipes).join(", ");
 
-            // Join all unique recipe names with newlines
+            const cell = Array.from(uniqueRecipes).join(", ");
             mealArr.push(cell);
           } else {
             mealArr.push("");
           }
+
           data.push(mealArr);
         });
 
@@ -198,7 +197,6 @@ const RenderMealPlanPage = () => {
       });
     });
 
-    // console.log({ data });
     const tableData = [["Date", "Meal", "Menu", "Bungalow Menu"], ...data];
 
     try {
@@ -206,20 +204,19 @@ const RenderMealPlanPage = () => {
         endDate,
         "dd-MM-yyyy"
       )} Meal Plan`;
-      const res = await generateGoogleSheet({
+
+      // console.log({ tableData });
+
+      // Call the API to generate the Google Sheet
+      await generateGoogleSheet({
         payload: tableData,
         title,
       });
-      if (res.data.success) {
-        // Open the Google Sheet in a new tab
-        window.open(res.data.sheetUrl, "_blank");
-        setGSheetExportLoading(false);
-      }
+      setGSheetExportLoading(false);
     } catch (error) {
       console.error("Error exporting to Google Sheet:", error);
       setGSheetExportLoading(false);
       toast.error("Error exporting to Google Sheet!");
-      // alert("Failed to generate purchase order.");
     }
   };
 

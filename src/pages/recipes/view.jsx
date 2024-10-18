@@ -136,16 +136,11 @@ const Recipes = ({ recipes }) => {
     ];
 
     try {
-      const res = await generateGoogleSheet({
+      await generateGoogleSheet({
         payload: tableData,
         title: `Recipes Databse`,
       });
-      if (res.data.success) {
-        // Open the Google Sheet in a new tab
-        window.open(res.data.sheetUrl, "_blank");
-        setExportInProgress(false);
-        toast.success("Export successful!");
-      }
+      toast.success("Export successful!");
     } catch (error) {
       console.error("Export exporting!", error);
       setExportInProgress(false);
