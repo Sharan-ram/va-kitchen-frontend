@@ -158,19 +158,23 @@ const MonthlyOrder = () => {
                               <input
                                 type="text"
                                 onChange={(e) => {
-                                  const updatedIngredients = ingredients.map(
-                                    (ing) => {
-                                      // console.log({ ingredient, ing });
-                                      if (ing._id === ingredient._id) {
-                                        return {
-                                          ...ingredient,
-                                          adjustment: e.target.value,
-                                        };
-                                      }
-                                      return ing;
-                                    }
-                                  );
-                                  setIngredients(updatedIngredients);
+                                  setIngredients({
+                                    ...ingredients,
+                                    [selectedTab.toLowerCase()]: {
+                                      ...ingredients[selectedTab.toLowerCase()],
+                                      [vendor]: ingredients[
+                                        selectedTab.toLowerCase()
+                                      ][vendor].map((ing) => {
+                                        if (ing._id === _id) {
+                                          return {
+                                            ...ing,
+                                            adjustment: e.target.value,
+                                          };
+                                        }
+                                        return ing;
+                                      }),
+                                    },
+                                  });
                                 }}
                                 value={adjustment}
                                 className="pl-10 pr-4 py-2 border rounded-md"
