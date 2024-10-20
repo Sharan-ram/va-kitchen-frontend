@@ -1,5 +1,6 @@
 import axiosInstance from "@/utils/axiosInstance";
 import { format } from "date-fns";
+import pako from "pako";
 
 export const getMealPlanPerMonth = async (year, month) => {
   try {
@@ -28,7 +29,18 @@ export const getMealPlanBetweenDateRange = async (startDate, endDate) => {
 
 export const saveNewMealPlan = async (payload) => {
   try {
-    const response = await axiosInstance.post(`/api/mealPlan`, payload);
+    const compressedPayload = pako.gzip(JSON.stringify(payload));
+    const response = await axiosInstance.post(
+      `/api/mealPlan`,
+      compressedPayload,
+      {
+        headers: {
+          "Content-Encoding": "gzip",
+          "Content-Type": "application/json",
+        },
+        transformRequest: [(data) => data],
+      }
+    );
     return response.data.data;
   } catch (e) {
     throw new Error(e);
@@ -38,9 +50,18 @@ export const saveNewMealPlan = async (payload) => {
 export const updateExistingMealPlan = async (mealPlan) => {
   try {
     const { __v, ...rest } = mealPlan;
-    const response = await axiosInstance.put(`/api/mealPlan/${mealPlan._id}`, {
-      ...rest,
-    });
+    const compressedPayload = pako.gzip(JSON.stringify({ ...rest }));
+    const response = await axiosInstance.put(
+      `/api/mealPlan/${mealPlan._id}`,
+      compressedPayload,
+      {
+        headers: {
+          "Content-Encoding": "gzip",
+          "Content-Type": "/application/octet-stream",
+        },
+        transformRequest: [(data) => data],
+      }
+    );
     return response;
   } catch (e) {
     throw new Error(e);

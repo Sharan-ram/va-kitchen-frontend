@@ -1,6 +1,7 @@
 import dbConnect from "../../../../lib/dbConnect";
 import MealPlan from "../../../../models/MealPlan";
 import authMiddleware from "../../../../middleware/auth";
+import decompressMiddleware from "../../../../middleware/decompression";
 
 export default async function handler(req, res) {
   await dbConnect(); // Connect to the database
@@ -8,6 +9,8 @@ export default async function handler(req, res) {
     method,
     query: { id },
   } = req;
+  // console.log({ bodyBefore: req.body });
+  await decompressMiddleware(req, res);
 
   switch (method) {
     case "PUT":
@@ -15,7 +18,10 @@ export default async function handler(req, res) {
         if (!authMiddleware(req, res, ["admin", "user"])) {
           return;
         }
+
         const updatedFields = req.body;
+
+        // console.log({ bodyAfter: req.body });
 
         // Find the meal plan by ID and update it
         let mealPlan = await MealPlan.findById(id);
@@ -67,3 +73,9 @@ export default async function handler(req, res) {
         .end(`Method ${method} Not Allowed`);
   }
 }
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
