@@ -15,7 +15,7 @@ export default async function handler(req, res) {
         if (!authMiddleware(req, res, ["admin", "user"])) {
           return;
         }
-        console.log({ body: req.body });
+        // console.log({ body: req.body });
         const mealPlan = new MealPlan(req.body); // Create a new meal plan
         await mealPlan.save(); // Save the meal plan to the database
         return res.status(201).json({ success: true, data: mealPlan });
@@ -51,8 +51,6 @@ export default async function handler(req, res) {
 
 export const config = {
   api: {
-    bodyParser: {
-      sizeLimit: "5mb",
-    },
+    bodyParser: false,
   },
 };
