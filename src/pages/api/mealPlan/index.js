@@ -1,6 +1,7 @@
 import dbConnect from "../../../../lib/dbConnect";
 import MealPlan from "../../../../models/MealPlan";
 import authMiddleware from "../../../../middleware/auth";
+import decompressMiddleware from "../../../../middleware/decompression";
 
 export default async function handler(req, res) {
   await dbConnect(); // Connect to the database
@@ -10,9 +11,11 @@ export default async function handler(req, res) {
   switch (method) {
     case "POST":
       try {
+        await decompressMiddleware(req, res);
         if (!authMiddleware(req, res, ["admin", "user"])) {
           return;
         }
+        console.log({ body: req.body });
         const mealPlan = new MealPlan(req.body); // Create a new meal plan
         await mealPlan.save(); // Save the meal plan to the database
         return res.status(201).json({ success: true, data: mealPlan });
@@ -45,3 +48,11 @@ export default async function handler(req, res) {
         .end(`Method ${method} Not Allowed`);
   }
 }
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "5mb",
+    },
+  },
+};

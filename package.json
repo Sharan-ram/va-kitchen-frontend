@@ -22,6 +22,7 @@
     "mongoose": "^8.7.1",
     "next": "13.5",
     "nodemailer": "^6.9.15",
+    "pako": "^2.1.0",
     "phosphor-react": "^1.4.1",
     "react": "18.2.0",
     "react-date-picker": "^10.5.0",
