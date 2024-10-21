@@ -52,6 +52,15 @@ export const updateRecipe = async (recipe) => {
   }
 };
 
+export const deleteRecipe = async (recipeId) => {
+  try {
+    const response = await axiosInstance.delete(`/api/recipe/${recipeId}`);
+    return response;
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+
 export const getRecipesDietType = async () => {
   try {
     const response = await axiosInstance.get(`/api/recipe/diet-type`);

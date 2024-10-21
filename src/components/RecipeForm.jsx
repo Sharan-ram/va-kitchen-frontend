@@ -2,7 +2,7 @@ import { useState } from "react";
 import Input from "./Input"; // Assuming you have an Input component for text and select fields
 import classNames from "classnames";
 import { searchIngredient } from "@/services/ingredient";
-import { updateRecipe } from "@/services/recipe";
+import { updateRecipe, deleteRecipe } from "@/services/recipe";
 import { saveRecipe } from "@/services/recipe";
 import { usualMealTime, mealType, dietType } from "@/helpers/constants";
 import { toast } from "react-toastify";
@@ -33,6 +33,7 @@ const RecipeForm = ({ type, recipe }) => {
   const [searchResults, setSearchResults] = useState();
   const [showSearchResults, setShowSearchResults] = useState();
   const [recipeSaveLoading, setRecipeSaveLoading] = useState(false);
+  const [deleteRecipeLoading, setDeleteRecipeLoading] = useState(false);
 
   const handleChange = (e, index) => {
     const { name, value } = e.target;
@@ -173,6 +174,20 @@ const RecipeForm = ({ type, recipe }) => {
     // setSearchText("");
     setShowSearchResults(false);
     setSearchResults([]);
+  };
+
+  const handleDelete = async () => {
+    try {
+      setDeleteRecipeLoading(true);
+      await deleteRecipe(formData._id);
+      setDeleteRecipeLoading(false);
+      toast.success("Recipe Deleted successfully!");
+      setFormData(initialState);
+    } catch (e) {
+      console.error(e);
+      setDeleteRecipeLoading(false);
+      toast.error("Recipe Delete unsuccessful!");
+    }
   };
 
   const submitDisabled =
@@ -587,6 +602,19 @@ const RecipeForm = ({ type, recipe }) => {
           >
             {recipeSaveLoading ? <Loader /> : "Submit"}
           </button>
+
+          {type === "edit" && (
+            <button
+              className={classNames(
+                "px-4 py-2 bg-red-500 text-white rounded-md cursor-pointer ml-6",
+                deleteRecipeLoading && "cursor-not-allowed"
+              )}
+              onClick={handleDelete}
+              disabled={deleteRecipeLoading}
+            >
+              {deleteRecipeLoading ? <Loader /> : "Delete Recipe"}
+            </button>
+          )}
         </div>
       </form>
     </div>

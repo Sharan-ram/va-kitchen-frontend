@@ -134,6 +134,7 @@ const RecipeSchema = mongoose.Schema({
     type: [String], // Diet type is now an array
     enum: ["vegan", "nonVegan", "glutenFree"],
     default: ["nonVegan"],
+    required: true,
   },
   label: LabelSchema,
   tableSetting: TableSettingSchema,
