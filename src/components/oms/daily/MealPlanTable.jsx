@@ -57,11 +57,13 @@ const MealPlanTable = ({
     return false;
   };
 
-  const isRecipeSelected = (recipeName) => {
+  const isRecipeSelected = (recipeName, date) => {
     if (selectAll) return true;
+    console.log({ recipeName, date });
     const recipe = selectedRecipes.find(
-      (recipeObj) => recipeObj.recipe === recipeName
+      (recipeObj) => recipeObj.recipe === recipeName && recipeObj.date === date
     );
+    console.log({ recipe });
     if (recipe) return true;
     return false;
   };
@@ -84,17 +86,19 @@ const MealPlanTable = ({
     setSelectAll(false);
   };
 
-  const selectRecipe = (recipeName, val) => {
+  const selectRecipe = (recipeName, val, date) => {
     // console.log({ recipeName, val });
     if (val) {
       const recipe = mealPlan.find(
-        (recipeObj) => recipeObj.recipe === recipeName
+        (recipeObj) =>
+          recipeObj.recipe === recipeName && date === recipeObj.date
       );
       //   console.log({ recipe });
       setSelectedRecipes([...selectedRecipes, recipe]);
     } else {
       const index = selectedRecipes.findIndex(
-        (recipeObj) => recipeObj.recipe === recipeName
+        (recipeObj) =>
+          recipeObj.recipe === recipeName && date === recipeObj.date
       );
       const newSelectedRecipes = [
         ...selectedRecipes.slice(0, index),
@@ -104,6 +108,8 @@ const MealPlanTable = ({
     }
     setSelectAll(false);
   };
+
+  console.log({ rows: getRows(), selectedRecipes });
 
   return (
     <table className="min-w-full divide-y divide-gray-200 max-w-[100%] mt-2">
@@ -133,8 +139,10 @@ const MealPlanTable = ({
                   type="checkbox"
                   id={row.recipe}
                   name={row.recipe}
-                  checked={isRecipeSelected(row.recipe)}
-                  onChange={(e) => selectRecipe(row.recipe, e.target.checked)}
+                  checked={isRecipeSelected(row.recipe, row.date)}
+                  onChange={(e) =>
+                    selectRecipe(row.recipe, e.target.checked, row.date)
+                  }
                   className="mr-2 cursor-pointer"
                 />
               )}
