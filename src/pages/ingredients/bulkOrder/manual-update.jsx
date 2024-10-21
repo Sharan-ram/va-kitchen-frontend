@@ -4,11 +4,13 @@ import { getIngredientBulkOrder, updateBulkOrder } from "@/services/ingredient";
 import { toast } from "react-toastify";
 import Loader from "@/components/Loader";
 import classNames from "classnames";
+import { generateGoogleSheet } from "@/services/order";
 
 const ManualBulkOrderUpdate = () => {
   const [ingredients, setIngredients] = useState();
   const [bulkOrderLoading, setBulkOrderLoading] = useState(false);
   const [updateBulkOrderLoading, setUpdateBulkOrderLoading] = useState(false);
+  const [exportInProgress, setExportInProgress] = useState(false);
 
   useEffect(() => {
     const fetchIngredients = async () => {
@@ -67,6 +69,46 @@ const ManualBulkOrderUpdate = () => {
     }
   };
 
+  const exportToGsheets = async () => {
+    setExportInProgress(true);
+    // Define headers
+    const tableData = [
+      [
+        "No.",
+        "Ingredient",
+        "Summer Quantity",
+        "Monsoon Quantity",
+        "Winter Quantity",
+      ],
+    ];
+
+    // Convert ingredients object into table format
+    let index = 1; // Initialize row number
+    for (const [ingredientId, ingredient] of Object.entries(ingredients)) {
+      const row = [
+        index++, // No.
+        ingredient.name, // Ingredient ID or Name
+        ingredient.bulkOrder?.summerQuantity || "", // Summer Quantity
+        ingredient.bulkOrder?.monsoonQuantity || "", // Monsoon Quantity
+        ingredient.bulkOrder?.winterQuantity || "", // Winter Quantity
+      ];
+      tableData.push(row);
+    }
+
+    try {
+      await generateGoogleSheet({
+        payload: tableData,
+        title: `Recipes Databse`,
+      });
+      toast.success("Export successful!");
+      setExportInProgress(false);
+    } catch (error) {
+      console.error("Export exporting!", error);
+      setExportInProgress(false);
+      toast.error("Error exporting!");
+    }
+  };
+
   const disableUpdateButton =
     bulkOrderLoading || updateBulkOrderLoading || !ingredients;
 
@@ -90,8 +132,25 @@ const ManualBulkOrderUpdate = () => {
           >
             {updateBulkOrderLoading ? <Loader /> : "Update Bulk orders"}
           </button>
+
+          <button
+            className={classNames(
+              "px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 ml-6",
+              (disableUpdateButton || exportInProgress) &&
+                "cursor-not-allowed opacity-50"
+            )}
+            onClick={exportToGsheets}
+            disabled={disableUpdateButton || exportInProgress}
+          >
+            {updateBulkOrderLoading || exportInProgress ? (
+              <Loader />
+            ) : (
+              "Export to GSheets"
+            )}
+          </button>
         </div>
       </div>
+
       <div className="my-10 flex items-center justify-between">
         <div className="w-[40%]"></div>
         <div className="w-[60%] flex items-center justify-between">
