@@ -139,40 +139,40 @@ const IngredientsTable = ({ mealPlan }) => {
                   `bg-[${backgroundColor}]`
                 )}
               >
-                <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold">
+                <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold text-center">
                   {row.Date && row.Date}
                 </td>
-                <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold">
+                <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold text-center">
                   {row.Meal && row.Meal}
                 </td>
-                <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold">
+                <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold text-center">
                   {row.RecipeName && row.RecipeName}
                 </td>
-                <td className="px-3 py-2 whitespace-nowrap capitalize">
+                <td className="px-3 py-2 whitespace-nowrap capitalize text-center">
                   {row.VeganCount}
                 </td>
-                <td className="px-3 py-2 whitespace-nowrap capitalize">
+                <td className="px-3 py-2 whitespace-nowrap capitalize text-center">
                   {row.NonVeganCount}
                 </td>
-                <td className="px-3 py-2 whitespace-nowrap capitalize">
+                <td className="px-3 py-2 whitespace-nowrap capitalize text-center">
                   {row.GlutenFreeCount}
                 </td>
-                <td className="px-3 py-2 whitespace-nowrap capitalize">
+                <td className="px-3 py-2 whitespace-nowrap capitalize text-center">
                   {row.IngredientName}
                 </td>
-                <td className="px-3 py-2 whitespace-nowrap capitalize">
+                <td className="px-3 py-2 whitespace-nowrap capitalize text-center">
                   {row.QuantityTotal}
                 </td>
-                <td className="px-3 py-2 whitespace-nowrap capitalize">
+                <td className="px-3 py-2 whitespace-nowrap capitalize text-center">
                   {row.QuantityPerHead}
                 </td>
-                <td className="px-3 py-2 whitespace-nowrap capitalize">
+                <td className="px-3 py-2 whitespace-nowrap capitalize text-center">
                   {row.ingredientPrice}
                 </td>
-                <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold">
+                <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold text-center">
                   {row.recipePrice}
                 </td>
-                <td className="px-3 py-2 whitespace-nowrap capitalize font-bold">
+                <td className="px-3 py-2 whitespace-nowrap capitalize font-bold text-center">
                   {row.totalPrice}
                 </td>
               </tr>
