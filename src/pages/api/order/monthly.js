@@ -87,6 +87,7 @@ export default async function handler(req, res) {
               closingStock: closingStock.toFixed(2),
               vendor: ingredient.vendor,
               sponsored: ingredient.sponsored,
+              price: ingredient.price,
             };
           });
 

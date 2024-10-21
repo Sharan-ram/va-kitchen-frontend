@@ -154,6 +154,7 @@ export default async function handler(req, res) {
               purchaseUnit: ingredient.purchaseUnit,
               vendor: ingredient.vendor,
               sponsored: ingredient.sponsored,
+              price: ingredient.price,
             };
           });
 

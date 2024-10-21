@@ -154,6 +154,7 @@ const WeeklyOrder = () => {
                               adjustment,
                               purchaseUnit,
                               closingStock,
+                              price,
                             } = ingredient;
                             return (
                               <tr className="border-b max-w-[100%]" key={_id}>
@@ -205,6 +206,11 @@ const WeeklyOrder = () => {
                                     value={adjustment}
                                     className="pl-10 pr-4 py-2 border rounded-md"
                                   />
+                                </td>
+                                <td className="px-3 py-2 whitespace-nowrap text-center">
+                                  {price
+                                    ? Math.abs(Math.round(adjustment * price))
+                                    : ""}
                                 </td>
                                 <td className="px-3 py-2 whitespace-nowrap text-center">
                                   {purchaseUnit}

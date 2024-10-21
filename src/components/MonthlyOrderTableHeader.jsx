@@ -24,6 +24,7 @@ const MonthlyOrderTableHeader = () => {
         <th className="px-3 py-2 font-bold uppercase tracking-wider">
           Adjustment
         </th>
+        <th className="px-3 py-2 font-bold uppercase tracking-wider">Price</th>
         <th className="px-3 py-2 font-bold uppercase tracking-wider">
           Purchase Unit
         </th>

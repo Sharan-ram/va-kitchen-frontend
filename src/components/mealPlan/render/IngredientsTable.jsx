@@ -1,3 +1,5 @@
+import classNames from "classnames";
+
 const IngredientsTable = ({ mealPlan }) => {
   const getRows = () => {
     let rows = [];
@@ -76,6 +78,9 @@ const IngredientsTable = ({ mealPlan }) => {
     return rows;
   };
 
+  let lastMealType = null;
+  let useAlternate = false;
+
   return (
     <div>
       <table className="min-w-full divide-y divide-gray-200 max-w-[100%]">
@@ -115,46 +120,64 @@ const IngredientsTable = ({ mealPlan }) => {
         </thead>
 
         <tbody className="bg-white divide-y divide-gray-200 max-w-[100%]">
-          {getRows().map((row, index) => (
-            <tr key={index} className="border-b max-w-[100%]">
-              <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold">
-                {row.Date && row.Date}
-              </td>
-              <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold">
-                {row.Meal && row.Meal}
-              </td>
-              <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold">
-                {row.RecipeName && row.RecipeName}
-              </td>
-              <td className="px-3 py-2 whitespace-nowrap capitalize">
-                {row.VeganCount}
-              </td>
-              <td className="px-3 py-2 whitespace-nowrap capitalize">
-                {row.NonVeganCount}
-              </td>
-              <td className="px-3 py-2 whitespace-nowrap capitalize">
-                {row.GlutenFreeCount}
-              </td>
-              <td className="px-3 py-2 whitespace-nowrap capitalize">
-                {row.IngredientName}
-              </td>
-              <td className="px-3 py-2 whitespace-nowrap capitalize">
-                {row.QuantityTotal}
-              </td>
-              <td className="px-3 py-2 whitespace-nowrap capitalize">
-                {row.QuantityPerHead}
-              </td>
-              <td className="px-3 py-2 whitespace-nowrap capitalize">
-                {row.ingredientPrice}
-              </td>
-              <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold">
-                {row.recipePrice}
-              </td>
-              <td className="px-3 py-2 whitespace-nowrap capitalize font-bold">
-                {row.totalPrice}
-              </td>
-            </tr>
-          ))}
+          {getRows().map((row, index) => {
+            if (row.mealType && row.mealType !== lastMealType) {
+              // If a new mealType is encountered, toggle the background color
+              useAlternate = !useAlternate;
+              lastMealType = row.mealType;
+            }
+
+            // console.log({ useAlternate, lastMealType });
+
+            // Set background color based on the toggle
+            const backgroundColor = useAlternate ? "#f4f1f1" : "#fff";
+            return (
+              <tr
+                key={index}
+                className={classNames(
+                  "border-b max-w-[100%]",
+                  `bg-[${backgroundColor}]`
+                )}
+              >
+                <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold">
+                  {row.Date && row.Date}
+                </td>
+                <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold">
+                  {row.Meal && row.Meal}
+                </td>
+                <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold">
+                  {row.RecipeName && row.RecipeName}
+                </td>
+                <td className="px-3 py-2 whitespace-nowrap capitalize">
+                  {row.VeganCount}
+                </td>
+                <td className="px-3 py-2 whitespace-nowrap capitalize">
+                  {row.NonVeganCount}
+                </td>
+                <td className="px-3 py-2 whitespace-nowrap capitalize">
+                  {row.GlutenFreeCount}
+                </td>
+                <td className="px-3 py-2 whitespace-nowrap capitalize">
+                  {row.IngredientName}
+                </td>
+                <td className="px-3 py-2 whitespace-nowrap capitalize">
+                  {row.QuantityTotal}
+                </td>
+                <td className="px-3 py-2 whitespace-nowrap capitalize">
+                  {row.QuantityPerHead}
+                </td>
+                <td className="px-3 py-2 whitespace-nowrap capitalize">
+                  {row.ingredientPrice}
+                </td>
+                <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold">
+                  {row.recipePrice}
+                </td>
+                <td className="px-3 py-2 whitespace-nowrap capitalize font-bold">
+                  {row.totalPrice}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
