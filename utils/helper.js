@@ -27,13 +27,8 @@ export const parseDate = (dateString) => {
   return new Date(Date.UTC(year, month - 1, day));
 };
 
-export const monthlyOrderTotalQuantity = (
-  mealPlan,
-  ingredientName,
-  bulkOrder
-) => {
+export const monthlyOrderTotalQuantity = (mealPlan, ingredientName) => {
   let totalQuantity = 0;
-  let bulkValue = 0;
   mealPlan.days.forEach((day) => {
     ["earlyMorning", "breakfast", "lunch", "evening", "dinner"].forEach(
       (meal) => {
@@ -54,10 +49,6 @@ export const monthlyOrderTotalQuantity = (
                   }
                 });
                 totalQuantity += ing[day.season] ? ing[day.season] * count : 0;
-                bulkValue +=
-                  bulkOrder && bulkOrder[day.season]
-                    ? bulkOrder[day.season] * count
-                    : 0;
               }
             });
           });
@@ -65,7 +56,7 @@ export const monthlyOrderTotalQuantity = (
       }
     );
   });
-  return { totalQuantity, bulkValue };
+  return totalQuantity;
 };
 
 export const monthlyOrderRemainingQuantity = (

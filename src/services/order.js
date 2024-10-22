@@ -1,9 +1,11 @@
 import axiosInstance from "@/utils/axiosInstance";
 import format from "date-fns/format";
 
-export const getMonthlyOrder = async () => {
+export const getMonthlyOrder = async (headCount) => {
   try {
-    const response = await axiosInstance.get(`/api/order/monthly`);
+    const response = await axiosInstance.get(
+      `/api/order/monthly?headCount=${headCount}`
+    );
     return response.data.data;
   } catch (e) {
     throw new Error(e);
