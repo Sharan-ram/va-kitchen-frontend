@@ -83,7 +83,7 @@ export default async function handler(req, res) {
           ],
         });
 
-        // console.log({ mealPlans: JSON.stringify(mealPlans, null, 2) });
+        // console.log({ mealPlans: JSON.stringify(mealPlansDeduction, null, 2) });
 
         if (!mealPlans.length) {
           return res.status(404).json({
@@ -116,7 +116,7 @@ export default async function handler(req, res) {
         mealPlansDeduction.forEach((plan) => {
           plan.days.forEach((day) => {
             const dayDate = parseDate(day.date);
-            if (dayDate > startDeduction && dayDate < endDeduction) {
+            if (dayDate >= startDeduction && dayDate <= endDeduction) {
               filteredDaysDeduction.push(day);
             }
           });
@@ -129,6 +129,14 @@ export default async function handler(req, res) {
         // const mergedMealPlanRemaining = { days: filteredDaysRemaining };
 
         const mergedMealPlanDeduction = { days: filteredDaysDeduction };
+
+        // console.log({
+        //   mergedMealPlanDeduction: JSON.stringify(
+        //     mergedMealPlanDeduction,
+        //     null,
+        //     2
+        //   ),
+        // });
 
         // Fetch all ingredients
         const ingredients = await Ingredient.find().sort({ name: 1 });
