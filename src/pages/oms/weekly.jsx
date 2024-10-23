@@ -14,15 +14,24 @@ const WeeklyOrder = () => {
   const [showPurchaseOrder, setShowPurchaseOrder] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const [startDateDeduction, setStartDateDeduction] = useState(new Date());
+  const [endDateDeduction, setEndDateDeduction] = useState(new Date());
   const [ingredientsLoading, setIngredientsLoading] = useState(false);
   const [generatePurchaseOrderLoading, setGeneratePurchaseOrder] =
     useState(false);
   const [selectedTab, setSelectedTab] = useState("Buy");
+  const [season, setSeason] = useState("");
 
   const fetchPurchaseOrder = async () => {
     try {
       setIngredientsLoading(true);
-      const res = await getWeeklyOrder(startDate, endDate);
+      const res = await getWeeklyOrder({
+        startDate,
+        endDate,
+        startDateDeduction,
+        endDateDeduction,
+        season,
+      });
       setIngredients(res);
       setShowPurchaseOrder(true);
       setIngredientsLoading(false);
@@ -71,16 +80,40 @@ const WeeklyOrder = () => {
 
   return (
     <div>
-      <Selections
-        onSubmit={fetchPurchaseOrder}
-        startDate={startDate}
-        endDate={endDate}
-        setStartDate={setStartDate}
-        setEndDate={setEndDate}
-        buttonText={"Show purchase order"}
-        toggleMealPlan={() => setShowPurchaseOrder(false)}
-        mealPlanLoading={ingredientsLoading}
-      />
+      <div className="flex justify-between items-center">
+        <Selections
+          // onSubmit={fetchPurchaseOrder}
+          startDate={startDateDeduction}
+          endDate={endDateDeduction}
+          setStartDate={setStartDateDeduction}
+          setEndDate={setEndDateDeduction}
+          showButton={false}
+          startDateLabel="Start Date (Monday)"
+          endDateLabel="End Date (Tuesday)"
+          toggleMealPlan={() => setShowPurchaseOrder(false)}
+          season={season}
+          showSeason={true}
+          setSeason={setSeason}
+          // buttonText={"Show purchase order"}
+          // toggleMealPlan={() => setShowPurchaseOrder(false)}
+          // mealPlanLoading={ingredientsLoading}
+        />
+      </div>
+
+      <div className="mt-6">
+        <Selections
+          onSubmit={fetchPurchaseOrder}
+          startDate={startDate}
+          endDate={endDate}
+          setStartDate={setStartDate}
+          setEndDate={setEndDate}
+          buttonText={"Show purchase order"}
+          toggleMealPlan={() => setShowPurchaseOrder(false)}
+          mealPlanLoading={ingredientsLoading}
+          startDateLabel="Start Date (Wednesday)"
+          endDateLabel="End Date (next Tuesday)"
+        />
+      </div>
       {!ingredientsLoading && showPurchaseOrder && (
         <h2 className="text-xl font-semibold my-6">{`Weekly Order Generation: ${format(
           startDate,
@@ -149,7 +182,7 @@ const WeeklyOrder = () => {
                               name,
                               bulkOrder,
                               weeklyMealPlan,
-                              remainingMealPlan,
+                              deductionMealPlan,
                               currentStock,
                               adjustment,
                               purchaseUnit,
@@ -168,7 +201,7 @@ const WeeklyOrder = () => {
                                   {weeklyMealPlan}
                                 </td>
                                 <td className="px-3 py-2 whitespace-nowrap text-center">
-                                  {remainingMealPlan}
+                                  {deductionMealPlan}
                                 </td>
                                 <td className="px-3 py-2 whitespace-nowrap text-center">
                                   {currentStock}

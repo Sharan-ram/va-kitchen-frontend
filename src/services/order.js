@@ -34,13 +34,25 @@ export const generateGoogleSheet = async ({ payload, title }) => {
   }
 };
 
-export const getWeeklyOrder = async (startDate, endDate) => {
+export const getWeeklyOrder = async ({
+  startDate,
+  endDate,
+  startDateDeduction,
+  endDateDeduction,
+  season,
+}) => {
   try {
     const response = await axiosInstance.get(
       `/api/order/weekly?startDate=${format(
         startDate,
         "dd-MM-yyyy"
-      )}&endDate=${format(endDate, "dd-MM-yyyy")}`
+      )}&endDate=${format(endDate, "dd-MM-yyyy")}&startDateDeduction=${format(
+        startDateDeduction,
+        "dd-MM-yyyy"
+      )}&endDateDeduction=${format(
+        endDateDeduction,
+        "dd-MM-yyyy"
+      )}&season=${season}`
     );
     return response.data.data;
   } catch (e) {

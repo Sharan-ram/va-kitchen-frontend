@@ -113,11 +113,9 @@ export const weeklyOrderTotalQuantity = (
   mealPlan,
   ingredientName,
   startDate,
-  endDate,
-  bulkOrder
+  endDate
 ) => {
   let totalQuantity = 0;
-  let bulkValue = 0;
   //   const start = parseDate(startDate);
   //   const end = parseDate(endDate);
 
@@ -131,7 +129,7 @@ export const weeklyOrderTotalQuantity = (
   //   console.log({ startTotal: start, endTotal: end });
 
   //   console.log({ mealPlan });
-  console.log({ days: mealPlan.days, mealPlan });
+  // console.log({ days: mealPlan.days, mealPlan });
   mealPlan?.days.forEach((day) => {
     const dayDate = parseDate(day.date);
     if (dayDate >= start && dayDate <= end) {
@@ -155,10 +153,6 @@ export const weeklyOrderTotalQuantity = (
                   totalQuantity += ing[day.season]
                     ? ing[day.season] * count
                     : 0;
-                  bulkValue +=
-                    bulkOrder && bulkOrder[day.season]
-                      ? bulkOrder[day.season] * count
-                      : 0;
                 }
               });
             });
@@ -168,30 +162,17 @@ export const weeklyOrderTotalQuantity = (
     }
   });
   // console.log({ weeklyQuant: totalQuantity });
-  return { totalQuantity, bulkValue };
+  return totalQuantity;
 };
 
 // Helper function to calculate the remaining quantity needed for a given ingredient from the current date to the start date
-export const weeklyOrderRemainingQuantity = (
-  mealPlan,
-  ingredientName,
-  currentDate,
-  startDate
-) => {
+export const weeklyOrderRemainingQuantity = (mealPlan, ingredientName) => {
   let totalQuantity = 0;
-  //   const start = parseDate(currentDate);
-  //   const end = parseDate(startDate);
-  const start = currentDate;
-  const end = startDate;
 
   if (!mealPlan) return 0;
 
-  //   console.log({ mealPlan });
-  // console.log({ startRemaing: start, endRemaining: end });
-
   mealPlan.days.forEach((day) => {
     const dayDate = parseDate(day.date);
-    // if (dayDate > start && dayDate < end) {
     ["earlyMorning", "breakfast", "lunch", "evening", "dinner"].forEach(
       (meal) => {
         if (day[meal]) {

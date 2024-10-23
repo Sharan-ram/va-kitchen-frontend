@@ -12,7 +12,8 @@ import authMiddleware from "../../../../middleware/auth";
 
 export default async function handler(req, res) {
   const { method } = req;
-  const { startDate, endDate } = req.query;
+  const { startDate, endDate, startDateDeduction, endDateDeduction, season } =
+    req.query;
 
   await dbConnect();
 
@@ -32,18 +33,21 @@ export default async function handler(req, res) {
         const start = parseDate(startDate);
         const end = parseDate(endDate);
 
-        const currentDate = new Date();
-        const currentMonth = currentDate.getMonth() + 1; // JavaScript months are 0-indexed
-        const currentYear = currentDate.getFullYear();
+        const startDeduction = parseDate(startDateDeduction);
+        const endDeduction = parseDate(endDateDeduction);
 
-        const parsedCurrentDate = parseDate(formatDateToDDMMYYYY(currentDate));
+        // const currentDate = new Date();
+        // const currentMonth = currentDate.getMonth() + 1; // JavaScript months are 0-indexed
+        // const currentYear = currentDate.getFullYear();
+
+        // const parsedCurrentDate = parseDate(formatDateToDDMMYYYY(currentDate));
         // console.log({ parsedCurrentDate });
 
         // Fetch the current month meal plan
-        const currentMonthMealPlan = await MealPlan.findOne({
-          year: currentYear,
-          month: currentMonth,
-        });
+        // const currentMonthMealPlan = await MealPlan.findOne({
+        //   year: currentYear,
+        //   month: currentMonth,
+        // });
         // console.log({ currentMonthMealPlan, currentYear, currentMonth });
 
         // Fetch meal plans for the months that include the start date and end date
@@ -52,6 +56,12 @@ export default async function handler(req, res) {
         const endYear = end.getFullYear();
         const endMonth = end.getMonth() + 1;
 
+        // Fetch meal plans for the months that include the start date and end date
+        const startYearDeduction = startDeduction.getFullYear();
+        const startMonthDeduction = startDeduction.getMonth() + 1;
+        const endYearDeduction = endDeduction.getFullYear();
+        const endMonthDeduction = endDeduction.getMonth() + 1;
+
         const mealPlans = await MealPlan.find({
           $or: [
             { year: startYear, month: startMonth },
@@ -59,10 +69,17 @@ export default async function handler(req, res) {
           ],
         });
 
-        const mealPlansRemaining = await MealPlan.find({
+        // const mealPlansRemaining = await MealPlan.find({
+        //   $or: [
+        //     { year: currentYear, month: currentMonth },
+        //     { year: startYear, month: startMonth },
+        //   ],
+        // });
+
+        const mealPlansDeduction = await MealPlan.find({
           $or: [
-            { year: currentYear, month: currentMonth },
-            { year: startYear, month: startMonth },
+            { year: startYearDeduction, month: startMonthDeduction },
+            { year: endYearDeduction, month: endMonthDeduction },
           ],
         });
 
@@ -85,12 +102,22 @@ export default async function handler(req, res) {
           });
         });
 
-        const filteredDaysRemaining = [];
-        mealPlansRemaining.forEach((plan) => {
+        // const filteredDaysRemaining = [];
+        // mealPlansRemaining.forEach((plan) => {
+        //   plan.days.forEach((day) => {
+        //     const dayDate = parseDate(day.date);
+        //     if (dayDate > parsedCurrentDate && dayDate < start) {
+        //       filteredDaysRemaining.push(day);
+        //     }
+        //   });
+        // });
+
+        const filteredDaysDeduction = [];
+        mealPlansDeduction.forEach((plan) => {
           plan.days.forEach((day) => {
             const dayDate = parseDate(day.date);
-            if (dayDate > parsedCurrentDate && dayDate < start) {
-              filteredDaysRemaining.push(day);
+            if (dayDate > startDeduction && dayDate < endDeduction) {
+              filteredDaysDeduction.push(day);
             }
           });
         });
@@ -99,7 +126,9 @@ export default async function handler(req, res) {
 
         const mergedMealPlan = { days: filteredDays };
 
-        const mergedMealPlanRemaining = { days: filteredDaysRemaining };
+        // const mergedMealPlanRemaining = { days: filteredDaysRemaining };
+
+        const mergedMealPlanDeduction = { days: filteredDaysDeduction };
 
         // Fetch all ingredients
         const ingredients = await Ingredient.find().sort({ name: 1 });
@@ -122,34 +151,38 @@ export default async function handler(req, res) {
           .map((ingredient) => {
             const ingredientName = ingredient.name;
             // console.log({ ingredientName });
-            const { totalQuantity, bulkValue } = weeklyOrderTotalQuantity(
+            const totalQuantity = weeklyOrderTotalQuantity(
               mergedMealPlan,
               ingredientName,
               start,
-              end,
-              ingredient.bulkOrder
+              end
             );
             // console.log({ totalQuantityInRange });
             const currentStock = ingredient.stock || 0;
-            const remainingQuantityToStartDate = weeklyOrderRemainingQuantity(
-              mergedMealPlanRemaining,
-              ingredientName,
-              parsedCurrentDate,
-              start
+            // const remainingQuantityToStartDate = weeklyOrderRemainingQuantity(
+            //   mergedMealPlanRemaining,
+            //   ingredientName,
+            //   parsedCurrentDate,
+            //   start
+            // );
+            const deductionQuantity = weeklyOrderRemainingQuantity(
+              mergedMealPlanDeduction,
+              ingredientName
             );
-            // console.log({ remainingQuantityToStartDate });
-            const closingStock = currentStock - remainingQuantityToStartDate;
-            const adjustment =
-              bulkValue > 0 ? bulkValue : totalQuantity - closingStock;
+            const bulkOrder = ingredient.bulkOrder?.[season] || null;
+            const closingStock = currentStock - deductionQuantity;
+            const adjustment = bulkOrder
+              ? Number(bulkOrder)
+              : totalQuantity - closingStock;
 
             return {
               _id: ingredient._id,
               name: ingredientName,
               weeklyMealPlan: totalQuantity.toFixed(2),
-              remainingMealPlan: remainingQuantityToStartDate.toFixed(2),
+              deductionMealPlan: deductionQuantity.toFixed(2),
               currentStock: currentStock.toFixed(2),
               closingStock: closingStock.toFixed(2),
-              bulkOrder: bulkValue.toFixed(2),
+              bulkOrder,
               adjustment: adjustment.toFixed(2),
               purchaseUnit: ingredient.purchaseUnit,
               vendor: ingredient.vendor,
