@@ -62,6 +62,36 @@ export default async function handler(req, res) {
       }
       break;
 
+    case "DELETE":
+      // DELETE recipe by ID
+      try {
+        if (!authMiddleware(req, res, ["admin"])) {
+          return;
+        }
+
+        const deletedRecipe = await Recipe.findByIdAndDelete(id);
+
+        // Check if recipe exists
+        if (!deletedRecipe) {
+          return res
+            .status(404)
+            .json({ success: false, message: "Recipe not found" });
+        }
+
+        res
+          .status(200)
+          .json({ success: true, message: "Recipe deleted successfully" });
+      } catch (error) {
+        // Handle invalid ObjectId or other server errors
+        if (error.kind === "ObjectId") {
+          return res
+            .status(400)
+            .json({ success: false, message: "Invalid recipe ID format" });
+        }
+        res.status(500).json({ success: false, message: error.message });
+      }
+      break;
+
     default:
       res.setHeader("Allow", ["GET", "PUT"]);
       res.status(405).end(`Method ${method} Not Allowed`);

@@ -1,6 +1,11 @@
 import { format } from "date-fns";
 
-const WeeklyOrderTableHeader = ({ startDate, endDate, dayBeforeStartDate }) => {
+const WeeklyOrderTableHeader = ({
+  startDate,
+  endDate,
+  startDateDeduction,
+  endDateDeduction,
+}) => {
   return (
     <thead className="bg-gray-50 max-w-[100%] sticky top-[100px]">
       <tr className="bg-gray-200">
@@ -9,21 +14,18 @@ const WeeklyOrderTableHeader = ({ startDate, endDate, dayBeforeStartDate }) => {
           Ingredient
         </th>
         <th className="px-3 py-2 font-bold uppercase tracking-wider">
+          {`Requirement (${format(startDateDeduction, "dd-MM-yyyy")} to
+                      ${format(endDateDeduction, "dd-MM-yyyy")})`}
+        </th>
+        <th className="px-3 py-2 font-bold uppercase tracking-wider">
           {`Requirement (${format(startDate, "dd-MM-yyyy")} to
                       ${format(endDate, "dd-MM-yyyy")})`}
         </th>
         <th className="px-3 py-2 font-bold uppercase tracking-wider">
-          {`Requirement (Tmrw to
-                      ${format(dayBeforeStartDate, "dd-MM-yyyy")})`}
+          Current Stock
         </th>
         <th className="px-3 py-2 font-bold uppercase tracking-wider">
-          Current Stock (by end of today)
-        </th>
-        <th className="px-3 py-2 font-bold uppercase tracking-wider">
-          {`Closing Stock (Tmrw to ${format(
-            dayBeforeStartDate,
-            "dd-MM-yyyy"
-          )})`}
+          {`Closing Stock (on ${format(endDateDeduction, "dd-MM-yyyy")})`}
         </th>
         <th className="px-3 py-2 font-bold uppercase tracking-wider">
           Bulk order
@@ -31,6 +33,7 @@ const WeeklyOrderTableHeader = ({ startDate, endDate, dayBeforeStartDate }) => {
         <th className="px-3 py-2 font-bold uppercase tracking-wider">
           Adjustment
         </th>
+        <th className="px-3 py-2 font-bold uppercase tracking-wider">Price</th>
         <th className="px-3 py-2 font-bold uppercase tracking-wider">
           Purchase Unit
         </th>

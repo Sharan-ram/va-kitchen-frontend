@@ -83,7 +83,7 @@ const TotalIngredientsQuantity = ({ mealPlan }) => {
                     {ingredientName}
                   </td>
                   <td className="px-3 py-2 whitespace-nowrap capitalize text-center">
-                    {ingredients[ingredientName].quantity.toFixed(3)}
+                    {ingredients[ingredientName].quantity.toFixed(1)}
                   </td>
                   <td className="px-3 py-2 whitespace-nowrap capitalize text-center">
                     {ingredients[ingredientName].cookingUnit}

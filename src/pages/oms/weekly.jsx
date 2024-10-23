@@ -14,15 +14,24 @@ const WeeklyOrder = () => {
   const [showPurchaseOrder, setShowPurchaseOrder] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const [startDateDeduction, setStartDateDeduction] = useState(new Date());
+  const [endDateDeduction, setEndDateDeduction] = useState(new Date());
   const [ingredientsLoading, setIngredientsLoading] = useState(false);
   const [generatePurchaseOrderLoading, setGeneratePurchaseOrder] =
     useState(false);
   const [selectedTab, setSelectedTab] = useState("Buy");
+  const [season, setSeason] = useState("");
 
   const fetchPurchaseOrder = async () => {
     try {
       setIngredientsLoading(true);
-      const res = await getWeeklyOrder(startDate, endDate);
+      const res = await getWeeklyOrder({
+        startDate,
+        endDate,
+        startDateDeduction,
+        endDateDeduction,
+        season,
+      });
       setIngredients(res);
       setShowPurchaseOrder(true);
       setIngredientsLoading(false);
@@ -71,16 +80,45 @@ const WeeklyOrder = () => {
 
   return (
     <div>
-      <Selections
-        onSubmit={fetchPurchaseOrder}
-        startDate={startDate}
-        endDate={endDate}
-        setStartDate={setStartDate}
-        setEndDate={setEndDate}
-        buttonText={"Show purchase order"}
-        toggleMealPlan={() => setShowPurchaseOrder(false)}
-        mealPlanLoading={ingredientsLoading}
-      />
+      <div className="flex justify-between items-center">
+        <Selections
+          // onSubmit={fetchPurchaseOrder}
+          startDate={startDateDeduction}
+          endDate={endDateDeduction}
+          setStartDate={setStartDateDeduction}
+          setEndDate={setEndDateDeduction}
+          showButton={false}
+          startDateLabel="Start Date (Monday)"
+          endDateLabel="End Date (Tuesday)"
+          toggleMealPlan={() => setShowPurchaseOrder(false)}
+          season={season}
+          showSeason={true}
+          setSeason={setSeason}
+        />
+      </div>
+
+      <div className="mt-8">
+        <Selections
+          onSubmit={fetchPurchaseOrder}
+          startDate={startDate}
+          endDate={endDate}
+          setStartDate={setStartDate}
+          setEndDate={setEndDate}
+          buttonText={"Show purchase order"}
+          toggleMealPlan={() => setShowPurchaseOrder(false)}
+          mealPlanLoading={ingredientsLoading}
+          startDateLabel="Start Date (Wednesday)"
+          endDateLabel="End Date (next Tuesday)"
+          disabled={
+            !startDate ||
+            !endDate ||
+            !startDateDeduction ||
+            !endDateDeduction ||
+            !season ||
+            ingredientsLoading
+          }
+        />
+      </div>
       {!ingredientsLoading && showPurchaseOrder && (
         <h2 className="text-xl font-semibold my-6">{`Weekly Order Generation: ${format(
           startDate,
@@ -139,7 +177,8 @@ const WeeklyOrder = () => {
                       <WeeklyOrderTableHeader
                         startDate={startDate}
                         endDate={endDate}
-                        dayBeforeStartDate={dayBeforeStartDate}
+                        startDateDeduction={startDateDeduction}
+                        endDateDeduction={endDateDeduction}
                       />
                       <tbody className="bg-white divide-y divide-gray-200 max-w-[100%]">
                         {ingredients[selectedTab.toLowerCase()][vendor].map(
@@ -149,11 +188,12 @@ const WeeklyOrder = () => {
                               name,
                               bulkOrder,
                               weeklyMealPlan,
-                              remainingMealPlan,
+                              deductionMealPlan,
                               currentStock,
                               adjustment,
                               purchaseUnit,
                               closingStock,
+                              price,
                             } = ingredient;
                             return (
                               <tr className="border-b max-w-[100%]" key={_id}>
@@ -164,10 +204,10 @@ const WeeklyOrder = () => {
                                   {name}
                                 </td>
                                 <td className="px-3 py-2 whitespace-nowrap text-center">
-                                  {weeklyMealPlan}
+                                  {deductionMealPlan}
                                 </td>
                                 <td className="px-3 py-2 whitespace-nowrap text-center">
-                                  {remainingMealPlan}
+                                  {weeklyMealPlan}
                                 </td>
                                 <td className="px-3 py-2 whitespace-nowrap text-center">
                                   {currentStock}
@@ -205,6 +245,11 @@ const WeeklyOrder = () => {
                                     value={adjustment}
                                     className="pl-10 pr-4 py-2 border rounded-md"
                                   />
+                                </td>
+                                <td className="px-3 py-2 whitespace-nowrap text-center">
+                                  {price
+                                    ? Math.abs(Math.round(adjustment * price))
+                                    : ""}
                                 </td>
                                 <td className="px-3 py-2 whitespace-nowrap text-center">
                                   {purchaseUnit}

@@ -9,7 +9,8 @@ import {
 import authMiddleware from "../../../../middleware/auth";
 
 export default async function handler(req, res) {
-  const { method } = req;
+  const { method, query } = req;
+  const { headCount } = query;
 
   await dbConnect();
 
@@ -43,6 +44,8 @@ export default async function handler(req, res) {
 
         const ingredients = await Ingredient.find().sort({ name: 1 });
 
+        // console.log({ season: nextMonthMealPlan.season });
+
         // Process and generate the response
         const response = ingredients
           .filter((ingredient) => {
@@ -55,12 +58,12 @@ export default async function handler(req, res) {
             );
           })
           .map((ingredient) => {
+            // console.log({ bulkOrder: ingredient.bulkOrder });
             const isLastDayOfMonthVar = isLastDayOfMonth(currentDate);
             const ingredientName = ingredient.name;
-            const { totalQuantity, bulkValue } = monthlyOrderTotalQuantity(
+            const totalQuantity = monthlyOrderTotalQuantity(
               nextMonthMealPlan,
-              ingredientName,
-              ingredient.bulkOrder
+              ingredientName
             );
             // console.log({ currentDate: currentDate.toISOString().split("T")[0] });
             const currentStock = ingredient.stock || 0;
@@ -72,21 +75,34 @@ export default async function handler(req, res) {
                   currentDate
                 );
             const closingStock = currentStock - remainingMealPlan;
+
+            const bulkValue =
+              ingredient.bulkOrder &&
+              ingredient.bulkOrder[nextMonthMealPlan.season] > 0
+                ? Number(ingredient.bulkOrder[nextMonthMealPlan.season]) *
+                  Number(headCount)
+                : null;
+
             const adjustment =
-              bulkValue > 0 ? bulkValue : totalQuantity - closingStock;
+              bulkValue && bulkValue > 0
+                ? bulkValue.toFixed(1)
+                : (totalQuantity - closingStock).toFixed(1);
+
+            // console.log({ bulkValue, ingredientName });
 
             return {
               _id: ingredient._id,
               name: ingredientName,
-              bulkOrder: bulkValue.toFixed(2),
+              bulkOrder: bulkValue ? bulkValue.toFixed(1) : null,
               monthlyMealPlan: totalQuantity.toFixed(2),
               remainingMealPlan: remainingMealPlan.toFixed(2),
               currentStock: currentStock.toFixed(2),
-              adjustment: adjustment.toFixed(2),
+              adjustment: adjustment,
               purchaseUnit: ingredient.purchaseUnit,
               closingStock: closingStock.toFixed(2),
               vendor: ingredient.vendor,
               sponsored: ingredient.sponsored,
+              price: ingredient.price,
             };
           });
 

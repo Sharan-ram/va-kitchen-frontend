@@ -71,6 +71,7 @@ const DailyOrder = () => {
         buttonText={"Show meal plan"}
         toggleMealPlan={toggleMealPlan}
         mealPlanLoading={mealPlanLoading}
+        disabled={!startDate || !endDate || mealPlanLoading}
       />
 
       {showMealPlan && (
