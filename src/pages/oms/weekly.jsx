@@ -94,13 +94,10 @@ const WeeklyOrder = () => {
           season={season}
           showSeason={true}
           setSeason={setSeason}
-          // buttonText={"Show purchase order"}
-          // toggleMealPlan={() => setShowPurchaseOrder(false)}
-          // mealPlanLoading={ingredientsLoading}
         />
       </div>
 
-      <div className="mt-6">
+      <div className="mt-8">
         <Selections
           onSubmit={fetchPurchaseOrder}
           startDate={startDate}
@@ -112,6 +109,14 @@ const WeeklyOrder = () => {
           mealPlanLoading={ingredientsLoading}
           startDateLabel="Start Date (Wednesday)"
           endDateLabel="End Date (next Tuesday)"
+          disabled={
+            !startDate ||
+            !endDate ||
+            !startDateDeduction ||
+            !endDateDeduction ||
+            !season ||
+            ingredientsLoading
+          }
         />
       </div>
       {!ingredientsLoading && showPurchaseOrder && (

@@ -231,6 +231,7 @@ const RenderMealPlanPage = () => {
         buttonText={"Show meal plan"}
         toggleMealPlan={toggleMealPlan}
         mealPlanLoading={mealPlanLoading}
+        disabled={!startDate || !endDate || mealPlanLoading}
       />
       {showMealPlan && (
         <div className="mt-10">

@@ -21,8 +21,9 @@ const Selections = ({
   showSeason = false,
   season = "",
   setSeason = () => {},
+  disabled = false,
 }) => {
-  const disabled = !startDate || !endDate || mealPlanLoading;
+  // const disabled = !startDate || !endDate || mealPlanLoading;
   return (
     <div className="flex items-center justify-between w-1/2">
       <div>
