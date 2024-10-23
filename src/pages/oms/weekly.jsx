@@ -172,7 +172,8 @@ const WeeklyOrder = () => {
                       <WeeklyOrderTableHeader
                         startDate={startDate}
                         endDate={endDate}
-                        dayBeforeStartDate={dayBeforeStartDate}
+                        startDateDeduction={startDateDeduction}
+                        endDateDeduction={endDateDeduction}
                       />
                       <tbody className="bg-white divide-y divide-gray-200 max-w-[100%]">
                         {ingredients[selectedTab.toLowerCase()][vendor].map(
@@ -198,10 +199,10 @@ const WeeklyOrder = () => {
                                   {name}
                                 </td>
                                 <td className="px-3 py-2 whitespace-nowrap text-center">
-                                  {weeklyMealPlan}
+                                  {deductionMealPlan}
                                 </td>
                                 <td className="px-3 py-2 whitespace-nowrap text-center">
-                                  {deductionMealPlan}
+                                  {weeklyMealPlan}
                                 </td>
                                 <td className="px-3 py-2 whitespace-nowrap text-center">
                                   {currentStock}
