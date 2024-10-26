@@ -10,6 +10,7 @@ export default async function handler(req, res) {
       await dbConnect();
 
       const user = await User.findOne({ username });
+      console.log({ user });
       if (!user || !(await user.comparePassword(password))) {
         return res.status(401).json({ message: "Invalid credentials" });
       }

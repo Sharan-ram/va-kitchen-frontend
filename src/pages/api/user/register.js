@@ -39,11 +39,8 @@ export default async function handler(req, res) {
       return res.status(400).json({ message: "Email already registered" });
     }
 
-    // Hash the password before saving
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     // Create a new user instance
-    const user = new User({ username, email, password: hashedPassword, role });
+    const user = new User({ username, email, password, role });
 
     // Save the user in the database
     await user.save();
