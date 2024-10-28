@@ -98,10 +98,13 @@ async function refreshAccessToken(username) {
   console.log("Refreshing access token...");
   try {
     const { token } = await oAuth2Client.getAccessToken();
+    console.log("REFRESHED TOKEN............", token);
     oAuth2Client.setCredentials({
       ...oAuth2Client.credentials,
       access_token: token,
     });
+
+    console.log("CREDENTIALS ARE SET");
 
     fs.writeFileSync(
       TOKEN_PATH(username),

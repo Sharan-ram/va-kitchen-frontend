@@ -178,9 +178,12 @@ export default async function handler(req, res) {
               ingredientName
             );
             const bulkOrder = ingredient.bulkOrder?.[season] || null;
-            const closingStock = currentStock - deductionQuantity;
+            const closingStock =
+              currentStock - deductionQuantity < 0
+                ? 0
+                : currentStock - deductionQuantity;
             const adjustment = bulkOrder
-              ? Number(bulkOrder)
+              ? Number(bulkOrder) - closingStock
               : totalQuantity - closingStock;
 
             return {
