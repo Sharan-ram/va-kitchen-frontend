@@ -74,10 +74,7 @@ export default async function handler(req, res) {
                   ingredientName,
                   currentDate
                 );
-            const closingStock =
-              currentStock - remainingMealPlan < 0
-                ? 0
-                : currentStock - remainingMealPlan;
+            const closingStock = currentStock - remainingMealPlan;
 
             const bulkValue =
               ingredient.bulkOrder &&
@@ -86,12 +83,21 @@ export default async function handler(req, res) {
                   Number(headCount)
                 : null;
 
-            const adjustment =
-              bulkValue && bulkValue > 0
-                ? (bulkValue - closingStock).toFixed(1)
-                : (totalQuantity - closingStock).toFixed(1);
+            let adjustment;
 
-            // console.log({ bulkValue, ingredientName });
+            if (bulkValue && bulkValue > 0) {
+              if (closingStock <= 0) {
+                adjustment = bulkValue.toFixed(1);
+              } else {
+                adjustment = (bulkValue - closingStock).toFixed(1);
+              }
+            } else {
+              if (closingStock <= 0) {
+                adjustment = totalQuantity.toFixed(1);
+              } else {
+                adjustment = (totalQuantity - closingStock).toFixed(1);
+              }
+            }
 
             return {
               _id: ingredient._id,

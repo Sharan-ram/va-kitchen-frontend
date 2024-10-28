@@ -178,13 +178,27 @@ export default async function handler(req, res) {
               ingredientName
             );
             const bulkOrder = ingredient.bulkOrder?.[season] || null;
-            const closingStock =
-              currentStock - deductionQuantity < 0
-                ? 0
-                : currentStock - deductionQuantity;
-            const adjustment = bulkOrder
-              ? Number(bulkOrder) - closingStock
-              : totalQuantity - closingStock;
+            const closingStock = currentStock - deductionQuantity;
+
+            // const adjustment = bulkOrder
+            //   ? Number(bulkOrder) - closingStock
+            //   : totalQuantity - closingStock;
+
+            let adjustment;
+
+            if (bulkOrder) {
+              if (closingStock <= 0) {
+                adjustment = Number(bulkOrder);
+              } else {
+                adjustment = Number(bulkOrder) - closingStock;
+              }
+            } else {
+              if (closingStock <= 0) {
+                adjustment = totalQuantity;
+              } else {
+                adjustment = totalQuantity - closingStock;
+              }
+            }
 
             return {
               _id: ingredient._id,
@@ -194,7 +208,7 @@ export default async function handler(req, res) {
               currentStock: currentStock.toFixed(2),
               closingStock: closingStock.toFixed(2),
               bulkOrder,
-              adjustment: adjustment.toFixed(2),
+              adjustment: adjustment.toFixed(1),
               purchaseUnit: ingredient.purchaseUnit,
               vendor: ingredient.vendor,
               sponsored: ingredient.sponsored,
