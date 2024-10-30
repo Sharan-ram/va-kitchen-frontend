@@ -80,8 +80,8 @@ const MonthlyOrder = () => {
           setStartDate={setStartDate}
           setEndDate={setEndDate}
           showButton={false}
-          startDateLabel="Start Date (Monday)"
-          endDateLabel="End Date (Tuesday)"
+          startDateLabel="Start Date for Deduction"
+          endDateLabel="End Date for Deduction"
           toggleMealPlan={() => setShowData(false)}
         />
       </div>

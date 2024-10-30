@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 const MonthlyOrderTableHeader = ({ startDate, endDate }) => {
   return (
     <thead className="bg-gray-50 max-w-[100%] sticky top-[100px]">
@@ -10,13 +11,14 @@ const MonthlyOrderTableHeader = ({ startDate, endDate }) => {
           Requirement (Next Month)
         </th>
         <th className="px-3 py-2 font-bold uppercase tracking-wider">
-          Requirement (Tmrw to Month end)
+          {`Requirement (${format(startDate, "dd-MM-yyyy")} to
+                      ${format(endDate, "dd-MM-yyyy")})`}
         </th>
         <th className="px-3 py-2 font-bold uppercase tracking-wider">
-          Current Stock (By end of today)
+          Stock in the Database (Last updated)
         </th>
         <th className="px-3 py-2 font-bold uppercase tracking-wider">
-          Closing Stock (Tmrw to Month end)
+          {`Closing Stock (as on ${format(endDate, "dd-MM-yyyy")})`}
         </th>
         <th className="px-3 py-2 font-bold uppercase tracking-wider">
           Bulk order
