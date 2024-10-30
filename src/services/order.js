@@ -1,10 +1,13 @@
 import axiosInstance from "@/utils/axiosInstance";
 import format from "date-fns/format";
 
-export const getMonthlyOrder = async (headCount) => {
+export const getMonthlyOrder = async ({ headCount, startDate, endDate }) => {
   try {
     const response = await axiosInstance.get(
-      `/api/order/monthly?headCount=${headCount}`
+      `/api/order/monthly?headCount=${headCount}&startDate=${format(
+        startDate,
+        "dd-MM-yyyy"
+      )}&endDate=${format(endDate, "dd-MM-yyyy")}`
     );
     return response.data.data;
   } catch (e) {

@@ -1,4 +1,4 @@
-const MonthlyOrderTableHeader = () => {
+const MonthlyOrderTableHeader = ({ startDate, endDate }) => {
   return (
     <thead className="bg-gray-50 max-w-[100%] sticky top-[100px]">
       <tr className="bg-gray-200">

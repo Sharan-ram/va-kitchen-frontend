@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import classNames from "classnames";
 import Tabs from "@/components/Tabs";
 import MonthlyOrderTableHeader from "@/components/MonthlyOrderTableHeader";
+import Selections from "@/components/mealPlan/render/Selections";
 
 const MonthlyOrder = () => {
   const [ingredients, setIngredients] = useState();
@@ -16,11 +17,13 @@ const MonthlyOrder = () => {
   const [selectedTab, setSelectedTab] = useState("Buy");
   const [headCount, setHeadCount] = useState();
   const [showData, setShowData] = useState(false);
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
 
   const fetchMonthlyOrder = async () => {
     try {
       setLoading(true);
-      const res = await getMonthlyOrder(headCount);
+      const res = await getMonthlyOrder({ headCount, startDate, endDate });
       setIngredients(res);
       setLoading(false);
       setShowData(true);
@@ -68,6 +71,20 @@ const MonthlyOrder = () => {
         Current Month - {currentMonth}, Monthly Order Generation for -{" "}
         {nextMonth}
       </h2>
+
+      <div>
+        <Selections
+          // onSubmit={fetchPurchaseOrder}
+          startDate={startDate}
+          endDate={endDate}
+          setStartDate={setStartDate}
+          setEndDate={setEndDate}
+          showButton={false}
+          startDateLabel="Start Date (Monday)"
+          endDateLabel="End Date (Tuesday)"
+          toggleMealPlan={() => setShowData(false)}
+        />
+      </div>
 
       <h4 className="text-lg font-semibold mt-4">Enter head count</h4>
 
@@ -150,7 +167,10 @@ const MonthlyOrder = () => {
                         </div>
                       </div>
                       <table className="min-w-full divide-y divide-gray-200 max-w-[100%] mt-4">
-                        <MonthlyOrderTableHeader />
+                        <MonthlyOrderTableHeader
+                          startDate={startDate}
+                          endDate={endDate}
+                        />
                         <tbody className="bg-white divide-y divide-gray-200 max-w-[100%]">
                           {ingredients[selectedTab.toLowerCase()][vendor].map(
                             (ingredient, index) => {

@@ -62,11 +62,12 @@ export const monthlyOrderTotalQuantity = (mealPlan, ingredientName) => {
 export const monthlyOrderRemainingQuantity = (
   mealPlan,
   ingredientName,
-  startDate
+  startDate,
+  endDate
 ) => {
   let totalQuantity = 0;
   // const start = parseDate(startDate);
-  const start = startDate;
+  // const start = startDate;
   // console.log({ mealPlan: mealPlan.days.map((day) => day.date) });
 
   if (!mealPlan) return 0;
@@ -74,7 +75,7 @@ export const monthlyOrderRemainingQuantity = (
   mealPlan.days.forEach((day) => {
     const dayDate = parseDate(day.date);
     // console.log({ dayDate });
-    if (isDateGreaterThan(dayDate, start) === true) {
+    if (dayDate >= startDate && dayDate <= endDate) {
       ["earlyMorning", "breakfast", "lunch", "evening", "dinner"].forEach(
         (meal) => {
           // console.log({ dayDate });
