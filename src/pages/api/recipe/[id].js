@@ -1,6 +1,12 @@
 import dbConnect from "../../../../lib/dbConnect";
 import Recipe from "../../../../models/Recipe";
 import authMiddleware from "../../../../middleware/auth";
+import MealPlan from "../../../../models/MealPlan";
+import {
+  getMealPlanForDateRange,
+  getCurrentDate,
+  isDateGreaterThan,
+} from "../../../../utils/helper";
 
 export default async function handler(req, res) {
   const { method } = req;
@@ -56,7 +62,57 @@ export default async function handler(req, res) {
             .json({ success: false, message: "Recipe not found" });
         }
 
-        res.status(200).json({ success: true, data: updatedRecipe });
+        // console.log({ updatedRecipe });
+
+        // Fetch meal plans from the current date onward
+        const mealPlans = await getMealPlanForDateRange(getCurrentDate()); // Fetch relevant meal plans
+
+        const updatePromises = mealPlans.map(async (mealPlanData) => {
+          // Fetch the full meal plan document
+          const mealPlan = await MealPlan.findById(mealPlanData._id);
+
+          // Update only the relevant days
+          mealPlan.days.forEach((day) => {
+            if (
+              !isDateGreaterThan(
+                new Date(),
+                day.date.split("-").reverse().join("-")
+              )
+            ) {
+              [
+                "earlyMorning",
+                "breakfast",
+                "lunch",
+                "evening",
+                "dinner",
+              ].forEach((mealType) => {
+                const meal = day[mealType];
+                if (meal) {
+                  meal.recipes = meal.recipes.map((recipe) => {
+                    if (
+                      recipe._id.toString() === updatedRecipe._id.toString()
+                    ) {
+                      // console.log("recipe updated", day.date);
+                      return { ...recipe, ...updatedRecipe.toObject() }; // Update recipe
+                    }
+                    return recipe;
+                  });
+                }
+              });
+            }
+          });
+
+          // Save the updated meal plan
+          await mealPlan.save();
+        });
+
+        await Promise.all(updatePromises);
+
+        res.status(200).json({
+          success: true,
+          message: "Recipe and associated MealPlans updated successfully",
+          data: updatedRecipe,
+        });
       } catch (error) {
         res.status(400).json({ success: false, message: error.message });
       }

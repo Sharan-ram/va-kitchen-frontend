@@ -97,7 +97,7 @@ async function getNewToken(username) {
 async function refreshAccessToken(username) {
   console.log("Refreshing access token...");
   try {
-    const { token } = await oAuth2Client.getAccessToken();
+    const { token } = await oAuth2Client.refreshAccessToken();
     console.log("REFRESHED TOKEN............", token);
     oAuth2Client.setCredentials({
       ...oAuth2Client.credentials,
