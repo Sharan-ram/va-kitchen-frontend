@@ -5,12 +5,13 @@ import {
   monthlyOrderTotalQuantity,
   monthlyOrderRemainingQuantity,
   isLastDayOfMonth,
+  parseDate,
 } from "../../../../utils/helper";
 import authMiddleware from "../../../../middleware/auth";
 
 export default async function handler(req, res) {
   const { method, query } = req;
-  const { headCount } = query;
+  const { headCount, startDate, endDate } = query;
 
   await dbConnect();
 
@@ -26,6 +27,9 @@ export default async function handler(req, res) {
         const currentYear = currentDate.getFullYear();
         const nextMonth = currentMonth === 12 ? 1 : currentMonth + 1;
         const nextYear = currentMonth === 12 ? currentYear + 1 : currentYear;
+
+        const parsedStartDate = parseDate(startDate);
+        const parsedEndDate = parseDate(endDate);
 
         // Fetch the meal plan for the current and next months
         const currentMonthMealPlan = await MealPlan.findOne({
@@ -67,13 +71,12 @@ export default async function handler(req, res) {
             );
             // console.log({ currentDate: currentDate.toISOString().split("T")[0] });
             const currentStock = ingredient.stock || 0;
-            const remainingMealPlan = isLastDayOfMonthVar
-              ? 0
-              : monthlyOrderRemainingQuantity(
-                  currentMonthMealPlan,
-                  ingredientName,
-                  currentDate
-                );
+            const remainingMealPlan = monthlyOrderRemainingQuantity(
+              currentMonthMealPlan,
+              ingredientName,
+              parsedStartDate,
+              parsedEndDate
+            );
             const closingStock = currentStock - remainingMealPlan;
 
             const bulkValue =
@@ -83,12 +86,21 @@ export default async function handler(req, res) {
                   Number(headCount)
                 : null;
 
-            const adjustment =
-              bulkValue && bulkValue > 0
-                ? bulkValue.toFixed(1)
-                : (totalQuantity - closingStock).toFixed(1);
+            let adjustment;
 
-            // console.log({ bulkValue, ingredientName });
+            if (bulkValue && bulkValue > 0) {
+              if (closingStock <= 0) {
+                adjustment = bulkValue.toFixed(1);
+              } else {
+                adjustment = (bulkValue - closingStock).toFixed(1);
+              }
+            } else {
+              if (closingStock <= 0) {
+                adjustment = totalQuantity.toFixed(1);
+              } else {
+                adjustment = (totalQuantity - closingStock).toFixed(1);
+              }
+            }
 
             return {
               _id: ingredient._id,

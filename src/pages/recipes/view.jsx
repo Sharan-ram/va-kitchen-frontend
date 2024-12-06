@@ -58,7 +58,7 @@ const Recipes = ({ recipes }) => {
           name: index === 0 ? name : "",
           labelIndian: index === 0 ? label.indian : "",
           labelEnglish: index === 0 ? label.english : "",
-          dietType: index === 0 ? dietType : "",
+          dietType: index === 0 ? dietType : [],
           mealType: index === 0 ? mealType : "",
           usualMealTime: index === 0 ? usualMealTime : "",
           tableSettingVessels: index === 0 ? tableSetting.vessels : "",
@@ -124,7 +124,7 @@ const Recipes = ({ recipes }) => {
           retreatQuantity,
           usualMealTime,
           mealType,
-          dietType.map(
+          dietType?.map(
             (str, index) => `${str}${index !== dietType.length - 1 ? "," : ""} `
           ),
           labelIndian,

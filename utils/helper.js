@@ -62,11 +62,12 @@ export const monthlyOrderTotalQuantity = (mealPlan, ingredientName) => {
 export const monthlyOrderRemainingQuantity = (
   mealPlan,
   ingredientName,
-  startDate
+  startDate,
+  endDate
 ) => {
   let totalQuantity = 0;
   // const start = parseDate(startDate);
-  const start = startDate;
+  // const start = startDate;
   // console.log({ mealPlan: mealPlan.days.map((day) => day.date) });
 
   if (!mealPlan) return 0;
@@ -74,7 +75,7 @@ export const monthlyOrderRemainingQuantity = (
   mealPlan.days.forEach((day) => {
     const dayDate = parseDate(day.date);
     // console.log({ dayDate });
-    if (isDateGreaterThan(dayDate, start) === true) {
+    if (dayDate >= startDate && dayDate <= endDate) {
       ["earlyMorning", "breakfast", "lunch", "evening", "dinner"].forEach(
         (meal) => {
           // console.log({ dayDate });
@@ -226,7 +227,7 @@ export const formatDateToDDMMYYYY = (date) => {
   return `${day}-${month}-${year}`; // Combine in DD-MM-YYYY format
 };
 
-function isDateGreaterThan(date1, date2) {
+export const isDateGreaterThan = (date1, date2) => {
   const d1 = new Date(date1);
   const d2 = new Date(date2);
 
@@ -238,7 +239,7 @@ function isDateGreaterThan(date1, date2) {
 
   // Return true if d1 (date1) is greater than d2 (date2)
   return d1 > d2;
-}
+};
 
 // function convertISTtoUTC(istDate) {
 //   // Calculate the IST to UTC offset, which is +5 hours 30 minutes ahead of UTC
@@ -246,22 +247,24 @@ function isDateGreaterThan(date1, date2) {
 //   return utcDate;
 // }
 
-export const getMealPlanForDateRange = async (startDate, endDate) => {
+export const getMealPlanForDateRange = async (startDate, endDate = null) => {
   try {
-    // Convert start and end dates to Date objects for comparison
+    // Convert start date to a Date object
     const startDateObj = parseDate(startDate);
-    const endDateObj = parseDate(endDate);
+
+    // Convert end date if provided, or set it to a very far-future date
+    const endDateObj = endDate ? parseDate(endDate) : new Date("9999-12-31");
 
     // Fetch all meal plans from the database
     let mealPlans = await MealPlan.find();
 
     // Step 1: Filter out meal plans that don't fall within the year and month range
     const filteredMealPlans = mealPlans.filter((plan) => {
-      const mealPlanStartDate = new Date(plan.year, plan.month - 1); // Adjust for 0-indexed months in JS
-      const mealPlanEndDate = new Date(plan.year, plan.month, 0); // Last day of the meal plan's month
+      const mealPlanStartDate = new Date(plan.year, plan.month - 1); // Adjust for 0-indexed months
+      const mealPlanEndDate = new Date(plan.year, plan.month, 0); // Last day of the month
 
       return (
-        mealPlanStartDate <= endDateObj && mealPlanEndDate >= startDateObj // Check if meal plan falls in the range
+        mealPlanStartDate <= endDateObj && mealPlanEndDate >= startDateObj // Check if meal plan falls in range
       );
     });
 
@@ -288,8 +291,6 @@ export const getMealPlanForDateRange = async (startDate, endDate) => {
       };
     });
 
-    // console.log({ mealPlansWithFilteredDays });
-
     return mealPlansWithFilteredDays;
   } catch (e) {
     console.log(e);
@@ -308,3 +309,12 @@ export const dailyOrderIngredients = [
   "Yeast",
   "Milk for Curd",
 ];
+
+export const getCurrentDate = () => {
+  const today = new Date();
+  const day = String(today.getDate()).padStart(2, "0");
+  const month = String(today.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+  const year = today.getFullYear();
+
+  return `${day}-${month}-${year}`;
+};

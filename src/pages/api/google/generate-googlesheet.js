@@ -70,7 +70,8 @@ async function authorizeClient(username) {
     const currentTime = Date.now();
     if (token.expiry_date && currentTime > token.expiry_date) {
       console.log("Access token expired, refreshing...");
-      await refreshAccessToken(username);
+      const url = await refreshAccessToken(username);
+      return url;
     }
   } catch (err) {
     console.error("Error in authorizing client:", err);
@@ -98,10 +99,13 @@ async function refreshAccessToken(username) {
   console.log("Refreshing access token...");
   try {
     const { token } = await oAuth2Client.getAccessToken();
+    console.log("REFRESHED TOKEN............", token);
     oAuth2Client.setCredentials({
       ...oAuth2Client.credentials,
       access_token: token,
     });
+
+    console.log("CREDENTIALS ARE SET");
 
     fs.writeFileSync(
       TOKEN_PATH(username),
@@ -110,7 +114,9 @@ async function refreshAccessToken(username) {
     console.log("Access token refreshed and saved to disk");
   } catch (error) {
     console.error("Error refreshing access token:", error);
-    await getNewToken(username); // Return the URL for redirection
+    console.log(`${TOKEN_PATH(username)} file deleted`);
+    await fs.unlinkSync(TOKEN_PATH(username));
+    return await authorizeClient(username);
   }
 }
 
@@ -175,7 +181,7 @@ export default async function handler(req, res) {
 
       // Authorize and get the redirect URL if needed
       const authUrl = await authorizeClient(username);
-      // console.log({ authUrl });
+      console.log({ authUrl });
       if (authUrl) {
         res.status(200).json({ authUrl }); // Redirect the user to the authorization URL
       }

@@ -54,7 +54,9 @@ export const getCurrentMonth = () => {
 };
 
 export const getNextMonth = () => {
-  return months[getCurrentMonthIndex() + 1].text;
+  let nextMonthIndex = getCurrentMonthIndex() + 1;
+  nextMonthIndex = nextMonthIndex > 11 ? 0 : nextMonthIndex;
+  return months[nextMonthIndex].text;
 };
 
 export const getDayBeforeGivenDate = (startDate) => {
