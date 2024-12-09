@@ -2,6 +2,7 @@ import dbConnect from "../../../../lib/dbConnect";
 import MealPlan from "../../../../models/MealPlan";
 import authMiddleware from "../../../../middleware/auth";
 import decompressMiddleware from "../../../../middleware/decompression";
+import { getMealPlanProjection } from "../../../../utils/helper";
 
 export default async function handler(req, res) {
   await dbConnect(); // Connect to the database
@@ -35,7 +36,10 @@ export default async function handler(req, res) {
             .json({ success: false, message: "Year and month are required." });
         }
 
-        const mealPlans = await MealPlan.find({ year, month });
+        const mealPlans = await MealPlan.find(
+          { year, month },
+          getMealPlanProjection
+        );
         return res.status(200).json({ success: true, data: mealPlans });
       } catch (error) {
         return res.status(500).json({ success: false, message: error.message });

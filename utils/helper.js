@@ -318,3 +318,26 @@ export const getCurrentDate = () => {
 
   return `${day}-${month}-${year}`;
 };
+
+export const getMealPlanProjection = {
+  year: 1,
+  month: 1,
+  season: 1,
+  entireMonthCounts: 1,
+  _id: 1,
+  "days.earlyMorning.recipes._id": 1,
+  "days.earlyMorning.recipes.name": 1,
+  "days.earlyMorning.recipes.comments": 1,
+  "days.breakfast.recipes._id": 1,
+  "days.breakfast.recipes.name": 1,
+  "days.breakfast.recipes.comments": 1,
+  "days.lunch.recipes._id": 1,
+  "days.lunch.recipes.name": 1,
+  "days.lunch.recipes.comments": 1,
+  "days.evening.recipes._id": 1,
+  "days.evening.recipes.name": 1,
+  "days.evening.recipes.comments": 1,
+  "days.dinner.recipes._id": 1,
+  "days.dinner.recipes.name": 1,
+  "days.dinner.recipes.comments": 1,
+};
