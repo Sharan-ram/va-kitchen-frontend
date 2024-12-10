@@ -27,6 +27,32 @@ export const parseDate = (dateString) => {
   return new Date(Date.UTC(year, month - 1, day));
 };
 
+export const getMealPlanProjection = {
+  year: 1,
+  month: 1,
+  season: 1,
+  entireMonthCounts: 1,
+  _id: 1,
+  "days._id": 1,
+  "days.date": 1,
+  "days.season": 1,
+  "days.earlyMorning.recipes._id": 1,
+  "days.earlyMorning.recipes.name": 1,
+  "days.earlyMorning.recipes.comments": 1,
+  "days.breakfast.recipes._id": 1,
+  "days.breakfast.recipes.name": 1,
+  "days.breakfast.recipes.comments": 1,
+  "days.lunch.recipes._id": 1,
+  "days.lunch.recipes.name": 1,
+  "days.lunch.recipes.comments": 1,
+  "days.evening.recipes._id": 1,
+  "days.evening.recipes.name": 1,
+  "days.evening.recipes.comments": 1,
+  "days.dinner.recipes._id": 1,
+  "days.dinner.recipes.name": 1,
+  "days.dinner.recipes.comments": 1,
+};
+
 export const monthlyOrderTotalQuantity = (mealPlan, ingredientName) => {
   let totalQuantity = 0;
   mealPlan.days.forEach((day) => {
@@ -249,52 +275,67 @@ export const isDateGreaterThan = (date1, date2) => {
 
 export const getMealPlanForDateRange = async (startDate, endDate = null) => {
   try {
-    // Convert start date to a Date object
     const startDateObj = parseDate(startDate);
+    const endDateObj = parseDate(endDate);
 
-    // Convert end date if provided, or set it to a very far-future date
-    const endDateObj = endDate ? parseDate(endDate) : new Date("9999-12-31");
+    console.log({ startDateObj, endDateObj });
 
-    // Fetch all meal plans from the database
-    let mealPlans = await MealPlan.find();
+    // Fetch meal plans, filter days inside the query using MongoDB's date comparison
+    const mealPlans = await MealPlan.aggregate([
+      {
+        $match: {
+          "days.date": {
+            $gte: startDateObj, // Ensure days.date is greater than or equal to startDate
+            $lte: endDateObj, // Ensure days.date is less than or equal to endDate
+          },
+        },
+      },
+      {
+        $project: {
+          year: 1,
+          month: 1,
+          season: 1,
+          entireMonthCounts: 1,
+          days: {
+            $filter: {
+              input: "$days",
+              as: "day",
+              cond: {
+                $and: [
+                  { $gte: ["$$day.date", startDateObj] },
+                  { $lte: ["$$day.date", endDateObj] },
+                ],
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: getMealPlanProjection, // Apply the specific projection after filtering the days
+      },
+    ]);
 
-    // Step 1: Filter out meal plans that don't fall within the year and month range
-    const filteredMealPlans = mealPlans.filter((plan) => {
-      const mealPlanStartDate = new Date(plan.year, plan.month - 1); // Adjust for 0-indexed months
-      const mealPlanEndDate = new Date(plan.year, plan.month, 0); // Last day of the month
+    // const mealPlans = await MealPlan.aggregate([
+    //   {
+    //     $match: {
+    //       "days.date": {
+    //         $gte: startDateObj, // Ensure days.date is greater than or equal to startDate
+    //         $lte: endDateObj, // Ensure days.date is less than or equal to endDate
+    //       },
+    //     },
+    //   },
+    // ]);
 
-      return (
-        mealPlanStartDate <= endDateObj && mealPlanEndDate >= startDateObj // Check if meal plan falls in range
-      );
-    });
+    // console.log({
+    //   mealPlans: JSON.stringify(mealPlans),
+    //   startDateObj,
+    //   endDateObj,
+    // });
 
-    // Step 2: For filtered meal plans, filter out `days` that don't fall within the date range
-    const mealPlansWithFilteredDays = filteredMealPlans.map((plan) => {
-      const filteredDays = plan.days
-        .filter((day) => {
-          const dayDate = parseDate(day.date);
-          return dayDate >= startDateObj && dayDate <= endDateObj;
-        })
-        .sort((a, b) => {
-          const dateA = new Date(a.date.split("-").reverse().join("-"));
-          const dateB = new Date(b.date.split("-").reverse().join("-"));
-          return dateA - dateB;
-        });
-
-      return {
-        _id: plan._id,
-        month: plan.month,
-        year: plan.year,
-        season: plan.season,
-        entireMonthCounts: plan.entireMonthCounts,
-        days: filteredDays,
-      };
-    });
-
-    return mealPlansWithFilteredDays;
-  } catch (e) {
-    console.log(e);
-    throw new Error(e);
+    return mealPlans;
+  } catch (error) {
+    console.error("Error fetching meal plans:", error);
+    throw new Error("Unable to fetch meal plans");
   }
 };
 
@@ -317,27 +358,4 @@ export const getCurrentDate = () => {
   const year = today.getFullYear();
 
   return `${day}-${month}-${year}`;
-};
-
-export const getMealPlanProjection = {
-  year: 1,
-  month: 1,
-  season: 1,
-  entireMonthCounts: 1,
-  _id: 1,
-  "days.earlyMorning.recipes._id": 1,
-  "days.earlyMorning.recipes.name": 1,
-  "days.earlyMorning.recipes.comments": 1,
-  "days.breakfast.recipes._id": 1,
-  "days.breakfast.recipes.name": 1,
-  "days.breakfast.recipes.comments": 1,
-  "days.lunch.recipes._id": 1,
-  "days.lunch.recipes.name": 1,
-  "days.lunch.recipes.comments": 1,
-  "days.evening.recipes._id": 1,
-  "days.evening.recipes.name": 1,
-  "days.evening.recipes.comments": 1,
-  "days.dinner.recipes._id": 1,
-  "days.dinner.recipes.name": 1,
-  "days.dinner.recipes.comments": 1,
 };

@@ -80,7 +80,7 @@ const MealSchema = mongoose.Schema({
 });
 
 const DaySchema = mongoose.Schema({
-  date: { type: String, required: true },
+  date: { type: Date, required: true },
   season: { type: String, required: true },
   earlyMorning: { type: MealSchema, default: undefined },
   breakfast: { type: MealSchema, default: undefined },
