@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Ingredient from "./Ingredient.js";
 
 const CuttingSchema = mongoose.Schema({
   method: {
@@ -64,43 +65,9 @@ const AllergySchema = mongoose.Schema({
 
 const FullIngredientSchema = mongoose.Schema({
   ingredient: {
-    name: {
-      type: String,
-      required: true,
-    },
-    englishEquivalent: {
-      type: String,
-    },
-    ingredientType: {
-      type: String,
-      required: true,
-    },
-    storageType: {
-      type: String,
-    },
-    vendor: {
-      type: String,
-      required: true,
-    },
-    sponsored: {
-      type: Boolean,
-      default: false,
-    },
-    purchaseUnit: {
-      type: String,
-      required: true,
-    },
-    cookingUnit: {
-      type: String,
-      required: true,
-    },
-    purchaseUnitPerCookingUnit: {
-      type: Number,
-      required: true,
-    },
-    price: {
-      type: Number,
-    },
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Ingredient",
+    required: true,
   },
   summerQuantity: {
     type: Number,
