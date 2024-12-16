@@ -1,8 +1,12 @@
 import dbConnect from "../../../../lib/dbConnect";
 import MealPlan from "../../../../models/MealPlan";
+import Recipe from "../../../../models/Recipe";
 import authMiddleware from "../../../../middleware/auth";
 import decompressMiddleware from "../../../../middleware/decompression";
-import { getMealPlanProjection } from "../../../../utils/helper";
+import {
+  getMealPlanProjection,
+  populateMealPlanRecipes,
+} from "../../../../utils/helper";
 
 export default async function handler(req, res) {
   await dbConnect(); // Connect to the database
@@ -39,7 +43,9 @@ export default async function handler(req, res) {
         const mealPlans = await MealPlan.find(
           { year, month },
           getMealPlanProjection
-        );
+        )
+          .populate(populateMealPlanRecipes())
+          .lean();
         return res.status(200).json({ success: true, data: mealPlans });
       } catch (error) {
         return res.status(500).json({ success: false, message: error.message });

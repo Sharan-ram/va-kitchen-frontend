@@ -36,21 +36,33 @@ export const getMealPlanProjection = {
   "days._id": 1,
   "days.date": 1,
   "days.season": 1,
-  "days.earlyMorning.recipes._id": 1,
-  "days.earlyMorning.recipes.name": 1,
-  "days.earlyMorning.recipes.comments": 1,
-  "days.breakfast.recipes._id": 1,
-  "days.breakfast.recipes.name": 1,
-  "days.breakfast.recipes.comments": 1,
-  "days.lunch.recipes._id": 1,
-  "days.lunch.recipes.name": 1,
-  "days.lunch.recipes.comments": 1,
-  "days.evening.recipes._id": 1,
-  "days.evening.recipes.name": 1,
-  "days.evening.recipes.comments": 1,
-  "days.dinner.recipes._id": 1,
-  "days.dinner.recipes.name": 1,
-  "days.dinner.recipes.comments": 1,
+  // Meal counts (added as per the requirement)
+  "days.earlyMorning.mealCounts": 1,
+  "days.breakfast.mealCounts": 1,
+  "days.lunch.mealCounts": 1,
+  "days.evening.mealCounts": 1,
+  "days.dinner.mealCounts": 1,
+  // Comments will now be directly under each meal
+  "days.earlyMorning.comments": 1,
+  "days.breakfast.comments": 1,
+  "days.lunch.comments": 1,
+  "days.evening.comments": 1,
+  "days.dinner.comments": 1,
+};
+
+export const populateMealPlanRecipes = () => {
+  const recipeFields = [
+    "days.earlyMorning.recipes",
+    "days.breakfast.recipes",
+    "days.lunch.recipes",
+    "days.evening.recipes",
+    "days.dinner.recipes",
+  ];
+
+  return recipeFields.map((field) => ({
+    path: field,
+    select: "_id name", // Specify which fields to populate
+  }));
 };
 
 export const monthlyOrderTotalQuantity = (mealPlan, ingredientName) => {
