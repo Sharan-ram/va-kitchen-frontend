@@ -1,4 +1,5 @@
 import { months } from "./constants";
+import { parseISO, format } from "date-fns";
 
 export function generateDaysOfMonth(year, month) {
   const daysInMonth = new Date(year, month + 1, 0).getDate(); // Get the last day of the specified month
@@ -63,4 +64,10 @@ export const getDayBeforeGivenDate = (startDate) => {
   const date = new Date(startDate); // Create a new Date object based on the start date
   date.setDate(date.getDate() - 1); // Subtract one day from the current date
   return date;
+};
+
+export const parsedAndFormattedDate = (ISODateString) => {
+  const parsedDate = parseISO(ISODateString);
+  const formattedDate = format(parsedDate, "dd-MM-yyyy");
+  return formattedDate;
 };

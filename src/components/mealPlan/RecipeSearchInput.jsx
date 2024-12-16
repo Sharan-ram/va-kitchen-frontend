@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { Trash } from "phosphor-react";
 import { searchRecipe } from "@/services/recipe";
 import classNames from "classnames";
+import { parsedAndFormattedDate } from "@/helpers/utils";
 
 const RecipeSearchInput = ({
   placeholder,
@@ -25,7 +26,8 @@ const RecipeSearchInput = ({
 
   useEffect(() => {
     const selectDateObj = mealPlan?.days?.find(
-      (dayObj) => dayObj.date === format(date, "dd-MM-yyyy")
+      (dayObj) =>
+        parsedAndFormattedDate(dayObj.date) === format(date, "dd-MM-yyyy")
     );
     // console.log({ date, selectDateObj });
     if (selectDateObj) {

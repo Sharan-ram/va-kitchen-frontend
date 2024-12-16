@@ -2,6 +2,7 @@ import React from "react";
 import RecipeSearchInput from "./RecipeSearchInput";
 import MealCountInput from "./MealCountInput";
 import { weekDays, meals, seasons, months } from "@/helpers/constants";
+import { parsedAndFormattedDate } from "@/helpers/utils";
 import { format } from "date-fns";
 import Input from "@/components/Input";
 
@@ -15,6 +16,7 @@ const MealPlanTable = ({
   setActiveRecipe,
   setActiveMealForComments,
 }) => {
+  // console.log({ mealPlan });
   const getMealPlanObj = (year, month) => {
     const mealPlanObj = mealPlan.find(
       (obj) => obj.year === year && obj.month === month
@@ -106,7 +108,10 @@ const MealPlanTable = ({
 
             const selectedDateObjIndex = specificMealPlan.days
               ? specificMealPlan.days?.findIndex((obj) => {
-                  return obj.date === format(day, "dd-MM-yyyy");
+                  return (
+                    parsedAndFormattedDate(obj.date) ===
+                    format(day, "dd-MM-yyyy")
+                  );
                 })
               : -1;
 
