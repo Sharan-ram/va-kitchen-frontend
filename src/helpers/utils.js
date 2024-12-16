@@ -1,12 +1,13 @@
 import { months } from "./constants";
-import { parseISO, format } from "date-fns";
+import { parseISO, format, isValid } from "date-fns";
 
 export function generateDaysOfMonth(year, month) {
-  const daysInMonth = new Date(year, month + 1, 0).getDate(); // Get the last day of the specified month
+  const daysInMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate(); // Get the last day of the specified month in UTC
 
   const days = [];
   for (let day = 1; day <= daysInMonth; day++) {
-    days.push(new Date(year, month, day));
+    // Create each date in UTC
+    days.push(new Date(Date.UTC(year, month, day)));
   }
 
   return days;
@@ -66,8 +67,24 @@ export const getDayBeforeGivenDate = (startDate) => {
   return date;
 };
 
-export const parsedAndFormattedDate = (ISODateString) => {
-  const parsedDate = parseISO(ISODateString);
-  const formattedDate = format(parsedDate, "dd-MM-yyyy");
-  return formattedDate;
+export const parsedAndFormattedDate = (input) => {
+  let date;
+
+  // Check if the input is already a Date object
+  if (input instanceof Date) {
+    date = input;
+  } else if (typeof input === "string") {
+    // Parse the ISO string
+    date = parseISO(input);
+  } else {
+    throw new Error("Invalid input: expected a Date object or an ISO string");
+  }
+
+  // Validate the parsed date
+  if (!isValid(date)) {
+    throw new Error("Invalid date");
+  }
+
+  // Format the valid date
+  return format(date, "dd-MM-yyyy");
 };

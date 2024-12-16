@@ -16,7 +16,7 @@ const MealPlanTable = ({
   setActiveRecipe,
   setActiveMealForComments,
 }) => {
-  // console.log({ mealPlan });
+  console.log({ mealPlan, days });
   const getMealPlanObj = (year, month) => {
     const mealPlanObj = mealPlan.find(
       (obj) => obj.year === year && obj.month === month
@@ -96,6 +96,7 @@ const MealPlanTable = ({
         <tbody className="bg-white divide-y divide-gray-200">
           {days.map((day) => {
             // console.log({ day, formattedDay: format(day, "dd-MM-yyyy") });
+            // console.log({ day });
             const date = day.getDate();
             const dayName = day.getDay();
             const monthRenderPage =
@@ -108,9 +109,11 @@ const MealPlanTable = ({
 
             const selectedDateObjIndex = specificMealPlan.days
               ? specificMealPlan.days?.findIndex((obj) => {
+                  // console.log({ obj });
                   return (
+                    obj.date &&
                     parsedAndFormattedDate(obj.date) ===
-                    format(day, "dd-MM-yyyy")
+                      format(day, "dd-MM-yyyy")
                   );
                 })
               : -1;
@@ -136,7 +139,7 @@ const MealPlanTable = ({
                           setSeasonPerDay({
                             season: e.target.value,
                             selectedDateObjIndex,
-                            date: format(day, "dd-MM-yyyy"),
+                            date: day.toISOString(),
                             mealPlan: specificMealPlan,
                           }),
                         options: [
