@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { dietTypeCounts } from "@/helpers/constants";
+import { parsedAndFormattedDate } from "@/helpers/utils";
 
 const MealCountInput = ({
   entireMonthCounts,
@@ -94,7 +95,7 @@ const MealCountInput = ({
   };
 
   const mealCounts = mealPlan?.days?.find(
-    (obj) => obj.date === format(date, "dd-MM-yyyy")
+    (obj) => parsedAndFormattedDate(obj.date) === format(date, "dd-MM-yyyy")
   )?.[meal]?.mealCounts;
 
   const getValue = (dietTypeCount) => {
