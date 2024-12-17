@@ -63,7 +63,7 @@ const RecipeSearchInput = ({
     let newMealPlan = JSON.parse(JSON.stringify(mealPlan));
     if (newMealPlan && Object.keys(newMealPlan).length > 0) {
       const selectedDateObjIndex = newMealPlan.days?.findIndex((obj) => {
-        return obj.date === formattedDate;
+        return parsedAndFormattedDate(obj.date) === formattedDate;
       });
       if (selectedDateObjIndex >= 0) {
         if (newMealPlan.days[selectedDateObjIndex][meal]) {
@@ -86,7 +86,7 @@ const RecipeSearchInput = ({
       } else {
         if (newMealPlan.days) {
           newMealPlan.days.push({
-            date: formattedDate,
+            date: date.toISOString(),
             [meal]: {
               mealCounts: newMealPlan.entireMonthCounts,
               recipes: [recipe],
@@ -96,7 +96,7 @@ const RecipeSearchInput = ({
         } else {
           newMealPlan.days = [
             {
-              date: formattedDate,
+              date: date.toISOString(),
               [meal]: {
                 mealCounts: newMealPlan.entireMonthCounts,
                 recipes: [recipe],
@@ -113,7 +113,7 @@ const RecipeSearchInput = ({
         entireMonthCounts: newMealPlan.entireMonthCounts,
         days: [
           {
-            date: formattedDate,
+            date: date.toISOString(),
             [meal]: {
               mealCounts: newMealPlan.entireMonthCounts,
               recipes: [recipe],
@@ -136,7 +136,7 @@ const RecipeSearchInput = ({
   const handleDeleteRecipe = (recipe) => {
     let newMealPlan = JSON.parse(JSON.stringify(mealPlan));
     const selectedDateObjIndex = newMealPlan.days.findIndex(
-      (obj) => obj.date === format(date, "dd-MM-yyyy")
+      (obj) => parsedAndFormattedDate(obj.date) === format(date, "dd-MM-yyyy")
     );
     let recipes = newMealPlan?.days[selectedDateObjIndex]?.[meal]?.recipes;
     const recipeIndex = recipes.findIndex((obj) => obj._id === recipe._id);

@@ -16,7 +16,7 @@ const MealPlanTable = ({
   setActiveRecipe,
   setActiveMealForComments,
 }) => {
-  console.log({ mealPlan, days });
+  // console.log({ mealPlan, days });
   const getMealPlanObj = (year, month) => {
     const mealPlanObj = mealPlan.find(
       (obj) => obj.year === year && obj.month === month
