@@ -1,7 +1,7 @@
 import dbConnect from "../../../../lib/dbConnect";
 import MealPlan from "../../../../models/MealPlan";
 import authMiddleware from "../../../../middleware/auth";
-import decompressMiddleware from "../../../../middleware/decompression";
+// import decompressMiddleware from "../../../../middleware/decompression";
 
 export default async function handler(req, res) {
   await dbConnect(); // Connect to the database
@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     query: { id },
   } = req;
   // console.log({ bodyBefore: req.body });
-  await decompressMiddleware(req, res);
+  // await decompressMiddleware(req, res);
 
   switch (method) {
     case "PUT":
@@ -21,45 +21,48 @@ export default async function handler(req, res) {
 
         const updatedFields = req.body;
 
-        // console.log({ bodyAfter: req.body });
-
-        // Find the meal plan by ID and update it
-        let mealPlan = await MealPlan.findById(id);
+        const mealPlan = await MealPlan.findById(id);
         if (!mealPlan) {
           return res
             .status(404)
             .json({ success: false, message: "Meal plan not found" });
         }
 
-        // Update top-level fields
         for (const key in updatedFields) {
           if (key !== "days") {
             mealPlan[key] = updatedFields[key];
           }
         }
 
-        // Handle days update or addition
+        // Process and update days array: extract recipe _ids
         if (updatedFields.days && Array.isArray(updatedFields.days)) {
-          updatedFields.days.forEach((updatedDay) => {
-            const existingDayIndex = mealPlan.days.findIndex(
-              (day) => day.date === updatedDay.date
-            );
-            if (existingDayIndex === -1) {
-              mealPlan.days = [...mealPlan.days, updatedDay];
-            } else {
-              mealPlan.days[existingDayIndex] = updatedDay;
-            }
-          });
+          mealPlan.days = updatedFields.days.map((day) => ({
+            ...day,
+            earlyMorning: {
+              ...day.earlyMorning,
+              recipes: day.earlyMorning?.recipes?.map((r) => r._id) || [],
+            },
+            breakfast: {
+              ...day.breakfast,
+              recipes: day.breakfast?.recipes?.map((r) => r._id) || [],
+            },
+            lunch: {
+              ...day.lunch,
+              recipes: day.lunch?.recipes?.map((r) => r._id) || [],
+            },
+            evening: {
+              ...day.evening,
+              recipes: day.evening?.recipes?.map((r) => r._id) || [],
+            },
+            dinner: {
+              ...day.dinner,
+              recipes: day.dinner?.recipes?.map((r) => r._id) || [],
+            },
+          }));
         }
 
+        // Save the updated meal plan
         const updatedMealPlan = await mealPlan.save();
-
-        // Sort the days array by date
-        updatedMealPlan.days.sort((a, b) => {
-          const dateA = new Date(a.date.split("-").reverse().join("-"));
-          const dateB = new Date(b.date.split("-").reverse().join("-"));
-          return dateA - dateB;
-        });
 
         return res.status(200).json({ success: true, data: updatedMealPlan });
       } catch (error) {
@@ -73,9 +76,3 @@ export default async function handler(req, res) {
         .end(`Method ${method} Not Allowed`);
   }
 }
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};

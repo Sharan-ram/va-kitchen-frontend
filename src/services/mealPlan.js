@@ -29,18 +29,20 @@ export const getMealPlanBetweenDateRange = async (startDate, endDate) => {
 
 export const saveNewMealPlan = async (payload) => {
   try {
-    const compressedPayload = pako.gzip(JSON.stringify(payload));
+    // const compressedPayload = pako.gzip(JSON.stringify(payload));
+    console.log({ payload });
     const response = await axiosInstance.post(
       `/api/mealPlan`,
-      compressedPayload,
-      {
-        headers: {
-          "Content-Encoding": "gzip",
-          "Content-Type": "application/json",
-        },
-        transformRequest: [(data) => data],
-      }
+      payload
+      // {
+      //   headers: {
+      //     "Content-Encoding": "gzip",
+      //     "Content-Type": "application/json",
+      //   },
+      //   transformRequest: [(data) => data],
+      // }
     );
+    console.log({ response });
     return response.data.data;
   } catch (e) {
     throw new Error(e);
@@ -50,17 +52,17 @@ export const saveNewMealPlan = async (payload) => {
 export const updateExistingMealPlan = async (mealPlan) => {
   try {
     const { __v, ...rest } = mealPlan;
-    const compressedPayload = pako.gzip(JSON.stringify({ ...rest }));
+    // const compressedPayload = pako.gzip(JSON.stringify({ ...rest }));
     const response = await axiosInstance.put(
       `/api/mealPlan/${mealPlan._id}`,
-      compressedPayload,
-      {
-        headers: {
-          "Content-Encoding": "gzip",
-          "Content-Type": "/application/octet-stream",
-        },
-        transformRequest: [(data) => data],
-      }
+      { ...rest }
+      // {
+      //   headers: {
+      //     "Content-Encoding": "gzip",
+      //     "Content-Type": "/application/octet-stream",
+      //   },
+      //   transformRequest: [(data) => data],
+      // }
     );
     return response;
   } catch (e) {
