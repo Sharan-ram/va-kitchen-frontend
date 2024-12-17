@@ -6,6 +6,7 @@ import authMiddleware from "../../../../middleware/auth";
 import {
   getMealPlanProjection,
   populateMealPlanRecipes,
+  processMealPlanDays,
 } from "../../../../utils/helper";
 
 export default async function handler(req, res) {
@@ -24,32 +25,7 @@ export default async function handler(req, res) {
 
         // Process and clean up the recipes array to extract only `_id`
         if (mealPlanData.days) {
-          mealPlanData.days = mealPlanData.days.map((day) => {
-            if (day.earlyMorning?.recipes) {
-              day.earlyMorning.recipes = day.earlyMorning.recipes.map(
-                (recipe) => recipe._id
-              );
-            }
-            if (day.breakfast?.recipes) {
-              day.breakfast.recipes = day.breakfast.recipes.map(
-                (recipe) => recipe._id
-              );
-            }
-            if (day.lunch?.recipes) {
-              day.lunch.recipes = day.lunch.recipes.map((recipe) => recipe._id);
-            }
-            if (day.evening?.recipes) {
-              day.evening.recipes = day.evening.recipes.map(
-                (recipe) => recipe._id
-              );
-            }
-            if (day.dinner?.recipes) {
-              day.dinner.recipes = day.dinner.recipes.map(
-                (recipe) => recipe._id
-              );
-            }
-            return day;
-          });
+          mealPlanData.days = processMealPlanDays(mealPlanData.days);
         }
 
         let mealPlan = new MealPlan(mealPlanData);

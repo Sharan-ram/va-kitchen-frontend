@@ -371,3 +371,26 @@ export const getCurrentDate = () => {
 
   return `${day}-${month}-${year}`;
 };
+
+export const processMealPlanDays = (days) => {
+  return days.map((day) => {
+    if (day.earlyMorning?.recipes) {
+      day.earlyMorning.recipes = day.earlyMorning.recipes.map(
+        (recipe) => recipe._id
+      );
+    }
+    if (day.breakfast?.recipes) {
+      day.breakfast.recipes = day.breakfast.recipes.map((recipe) => recipe._id);
+    }
+    if (day.lunch?.recipes) {
+      day.lunch.recipes = day.lunch.recipes.map((recipe) => recipe._id);
+    }
+    if (day.evening?.recipes) {
+      day.evening.recipes = day.evening.recipes.map((recipe) => recipe._id);
+    }
+    if (day.dinner?.recipes) {
+      day.dinner.recipes = day.dinner.recipes.map((recipe) => recipe._id);
+    }
+    return day;
+  });
+};

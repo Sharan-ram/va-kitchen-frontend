@@ -1,6 +1,7 @@
 import dbConnect from "../../../../lib/dbConnect";
 import MealPlan from "../../../../models/MealPlan";
 import authMiddleware from "../../../../middleware/auth";
+import { processMealPlanDays } from "../../../../utils/helper";
 // import decompressMiddleware from "../../../../middleware/decompression";
 
 export default async function handler(req, res) {
@@ -36,29 +37,7 @@ export default async function handler(req, res) {
 
         // Process and update days array: extract recipe _ids
         if (updatedFields.days && Array.isArray(updatedFields.days)) {
-          mealPlan.days = updatedFields.days.map((day) => ({
-            ...day,
-            earlyMorning: {
-              ...day.earlyMorning,
-              recipes: day.earlyMorning?.recipes?.map((r) => r._id) || [],
-            },
-            breakfast: {
-              ...day.breakfast,
-              recipes: day.breakfast?.recipes?.map((r) => r._id) || [],
-            },
-            lunch: {
-              ...day.lunch,
-              recipes: day.lunch?.recipes?.map((r) => r._id) || [],
-            },
-            evening: {
-              ...day.evening,
-              recipes: day.evening?.recipes?.map((r) => r._id) || [],
-            },
-            dinner: {
-              ...day.dinner,
-              recipes: day.dinner?.recipes?.map((r) => r._id) || [],
-            },
-          }));
+          mealPlan.days = processMealPlanDays(updatedFields.days);
         }
 
         // Save the updated meal plan
