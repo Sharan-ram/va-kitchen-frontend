@@ -128,7 +128,7 @@ const MealPlanTable = ({
             // console.log({ season });
             return (
               <tr key={day} className="border-b">
-                <td className="px-3 py-2 whitespace-nowrap font-bold min-w-[150px]">
+                <td className="px-3 py-2 whitespace-nowrap font-bold min-w-[150px] align-top">
                   <div>{`${date}, ${weekDays[dayName]}`}</div>
                   <div>
                     <Input
@@ -161,7 +161,7 @@ const MealPlanTable = ({
                   return (
                     <td
                       key={meal}
-                      className="px-3 py-2 whitespace-nowrap capitalize min-w-[300px] max-w-[450px]"
+                      className="px-3 py-2 whitespace-nowrap capitalize min-w-[300px] max-w-[450px] align-top"
                     >
                       <RecipeSearchInput
                         placeholder={`Search for ${meal} recipe`}
