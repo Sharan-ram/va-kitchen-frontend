@@ -22,7 +22,10 @@ export default async function handler(req, res) {
           return;
         }
 
-        const recipe = await Recipe.findById(id);
+        const recipe = await Recipe.findById(id).populate({
+          path: "ingredients.ingredient", // Path to populate
+          select: "_id name", // Fields to include in the populated data
+        });
 
         // Check if recipe exists
         if (!recipe) {
