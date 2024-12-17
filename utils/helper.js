@@ -322,8 +322,36 @@ export const getMealPlanForDateRange = async (startDate, endDate = null) => {
           },
         },
       },
+
       {
-        $project: getMealPlanProjection, // Apply the specific projection after filtering the days
+        $project: {
+          year: 1,
+          month: 1,
+          season: 1,
+          entireMonthCounts: 1,
+          _id: 1,
+          "days._id": 1,
+          "days.date": 1,
+          "days.season": 1,
+          // Meal counts
+          "days.earlyMorning.mealCounts": 1,
+          "days.breakfast.mealCounts": 1,
+          "days.lunch.mealCounts": 1,
+          "days.evening.mealCounts": 1,
+          "days.dinner.mealCounts": 1,
+          // Comments
+          "days.earlyMorning.comments": 1,
+          "days.breakfast.comments": 1,
+          "days.lunch.comments": 1,
+          "days.evening.comments": 1,
+          "days.dinner.comments": 1,
+          // Recipes and their populated details
+          "days.earlyMorning.recipes": 1,
+          "days.breakfast.recipes": 1,
+          "days.lunch.recipes": 1,
+          "days.evening.recipes": 1,
+          "days.dinner.recipes": 1,
+        },
       },
     ]);
 
@@ -343,6 +371,7 @@ export const getMealPlanForDateRange = async (startDate, endDate = null) => {
     //   startDateObj,
     //   endDateObj,
     // });
+    await MealPlan.populate(mealPlans, populateMealPlanRecipes());
 
     return mealPlans;
   } catch (error) {
