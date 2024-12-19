@@ -62,7 +62,7 @@ const RenderMealPlanPage = () => {
   };
 
   // console.log({ activeRecipe, activeMealPlan });
-  // console.log({ mealPlan });
+  console.log({ mealPlan });
   const createUpdatedMealPlanPromises = async (updatedMealPlans) => {
     try {
       const updateRequests = updatedMealPlans.map(async (mealPlan) => {
@@ -81,59 +81,82 @@ const RenderMealPlanPage = () => {
     }
   };
 
-  const handleRecipeUpdate = (recipe) => {
+  const handleRecipeUpdate = (tempRecipe) => {
     const newMealPlan = mealPlan.map((mealPlanObj) => {
       let newMealPlanObj = { ...mealPlanObj };
       newMealPlanObj.days = newMealPlanObj.days.map((day) => {
         let newDayObj = { ...day };
         if (day.earlyMorning && day.earlyMorning.recipes) {
-          newDayObj.earlyMorning.recipes = newDayObj.earlyMorning.recipes.map(
-            (r) => {
-              if (r._id === recipe._id) {
-                return recipe;
-              } else {
-                return r;
-              }
+          newDayObj.earlyMorning = {
+            ...day.earlyMorning,
+            tempRecipes: [...(day.tempRecipes || [])],
+          };
+          newDayObj.earlyMorning.recipes.forEach((r) => {
+            if (r._id === activeRecipe._id) {
+              newDayObj.earlyMorning.tempRecipes.push({
+                originalRecipe: activeRecipe._id,
+                tempRecipe: tempRecipe._id,
+              });
             }
-          );
+          });
         }
 
         if (day.breakfast && day.breakfast.recipes) {
-          newDayObj.breakfast.recipes = newDayObj.breakfast.recipes.map((r) => {
-            if (r._id === recipe._id) {
-              return recipe;
-            } else {
-              return r;
+          newDayObj.breakfast = {
+            ...day.breakfast,
+            tempRecipes: [...(day.tempRecipes || [])],
+          };
+          newDayObj.breakfast.recipes.forEach((r) => {
+            if (r._id === activeRecipe._id) {
+              newDayObj.breakfast.tempRecipes.push({
+                originalRecipe: activeRecipe._id,
+                tempRecipe: tempRecipe._id,
+              });
             }
           });
         }
 
         if (day.lunch && day.lunch.recipes) {
-          newDayObj.lunch.recipes = newDayObj.lunch.recipes.map((r) => {
-            if (r._id === recipe._id) {
-              return recipe;
-            } else {
-              return r;
+          newDayObj.lunch = {
+            ...day.lunch,
+            tempRecipes: [...(day.tempRecipes || [])],
+          };
+          newDayObj.lunch.recipes.forEach((r) => {
+            if (r._id === activeRecipe._id) {
+              newDayObj.lunch.tempRecipes.push({
+                originalRecipe: activeRecipe._id,
+                tempRecipe: tempRecipe._id,
+              });
             }
           });
         }
 
         if (day.evening && day.evening.recipes) {
-          newDayObj.evening.recipes = newDayObj.evening.recipes.map((r) => {
-            if (r._id === recipe._id) {
-              return recipe;
-            } else {
-              return r;
+          newDayObj.evening = {
+            ...day.evening,
+            tempRecipes: [...(day.tempRecipes || [])],
+          };
+          newDayObj.evening.recipes.forEach((r) => {
+            if (r._id === activeRecipe._id) {
+              newDayObj.evening.tempRecipes.push({
+                originalRecipe: activeRecipe._id,
+                tempRecipe: tempRecipe._id,
+              });
             }
           });
         }
 
         if (day.dinner && day.dinner.recipes) {
-          newDayObj.dinner.recipes = newDayObj.dinner.recipes.map((r) => {
-            if (r._id === recipe._id) {
-              return recipe;
-            } else {
-              return r;
+          newDayObj.dinner = {
+            ...day.dinner,
+            tempRecipes: [...(day.tempRecipes || [])],
+          };
+          newDayObj.dinner.recipes.forEach((r) => {
+            if (r._id === activeRecipe._id) {
+              newDayObj.dinner.tempRecipes.push({
+                originalRecipe: activeRecipe._id,
+                tempRecipe: tempRecipe._id,
+              });
             }
           });
         }

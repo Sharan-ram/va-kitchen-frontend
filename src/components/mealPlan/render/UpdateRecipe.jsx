@@ -3,6 +3,7 @@ import classNames from "classnames";
 import { Trash } from "phosphor-react";
 import { searchIngredient } from "@/services/ingredient";
 import { getRecipeById } from "@/services/recipe";
+import { saveTempRecipe } from "@/services/tempRecipe";
 import Loader from "@/components/Loader";
 
 const UpdateRecipe = ({ recipe, onUpdateRecipe }) => {
@@ -114,21 +115,24 @@ const UpdateRecipe = ({ recipe, onUpdateRecipe }) => {
     setIngredients(newIngredients);
   };
 
-  const handleUpdateRecipe = () => {
+  const handleUpdateRecipe = async () => {
     const newRecipe = {
-      ...recipe,
+      name: recipe.name,
+      originalRecipe: recipe._id,
       ingredients: ingredients.map((ing) => {
         return {
           ...ing,
-          summerQuantity: Number(ing.summerQuantity),
-          winterQuantity: Number(ing.winterQuantity),
-          monsoonQuantity: Number(ing.monsoonQuantity),
-          retreatQuantity: Number(ing.retreatQuantity),
+          summerQuantity: Number(ing.summerQuantity) || 0,
+          winterQuantity: Number(ing.winterQuantity) || 0,
+          monsoonQuantity: Number(ing.monsoonQuantity) || 0,
+          retreatQuantity: Number(ing.retreatQuantity) || 0,
         };
       }),
     };
-    // console.log({ newRecipe });
-    onUpdateRecipe(newRecipe);
+
+    const res = await saveTempRecipe(newRecipe);
+    console.log({ res });
+    onUpdateRecipe(res);
   };
 
   // console.log({ recipe, ingredients });

@@ -36,6 +36,20 @@ const MealSchema = mongoose.Schema({
     glutenFreeCount: { type: Number, default: 0 },
   },
   recipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
+  tempRecipes: [
+    {
+      originalRecipe: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Recipe",
+        required: true,
+      },
+      tempRecipe: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "TempRecipe",
+        required: true,
+      },
+    },
+  ],
   comments: [CommentSchema],
 });
 
