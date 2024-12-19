@@ -25,6 +25,7 @@ const RenderMealPlanPage = () => {
   const [selectedTab, setSelectedTab] = useState("Meal Plan");
   const [activeRecipe, setActiveRecipe] = useState(null);
   const [activeMealPlan, setActiveMealPlan] = useState(null);
+  const [activeRecipeType, setActiveRecipeType] = useState(null);
 
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -81,7 +82,14 @@ const RenderMealPlanPage = () => {
     }
   };
 
-  const handleRecipeUpdate = (tempRecipe) => {
+  const handleRecipeUpdate = (tempRecipe, updateMealPlan) => {
+    if (!updateMealPlan) {
+      setActiveRecipe(false);
+      return;
+    }
+
+    console.log("====================inside");
+
     const newMealPlan = mealPlan.map((mealPlanObj) => {
       let newMealPlanObj = { ...mealPlanObj };
       newMealPlanObj.days = newMealPlanObj.days.map((day) => {
@@ -296,12 +304,32 @@ const RenderMealPlanPage = () => {
               });
               setMealPlan(newPlans);
             }}
-            setActiveRecipe={({ recipe, month, year }) => {
+            setActiveRecipe={({ recipe, month, year, dayIndex, meal }) => {
               const selectedMealPlan = mealPlan.find(
                 (obj) => obj.month === month && obj.year === year
               );
+              console.log({ selectedMealPlan, dayIndex, meal });
+              const tempRecipes =
+                selectedMealPlan.days[dayIndex][meal].tempRecipes;
+
+              const tempRecipeObj = tempRecipes?.find(
+                (tR) => tR.originalRecipe === recipe._id
+              );
+              // console.log({ tempRecipeObj });
+
               setActiveMealPlan(selectedMealPlan);
-              setActiveRecipe(recipe);
+              setActiveRecipe(
+                tempRecipeObj
+                  ? {
+                      name: recipe.name,
+                      tempRecipe: tempRecipeObj.tempRecipe,
+                      originalRecipe: recipe._id,
+                    }
+                  : { name: recipe.name, originalRecipe: recipe._id }
+              );
+              setActiveRecipeType(
+                tempRecipeObj ? "tempRecipe" : "originalRecipe"
+              );
             }}
             setActiveMealForComments={setActiveMealForComments}
           />
@@ -335,10 +363,12 @@ const RenderMealPlanPage = () => {
           closeModal={() => {
             setActiveMealPlan(null);
             setActiveRecipe(null);
+            setActiveRecipeType(null);
           }}
         >
           <UpdateRecipe
             recipe={activeRecipe}
+            recipeType={activeRecipeType}
             onUpdateRecipe={handleRecipeUpdate}
           />
         </Modal>

@@ -18,3 +18,16 @@ export const getTempRecipeById = async (tempRecipeId) => {
     throw new Error(e);
   }
 };
+
+export const updateTempRecipe = async (tempRecipe) => {
+  console.log({ tempRecipe });
+  try {
+    const response = await axiosInstance.put(
+      `/api/tempRecipe/${tempRecipe._id}`,
+      tempRecipe
+    );
+    return response.data.data;
+  } catch (e) {
+    throw new Error(e);
+  }
+};

@@ -1,5 +1,6 @@
 // const MealPlan = require("../models/mealPlan");
 import MealPlan from "../models/MealPlan";
+import Recipe from "../models/Recipe";
 
 export const monthNames = [
   "January",
@@ -351,6 +352,12 @@ export const getMealPlanForDateRange = async (startDate, endDate = null) => {
           "days.lunch.recipes": 1,
           "days.evening.recipes": 1,
           "days.dinner.recipes": 1,
+          // Temp recipes
+          "days.earlyMorning.tempRecipes": 1,
+          "days.breakfast.tempRecipes": 1,
+          "days.lunch.tempRecipes": 1,
+          "days.evening.tempRecipes": 1,
+          "days.dinner.tempRecipes": 1,
         },
       },
     ]);
@@ -402,24 +409,41 @@ export const getCurrentDate = () => {
 };
 
 export const processMealPlanDays = (days) => {
-  return days.map((day) => {
-    if (day.earlyMorning?.recipes) {
-      day.earlyMorning.recipes = day.earlyMorning.recipes.map(
+  const newDays = days.map((day) => {
+    // Spread all properties of `day` into a new object
+    const newDay = { ...day };
+
+    if (newDay.earlyMorning?.recipes) {
+      newDay.earlyMorning.recipes = newDay.earlyMorning.recipes.map(
         (recipe) => recipe._id
       );
     }
-    if (day.breakfast?.recipes) {
-      day.breakfast.recipes = day.breakfast.recipes.map((recipe) => recipe._id);
+
+    if (newDay.breakfast?.recipes) {
+      newDay.breakfast.recipes = newDay.breakfast.recipes.map(
+        (recipe) => recipe._id
+      );
     }
-    if (day.lunch?.recipes) {
-      day.lunch.recipes = day.lunch.recipes.map((recipe) => recipe._id);
+
+    if (newDay.lunch?.recipes) {
+      newDay.lunch.recipes = newDay.lunch.recipes.map((recipe) => recipe._id);
     }
-    if (day.evening?.recipes) {
-      day.evening.recipes = day.evening.recipes.map((recipe) => recipe._id);
+
+    if (newDay.evening?.recipes) {
+      newDay.evening.recipes = newDay.evening.recipes.map(
+        (recipe) => recipe._id
+      );
     }
-    if (day.dinner?.recipes) {
-      day.dinner.recipes = day.dinner.recipes.map((recipe) => recipe._id);
+
+    if (newDay.dinner?.recipes) {
+      newDay.dinner.recipes = newDay.dinner.recipes.map((recipe) => recipe._id);
     }
-    return day;
+
+    // Preserve `tempRecipes` and any other unhandled fields
+    return newDay;
   });
+
+  // console.log("newDays", JSON.stringify(newDays));
+
+  return newDays;
 };

@@ -37,11 +37,18 @@ export default async function handler(req, res) {
 
         // Process and update days array: extract recipe _ids
         if (updatedFields.days && Array.isArray(updatedFields.days)) {
-          mealPlan.days = processMealPlanDays(updatedFields.days);
+          const newDays = processMealPlanDays(updatedFields.days);
+          // console.log("newDays", JSON.stringify(newDays));
+
+          const updatedMealPlan = await MealPlan.findByIdAndUpdate(
+            mealPlan._id,
+            { $set: { days: newDays } },
+            { new: true } // Ensures we get the updated document
+          );
+          console.log("updatedMealPlan", JSON.stringify(updatedMealPlan));
         }
 
-        // Save the updated meal plan
-        const updatedMealPlan = await mealPlan.save();
+        const updatedMealPlan = await MealPlan.findById(mealPlan._id);
 
         return res.status(200).json({ success: true, data: updatedMealPlan });
       } catch (error) {

@@ -16,6 +16,7 @@ const RecipeSearchInput = ({
   month,
   setActiveRecipe,
   allowRecipeUpdate,
+  dayIndex,
 }) => {
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
@@ -182,7 +183,13 @@ const RecipeSearchInput = ({
                     )}
                     onClick={() => {
                       allowRecipeUpdate
-                        ? setActiveRecipe({ recipe, month, year })
+                        ? setActiveRecipe({
+                            recipe,
+                            month,
+                            year,
+                            dayIndex,
+                            meal,
+                          })
                         : () => {};
                     }}
                   >

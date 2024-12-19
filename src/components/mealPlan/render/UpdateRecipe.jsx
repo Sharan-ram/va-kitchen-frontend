@@ -3,10 +3,15 @@ import classNames from "classnames";
 import { Trash } from "phosphor-react";
 import { searchIngredient } from "@/services/ingredient";
 import { getRecipeById } from "@/services/recipe";
-import { saveTempRecipe } from "@/services/tempRecipe";
+import {
+  saveTempRecipe,
+  getTempRecipeById,
+  updateTempRecipe,
+} from "@/services/tempRecipe";
 import Loader from "@/components/Loader";
 
-const UpdateRecipe = ({ recipe, onUpdateRecipe }) => {
+const UpdateRecipe = ({ recipe, onUpdateRecipe, recipeType }) => {
+  console.log({ recipe, recipeType });
   const [ingredients, setIngredients] = useState([]);
   const [search, setSearch] = useState("");
   const [showSearch, toggleSearch] = useState(false);
@@ -17,7 +22,10 @@ const UpdateRecipe = ({ recipe, onUpdateRecipe }) => {
   useEffect(() => {
     const fetchRecipeDetail = async () => {
       try {
-        const res = await getRecipeById(recipe._id);
+        const res =
+          recipeType === "originalRecipe"
+            ? await getRecipeById(recipe.originalRecipe)
+            : await getTempRecipeById(recipe.tempRecipe);
         setRecipeDetail(res);
         setIngredients(res.ingredients);
         setRecipeLoading(false);
@@ -118,7 +126,7 @@ const UpdateRecipe = ({ recipe, onUpdateRecipe }) => {
   const handleUpdateRecipe = async () => {
     const newRecipe = {
       name: recipe.name,
-      originalRecipe: recipe._id,
+      originalRecipe: recipe.originalRecipe,
       ingredients: ingredients.map((ing) => {
         return {
           ...ing,
@@ -130,9 +138,12 @@ const UpdateRecipe = ({ recipe, onUpdateRecipe }) => {
       }),
     };
 
-    const res = await saveTempRecipe(newRecipe);
+    const res =
+      recipeType === "originalRecipe"
+        ? await saveTempRecipe(newRecipe)
+        : await updateTempRecipe({ ...newRecipe, _id: recipe.tempRecipe });
     console.log({ res });
-    onUpdateRecipe(res);
+    onUpdateRecipe(res, recipeType === "originalRecipe" ? true : false);
   };
 
   // console.log({ recipe, ingredients });

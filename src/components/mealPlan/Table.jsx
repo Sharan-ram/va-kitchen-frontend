@@ -94,7 +94,7 @@ const MealPlanTable = ({
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {days.map((day) => {
+          {days.map((day, dayIndex) => {
             // console.log({ day, formattedDay: format(day, "dd-MM-yyyy") });
             // console.log({ day });
             const date = day.getDate();
@@ -173,6 +173,7 @@ const MealPlanTable = ({
                         year={year || yearRenderPage}
                         setActiveRecipe={setActiveRecipe}
                         allowRecipeUpdate={page === "create" ? false : true}
+                        dayIndex={dayIndex}
                       />
                       <MealCountInput
                         entireMonthCounts={specificMealPlan.entireMonthCounts}
