@@ -40,7 +40,9 @@ export default async function handler(req, res) {
           ingredientFieldsSelect: "_id name",
         });
 
-        // console.log({ mealPlans: JSON.stringify(mealPlansDeduction, null, 2) });
+        // console.log({
+        //   mealPlansDeduction: JSON.stringify(mealPlansDeduction),
+        // });
 
         if (!mealPlans.length) {
           return res.status(404).json({
