@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import { parsedAndFormattedDate } from "@/helpers/utils";
 
 const IngredientsTable = ({ mealPlan }) => {
   const getRows = () => {
@@ -140,7 +141,7 @@ const IngredientsTable = ({ mealPlan }) => {
                 )}
               >
                 <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold text-center">
-                  {row.Date && row.Date}
+                  {row.Date && parsedAndFormattedDate(row.Date)}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold text-center">
                   {row.Meal && row.Meal}
