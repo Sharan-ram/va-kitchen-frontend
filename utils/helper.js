@@ -24,6 +24,7 @@ export const getNextMonthName = () => {
 };
 
 export const parseDate = (dateString) => {
+  // console.log({ dateString });
   const [day, month, year] = dateString.split("-").map(Number);
   return new Date(Date.UTC(year, month - 1, day));
 };
@@ -126,17 +127,13 @@ export const monthlyOrderRemainingQuantity = (
   // endDate
 ) => {
   let totalQuantity = 0;
-  // const start = parseDate(startDate);
-  // const start = startDate;
-  // console.log({ mealPlan: mealPlan.days.map((day) => day.date) });
-  console.log({ mealPlans });
+  // console.log({ mealPlans });
 
   if (!mealPlans) return 0;
   mealPlans.forEach((mealPlan) => {
     mealPlan.days.forEach((day) => {
       ["earlyMorning", "breakfast", "lunch", "evening", "dinner"].forEach(
         (meal) => {
-          // console.log({ dayDate });
           if (day[meal]) {
             day[meal]?.recipes.forEach((recipe) => {
               // console.log({ splitRecipe });
@@ -169,29 +166,17 @@ export const monthlyOrderRemainingQuantity = (
 
 // Helper function to calculate the total quantity needed for a given ingredient in a meal plan
 export const weeklyOrderTotalQuantity = (
-  mealPlan,
-  ingredientName,
-  startDate,
-  endDate
+  mealPlans,
+  ingredientName
+  // startDate,
+  // endDate
 ) => {
   let totalQuantity = 0;
-  //   const start = parseDate(startDate);
-  //   const end = parseDate(endDate);
 
-  const start = startDate;
-  const end = endDate;
+  if (!mealPlans) return 0;
 
-  if (!mealPlan) return 0;
-
-  // console.log({ start, end });
-
-  //   console.log({ startTotal: start, endTotal: end });
-
-  //   console.log({ mealPlan });
-  // console.log({ days: mealPlan.days, mealPlan });
-  mealPlan?.days.forEach((day) => {
-    const dayDate = parseDate(day.date);
-    if (dayDate >= start && dayDate <= end) {
+  mealPlans.forEach((mealPlan) => {
+    mealPlan?.days.forEach((day) => {
       ["earlyMorning", "breakfast", "lunch", "evening", "dinner"].forEach(
         (meal) => {
           if (day[meal]) {
@@ -218,45 +203,48 @@ export const weeklyOrderTotalQuantity = (
           }
         }
       );
-    }
+    });
   });
   // console.log({ weeklyQuant: totalQuantity });
   return totalQuantity;
 };
 
 // Helper function to calculate the remaining quantity needed for a given ingredient from the current date to the start date
-export const weeklyOrderRemainingQuantity = (mealPlan, ingredientName) => {
+export const weeklyOrderRemainingQuantity = (mealPlans, ingredientName) => {
   let totalQuantity = 0;
 
-  if (!mealPlan) return 0;
+  if (!mealPlans) return 0;
 
-  mealPlan.days.forEach((day) => {
-    const dayDate = parseDate(day.date);
-    ["earlyMorning", "breakfast", "lunch", "evening", "dinner"].forEach(
-      (meal) => {
-        if (day[meal]) {
-          day[meal]?.recipes.forEach((recipe) => {
-            recipe.ingredients.forEach((ing) => {
-              if (ing.ingredient.name === ingredientName) {
-                const mealCounts = day[meal].mealCounts;
-                let count = 0;
-                recipe.dietType.forEach((str) => {
-                  if (str === "vegan") {
-                    count = count + mealCounts.veganCount;
-                  } else if (str === "nonVegan") {
-                    count = count + mealCounts.nonVeganCount;
-                  } else {
-                    count = count + mealCounts.glutenFreeCount;
-                  }
-                });
-                totalQuantity += ing[day.season] ? ing[day.season] * count : 0;
-              }
+  mealPlans.forEach((mealPlan) => {
+    mealPlan.days.forEach((day) => {
+      ["earlyMorning", "breakfast", "lunch", "evening", "dinner"].forEach(
+        (meal) => {
+          if (day[meal]) {
+            day[meal]?.recipes.forEach((recipe) => {
+              recipe.ingredients.forEach((ing) => {
+                if (ing.ingredient.name === ingredientName) {
+                  const mealCounts = day[meal].mealCounts;
+                  let count = 0;
+                  recipe.dietType.forEach((str) => {
+                    if (str === "vegan") {
+                      count = count + mealCounts.veganCount;
+                    } else if (str === "nonVegan") {
+                      count = count + mealCounts.nonVeganCount;
+                    } else {
+                      count = count + mealCounts.glutenFreeCount;
+                    }
+                  });
+                  totalQuantity += ing[day.season]
+                    ? ing[day.season] * count
+                    : 0;
+                }
+              });
             });
-          });
+          }
         }
-      }
-    );
-    // }
+      );
+      // }
+    });
   });
   // console.log({ remainingQuant: totalQuantity });
   return totalQuantity;
