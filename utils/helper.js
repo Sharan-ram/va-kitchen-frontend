@@ -66,6 +66,25 @@ export const populateMealPlanRecipes = () => {
   }));
 };
 
+export const populateMealPlanRecipesForDateRange = () => {
+  const recipeFields = [
+    "days.earlyMorning.recipes",
+    "days.breakfast.recipes",
+    "days.lunch.recipes",
+    "days.evening.recipes",
+    "days.dinner.recipes",
+  ];
+
+  return recipeFields.map((field) => ({
+    path: field,
+    select: "_id name dietType ingredients", // Include ingredients in the selection
+    populate: {
+      path: "ingredients.ingredient", // Populate the `ingredient` field inside `ingredients`
+      select: "_id name price cookingUnit", // Specify fields to include from the `Ingredient` model
+    },
+  }));
+};
+
 export const monthlyOrderTotalQuantity = (mealPlan, ingredientName) => {
   let totalQuantity = 0;
   mealPlan.days.forEach((day) => {
@@ -378,7 +397,7 @@ export const getMealPlanForDateRange = async (startDate, endDate = null) => {
     //   startDateObj,
     //   endDateObj,
     // });
-    await MealPlan.populate(mealPlans, populateMealPlanRecipes());
+    await MealPlan.populate(mealPlans, populateMealPlanRecipesForDateRange());
 
     return mealPlans;
   } catch (error) {
