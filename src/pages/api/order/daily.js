@@ -25,10 +25,11 @@ export default async function handler(req, res) {
             .json({ message: "Start date and end date are required." });
         }
 
-        const mealPlansWithFilteredDays = await getMealPlanForDateRange(
+        const mealPlansWithFilteredDays = await getMealPlanForDateRange({
           startDate,
-          endDate
-        );
+          endDate,
+          ingredientFieldsSelect: "_id name purchaseUnit",
+        });
 
         let orderArr = [];
         mealPlansWithFilteredDays.forEach((mealPlanObj) => {
