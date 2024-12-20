@@ -66,7 +66,9 @@ export const populateMealPlanRecipes = () => {
   }));
 };
 
-export const populateMealPlanRecipesForDateRange = () => {
+export const populateMealPlanRecipesForDateRange = ({
+  ingredientFieldsSelect,
+}) => {
   const recipeFields = [
     "days.earlyMorning.recipes",
     "days.breakfast.recipes",
@@ -80,7 +82,7 @@ export const populateMealPlanRecipesForDateRange = () => {
     select: "_id name dietType ingredients", // Include ingredients in the selection
     populate: {
       path: "ingredients.ingredient", // Populate the `ingredient` field inside `ingredients`
-      select: "_id name price cookingUnit", // Specify fields to include from the `Ingredient` model
+      select: ingredientFieldsSelect, // Specify fields to include from the `Ingredient` model
     },
   }));
 };
@@ -118,22 +120,20 @@ export const monthlyOrderTotalQuantity = (mealPlan, ingredientName) => {
 };
 
 export const monthlyOrderRemainingQuantity = (
-  mealPlan,
-  ingredientName,
-  startDate,
-  endDate
+  mealPlans,
+  ingredientName
+  // startDate,
+  // endDate
 ) => {
   let totalQuantity = 0;
   // const start = parseDate(startDate);
   // const start = startDate;
   // console.log({ mealPlan: mealPlan.days.map((day) => day.date) });
+  console.log({ mealPlans });
 
-  if (!mealPlan) return 0;
-
-  mealPlan.days.forEach((day) => {
-    const dayDate = parseDate(day.date);
-    // console.log({ dayDate });
-    if (dayDate >= startDate && dayDate <= endDate) {
+  if (!mealPlans) return 0;
+  mealPlans.forEach((mealPlan) => {
+    mealPlan.days.forEach((day) => {
       ["earlyMorning", "breakfast", "lunch", "evening", "dinner"].forEach(
         (meal) => {
           // console.log({ dayDate });
@@ -162,7 +162,7 @@ export const monthlyOrderRemainingQuantity = (
           }
         }
       );
-    }
+    });
   });
   return totalQuantity;
 };
@@ -305,12 +305,16 @@ export const isDateGreaterThan = (date1, date2) => {
 //   return utcDate;
 // }
 
-export const getMealPlanForDateRange = async (startDate, endDate = null) => {
+export const getMealPlanForDateRange = async ({
+  startDate,
+  endDate = null,
+  ingredientFieldsSelect,
+}) => {
   try {
     const startDateObj = parseDate(startDate);
     const endDateObj = parseDate(endDate);
 
-    console.log({ startDateObj, endDateObj });
+    // console.log({ startDateObj, endDateObj });
 
     // Fetch meal plans, filter days inside the query using MongoDB's date comparison
     const mealPlans = await MealPlan.aggregate([
@@ -380,24 +384,10 @@ export const getMealPlanForDateRange = async (startDate, endDate = null) => {
         },
       },
     ]);
-
-    // const mealPlans = await MealPlan.aggregate([
-    //   {
-    //     $match: {
-    //       "days.date": {
-    //         $gte: startDateObj, // Ensure days.date is greater than or equal to startDate
-    //         $lte: endDateObj, // Ensure days.date is less than or equal to endDate
-    //       },
-    //     },
-    //   },
-    // ]);
-
-    // console.log({
-    //   mealPlans: JSON.stringify(mealPlans),
-    //   startDateObj,
-    //   endDateObj,
-    // });
-    await MealPlan.populate(mealPlans, populateMealPlanRecipesForDateRange());
+    await MealPlan.populate(
+      mealPlans,
+      populateMealPlanRecipesForDateRange({ ingredientFieldsSelect })
+    );
 
     return mealPlans;
   } catch (error) {

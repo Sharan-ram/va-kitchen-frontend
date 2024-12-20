@@ -16,10 +16,11 @@ export default async function handler(req, res) {
         if (!authMiddleware(req, res, ["admin", "user"])) {
           return;
         }
-        const mealPlansWithFilteredDays = await getMealPlanForDateRange(
+        const mealPlansWithFilteredDays = await getMealPlanForDateRange({
           startDate,
-          endDate
-        );
+          endDate,
+          ingredientFieldsSelect: "_id name price cookingUnit",
+        });
         return res
           .status(200)
           .json({ success: true, data: mealPlansWithFilteredDays });
