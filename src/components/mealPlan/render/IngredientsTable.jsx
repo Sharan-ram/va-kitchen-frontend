@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { parsedAndFormattedDate } from "@/helpers/utils";
+import { parsedAndFormattedDate, findTempRecipe } from "@/helpers/utils";
 
 const IngredientsTable = ({ mealPlan }) => {
   const getRows = () => {
@@ -17,7 +17,14 @@ const IngredientsTable = ({ mealPlan }) => {
 
               const season = day.season || mealPlanObj.season;
 
-              meal.recipes.forEach((recipe) => {
+              meal.recipes.forEach((recipeObj) => {
+                const recipe = findTempRecipe(
+                  recipeObj,
+                  day[mealType].tempRecipes
+                );
+
+                // console.log({ recipe });
+
                 let count = 0;
                 recipe.dietType.forEach((str) => {
                   if (str === "vegan") {
@@ -134,7 +141,7 @@ const IngredientsTable = ({ mealPlan }) => {
             const backgroundColor = useAlternate ? "#f4f1f1" : "#fff";
             return (
               <tr
-                key={index}
+                key={`${row.Date}-${row.Meal}-${row.RecipeName}-${index}`}
                 className={classNames(
                   "border-b max-w-[100%]",
                   `bg-[${backgroundColor}]`

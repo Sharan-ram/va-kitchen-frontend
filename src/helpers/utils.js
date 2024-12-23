@@ -88,3 +88,13 @@ export const parsedAndFormattedDate = (input) => {
   // Format the valid date
   return format(date, "dd-MM-yyyy");
 };
+
+export const findTempRecipe = (originalRecipe, tempRecipes) => {
+  if (!tempRecipes || tempRecipes.length === 0) return originalRecipe;
+  // console.log({ tempRecipes, originalRecipe });
+  const temp = tempRecipes.find(
+    (obj) => obj.originalRecipe === originalRecipe._id
+  );
+  if (temp) return temp.tempRecipe;
+  return originalRecipe;
+};
