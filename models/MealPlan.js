@@ -23,46 +23,6 @@ const AllergySchema = mongoose.Schema({
   allergyCode: { type: Number, default: 0 },
 });
 
-const FullIngredientSchema = mongoose.Schema({
-  ingredient: {
-    name: { type: String, required: true },
-    englishEquivalent: String,
-    ingredientType: { type: String, required: true },
-    storageType: String,
-    vendor: { type: String, required: true },
-    sponsored: { type: Boolean, default: false },
-    purchaseUnit: { type: String, required: true },
-    cookingUnit: { type: String, required: true },
-    purchaseUnitPerCookingUnit: { type: Number, required: true },
-    price: Number,
-  },
-  summerQuantity: { type: Number, default: null },
-  monsoonQuantity: { type: Number, default: null },
-  winterQuantity: { type: Number, default: null },
-  retreatQuantity: { type: Number, default: null },
-  cutting: CuttingSchema,
-  label: LabelSchema,
-  tableSetting: TableSettingSchema,
-  allergy: AllergySchema,
-});
-
-const RecipeSchema = mongoose.Schema({
-  name: { type: String, required: true },
-  ingredients: [FullIngredientSchema],
-  usualMealTime: String,
-  mealType: String,
-  dietType: {
-    type: [String],
-    enum: ["vegan", "nonVegan", "glutenFree"],
-    default: ["nonVegan"],
-  },
-  allergyCode: { type: Number, default: 0 },
-  adjustedAllergyCode: { type: Number, default: 0 },
-  mainAllergiesMeal: String,
-  specificAllergyMeal: String,
-  combinedAllergyMeal: String,
-});
-
 const CommentSchema = mongoose.Schema({
   username: { type: String, required: true },
   comment: { type: String, required: true },
@@ -75,12 +35,26 @@ const MealSchema = mongoose.Schema({
     veganCount: { type: Number, default: 0 },
     glutenFreeCount: { type: Number, default: 0 },
   },
-  recipes: [RecipeSchema],
+  recipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
+  tempRecipes: [
+    {
+      originalRecipe: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Recipe",
+        required: true,
+      },
+      tempRecipe: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "TempRecipe",
+        required: true,
+      },
+    },
+  ],
   comments: [CommentSchema],
 });
 
 const DaySchema = mongoose.Schema({
-  date: { type: String, required: true },
+  date: { type: Date, required: true },
   season: { type: String, required: true },
   earlyMorning: { type: MealSchema, default: undefined },
   breakfast: { type: MealSchema, default: undefined },

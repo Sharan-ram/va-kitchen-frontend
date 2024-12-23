@@ -15,6 +15,7 @@
     "bcrypt": "^5.1.1",
     "classnames": "^2.5.1",
     "date-fns": "^2.30.0",
+    "dotenv": "^16.4.7",
     "eslint": "8.46.0",
     "eslint-config-next": "13.4.12",
     "googleapis": "^144.0.0",

@@ -6,6 +6,8 @@ import {
   monthlyOrderRemainingQuantity,
   isLastDayOfMonth,
   parseDate,
+  getMealPlanForDateRange,
+  populateMealPlanRecipesForDateRange,
 } from "../../../../utils/helper";
 import authMiddleware from "../../../../middleware/auth";
 
@@ -28,25 +30,36 @@ export default async function handler(req, res) {
         const nextMonth = currentMonth === 12 ? 1 : currentMonth + 1;
         const nextYear = currentMonth === 12 ? currentYear + 1 : currentYear;
 
-        const parsedStartDate = parseDate(startDate);
-        const parsedEndDate = parseDate(endDate);
+        // const parsedStartDate = parseDate(startDate);
+        // const parsedEndDate = parseDate(endDate);
 
         // Fetch the meal plan for the current and next months
-        const currentMonthMealPlan = await MealPlan.findOne({
-          year: currentYear,
-          month: currentMonth,
+        const currentMonthMealPlan = await getMealPlanForDateRange({
+          startDate,
+          endDate,
+          ingredientFieldsSelect: "_id name",
         });
+        // console.log({ currentMonthMealPlan });
         const nextMonthMealPlan = await MealPlan.findOne({
           year: nextYear,
           month: nextMonth,
-        });
+        }).populate(
+          populateMealPlanRecipesForDateRange({
+            ingredientFieldsSelect: "_id name",
+          })
+        );
+        // console.log({ nextMonthMealPlan: JSON.stringify(nextMonthMealPlan) });
         if (!nextMonthMealPlan) {
           return res
             .status(404)
             .json({ message: "Meal plan for next month not found." });
         }
 
-        const ingredients = await Ingredient.find().sort({ name: 1 });
+        const ingredients = await Ingredient.find()
+          .select(
+            "_id name ingredientType vendor sponsored purchaseUnit price stock bulkOrder"
+          )
+          .sort({ name: 1 });
 
         // console.log({ season: nextMonthMealPlan.season });
 
@@ -63,7 +76,7 @@ export default async function handler(req, res) {
           })
           .map((ingredient) => {
             // console.log({ bulkOrder: ingredient.bulkOrder });
-            const isLastDayOfMonthVar = isLastDayOfMonth(currentDate);
+            // const isLastDayOfMonthVar = isLastDayOfMonth(currentDate);
             const ingredientName = ingredient.name;
             const totalQuantity = monthlyOrderTotalQuantity(
               nextMonthMealPlan,
@@ -73,9 +86,9 @@ export default async function handler(req, res) {
             const currentStock = ingredient.stock || 0;
             const remainingMealPlan = monthlyOrderRemainingQuantity(
               currentMonthMealPlan,
-              ingredientName,
-              parsedStartDate,
-              parsedEndDate
+              ingredientName
+              // parsedStartDate,
+              // parsedEndDate
             );
             const closingStock = currentStock - remainingMealPlan;
 

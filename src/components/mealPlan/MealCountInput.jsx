@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { dietTypeCounts } from "@/helpers/constants";
+import { parsedAndFormattedDate } from "@/helpers/utils";
 
 const MealCountInput = ({
   entireMonthCounts,
@@ -18,20 +19,12 @@ const MealCountInput = ({
         //   objDate: obj.date,
         //   absoluteDate: format(date, "dd-MM-yyyy"),
         // });
-        return obj.date === format(date, "dd-MM-yyyy");
+        return parsedAndFormattedDate(obj.date) === format(date, "dd-MM-yyyy");
       });
 
       if (selectedDateObjIndex >= 0) {
         let mealObj = newMealPlan.days?.[selectedDateObjIndex]?.[meal];
         if (mealObj) {
-          // mealObj = {
-          //   ...mealObj,
-          //   mealCounts: {
-          //     ...entireMonthCounts,
-          //     ...mealObj.mealCounts,
-          //     [dietTypeCount]: Number(value),
-          //   },
-          // };
           // console.log("inside here");
           newMealPlan.days[selectedDateObjIndex][meal] = {
             ...mealObj,
@@ -57,7 +50,7 @@ const MealCountInput = ({
           days: [
             ...newMealPlan.days,
             {
-              date: format(date, "dd-MM-yyyy"),
+              date: date.toISOString(),
               [meal]: {
                 mealCounts: {
                   ...entireMonthCounts,
@@ -75,7 +68,7 @@ const MealCountInput = ({
         ...newMealPlan,
         days: [
           {
-            date: format(date, "dd-MM-yyyy"),
+            date: date.toISOString(),
             [meal]: {
               mealCounts: {
                 ...entireMonthCounts,
@@ -94,7 +87,7 @@ const MealCountInput = ({
   };
 
   const mealCounts = mealPlan?.days?.find(
-    (obj) => obj.date === format(date, "dd-MM-yyyy")
+    (obj) => parsedAndFormattedDate(obj.date) === format(date, "dd-MM-yyyy")
   )?.[meal]?.mealCounts;
 
   const getValue = (dietTypeCount) => {

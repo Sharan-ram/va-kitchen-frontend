@@ -3,6 +3,7 @@ import MealPlan from "../../../../models/MealPlan";
 import {
   dailyOrderIngredients,
   getMealPlanForDateRange,
+  findTempRecipe,
 } from "../../../../utils/helper";
 import authMiddleware from "../../../../middleware/auth";
 
@@ -25,10 +26,11 @@ export default async function handler(req, res) {
             .json({ message: "Start date and end date are required." });
         }
 
-        const mealPlansWithFilteredDays = await getMealPlanForDateRange(
+        const mealPlansWithFilteredDays = await getMealPlanForDateRange({
           startDate,
-          endDate
-        );
+          endDate,
+          ingredientFieldsSelect: "_id name purchaseUnit",
+        });
 
         let orderArr = [];
         mealPlansWithFilteredDays.forEach((mealPlanObj) => {
@@ -37,7 +39,11 @@ export default async function handler(req, res) {
               (meal) => {
                 if (dayObj[meal]) {
                   const mealCounts = dayObj[meal].mealCounts;
-                  dayObj[meal]?.recipes.forEach((recipeObj) => {
+                  dayObj[meal]?.recipes.forEach((recipe) => {
+                    const recipeObj = findTempRecipe(
+                      recipe,
+                      dayObj[meal].tempRecipes
+                    );
                     let recipeData = {
                       date: dayObj.date,
                       meal,

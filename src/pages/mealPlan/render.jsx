@@ -2,7 +2,10 @@ import { useMemo, useState } from "react";
 import Selections from "@/components/mealPlan/render/Selections";
 import IngredientsTable from "@/components/mealPlan/render/IngredientsTable";
 import Table from "@/components/mealPlan/Table";
-import { generateDaysForDateRange } from "@/helpers/utils";
+import {
+  generateDaysForDateRange,
+  parsedAndFormattedDate,
+} from "@/helpers/utils";
 import Tabs from "@/components/Tabs";
 import Modal from "@/components/Modal";
 import UpdateRecipe from "@/components/mealPlan/render/UpdateRecipe";
@@ -25,6 +28,7 @@ const RenderMealPlanPage = () => {
   const [selectedTab, setSelectedTab] = useState("Meal Plan");
   const [activeRecipe, setActiveRecipe] = useState(null);
   const [activeMealPlan, setActiveMealPlan] = useState(null);
+  const [activeRecipeType, setActiveRecipeType] = useState(null);
 
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -62,7 +66,7 @@ const RenderMealPlanPage = () => {
   };
 
   // console.log({ activeRecipe, activeMealPlan });
-  // console.log({ mealPlan });
+  console.log({ mealPlan });
   const createUpdatedMealPlanPromises = async (updatedMealPlans) => {
     try {
       const updateRequests = updatedMealPlans.map(async (mealPlan) => {
@@ -81,59 +85,93 @@ const RenderMealPlanPage = () => {
     }
   };
 
-  const handleRecipeUpdate = (recipe) => {
+  const handleRecipeUpdate = (tempRecipe, updateMealPlan) => {
+    if (!updateMealPlan) {
+      setActiveRecipe(false);
+      return;
+    }
+
+    // console.log("====================inside");
+
     const newMealPlan = mealPlan.map((mealPlanObj) => {
+      // console.log({ mealPlanBefore: mealPlanObj });
       let newMealPlanObj = { ...mealPlanObj };
       newMealPlanObj.days = newMealPlanObj.days.map((day) => {
         let newDayObj = { ...day };
         if (day.earlyMorning && day.earlyMorning.recipes) {
-          newDayObj.earlyMorning.recipes = newDayObj.earlyMorning.recipes.map(
-            (r) => {
-              if (r._id === recipe._id) {
-                return recipe;
-              } else {
-                return r;
-              }
+          // console.log({ earlyMorning: day.earlyMorning });
+          newDayObj.earlyMorning = {
+            ...day.earlyMorning,
+            tempRecipes: [...(day.earlyMorning.tempRecipes || [])],
+          };
+          newDayObj.earlyMorning.recipes.forEach((r) => {
+            // console.log("recipes map", tempRecipe, activeRecipe);
+            if (r._id === activeRecipe.originalRecipe) {
+              // console.log("actove recipe matched in early morning");
+              newDayObj.earlyMorning.tempRecipes.push({
+                originalRecipe: activeRecipe.originalRecipe,
+                tempRecipe: tempRecipe._id,
+              });
             }
-          );
+          });
         }
 
         if (day.breakfast && day.breakfast.recipes) {
-          newDayObj.breakfast.recipes = newDayObj.breakfast.recipes.map((r) => {
-            if (r._id === recipe._id) {
-              return recipe;
-            } else {
-              return r;
+          newDayObj.breakfast = {
+            ...day.breakfast,
+            tempRecipes: [...(day.breakfast.tempRecipes || [])],
+          };
+          newDayObj.breakfast.recipes.forEach((r) => {
+            if (r._id === activeRecipe.originalRecipe) {
+              newDayObj.breakfast.tempRecipes.push({
+                originalRecipe: activeRecipe.originalRecipe,
+                tempRecipe: tempRecipe._id,
+              });
             }
           });
         }
 
         if (day.lunch && day.lunch.recipes) {
-          newDayObj.lunch.recipes = newDayObj.lunch.recipes.map((r) => {
-            if (r._id === recipe._id) {
-              return recipe;
-            } else {
-              return r;
+          newDayObj.lunch = {
+            ...day.lunch,
+            tempRecipes: [...(day.lunch.tempRecipes || [])],
+          };
+          newDayObj.lunch.recipes.forEach((r) => {
+            if (r._id === activeRecipe.originalRecipe) {
+              newDayObj.lunch.tempRecipes.push({
+                originalRecipe: activeRecipe.originalRecipe,
+                tempRecipe: tempRecipe._id,
+              });
             }
           });
         }
 
         if (day.evening && day.evening.recipes) {
-          newDayObj.evening.recipes = newDayObj.evening.recipes.map((r) => {
-            if (r._id === recipe._id) {
-              return recipe;
-            } else {
-              return r;
+          newDayObj.evening = {
+            ...day.evening,
+            tempRecipes: [...(day.evening.tempRecipes || [])],
+          };
+          newDayObj.evening.recipes.forEach((r) => {
+            if (r._id === activeRecipe.originalRecipe) {
+              newDayObj.evening.tempRecipes.push({
+                originalRecipe: activeRecipe.originalRecipe,
+                tempRecipe: tempRecipe._id,
+              });
             }
           });
         }
 
         if (day.dinner && day.dinner.recipes) {
-          newDayObj.dinner.recipes = newDayObj.dinner.recipes.map((r) => {
-            if (r._id === recipe._id) {
-              return recipe;
-            } else {
-              return r;
+          newDayObj.dinner = {
+            ...day.dinner,
+            tempRecipes: [...(day.dinner.tempRecipes || [])],
+          };
+          newDayObj.dinner.recipes.forEach((r) => {
+            if (r._id === activeRecipe.originalRecipe) {
+              newDayObj.dinner.tempRecipes.push({
+                originalRecipe: activeRecipe.originalRecipe,
+                tempRecipe: tempRecipe._id,
+              });
             }
           });
         }
@@ -143,6 +181,8 @@ const RenderMealPlanPage = () => {
 
       return newMealPlanObj;
     });
+
+    // console.log({ newMealPlanAfter: newMealPlan });
 
     setMealPlan(newMealPlan);
     setActiveRecipe(false);
@@ -273,12 +313,33 @@ const RenderMealPlanPage = () => {
               });
               setMealPlan(newPlans);
             }}
-            setActiveRecipe={({ recipe, month, year }) => {
+            setActiveRecipe={({ recipe, month, year, date, meal }) => {
               const selectedMealPlan = mealPlan.find(
                 (obj) => obj.month === month && obj.year === year
               );
+              const dayIndex = selectedMealPlan.days.findIndex(
+                (dayObj) =>
+                  parsedAndFormattedDate(dayObj.date) ===
+                  parsedAndFormattedDate(date)
+              );
+              console.log({ selectedMealPlan, dayIndex, meal });
+              const tempRecipes =
+                selectedMealPlan.days[dayIndex][meal].tempRecipes;
+
+              const tempRecipeObj = tempRecipes?.find(
+                (tR) => tR.originalRecipe === recipe._id
+              );
+              // console.log({ tempRecipeObj });
+
               setActiveMealPlan(selectedMealPlan);
-              setActiveRecipe(recipe);
+              setActiveRecipe(
+                tempRecipeObj
+                  ? tempRecipeObj
+                  : { name: recipe.name, originalRecipe: recipe._id }
+              );
+              setActiveRecipeType(
+                tempRecipeObj ? "tempRecipe" : "originalRecipe"
+              );
             }}
             setActiveMealForComments={setActiveMealForComments}
           />
@@ -312,10 +373,12 @@ const RenderMealPlanPage = () => {
           closeModal={() => {
             setActiveMealPlan(null);
             setActiveRecipe(null);
+            setActiveRecipeType(null);
           }}
         >
           <UpdateRecipe
             recipe={activeRecipe}
+            recipeType={activeRecipeType}
             onUpdateRecipe={handleRecipeUpdate}
           />
         </Modal>

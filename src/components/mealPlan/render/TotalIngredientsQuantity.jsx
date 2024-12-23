@@ -1,3 +1,5 @@
+import { findTempRecipe } from "@/helpers/utils";
+
 const TotalIngredientsQuantity = ({ mealPlan }) => {
   const getIngredients = () => {
     const ingredients = {};
@@ -8,7 +10,11 @@ const TotalIngredientsQuantity = ({ mealPlan }) => {
           (meal) => {
             //   console.log({ dayObj, meal });
             if (dayObj[meal]) {
-              dayObj[meal].recipes?.forEach((recipeObj) => {
+              dayObj[meal].recipes?.forEach((recipe) => {
+                const recipeObj = findTempRecipe(
+                  recipe,
+                  dayObj[meal].tempRecipes
+                );
                 //   console.log({ recipeObj });
                 recipeObj.ingredients.forEach((ingredientObj) => {
                   // console.log({ ingredientObj });

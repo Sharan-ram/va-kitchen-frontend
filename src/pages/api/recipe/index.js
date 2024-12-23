@@ -18,7 +18,10 @@ export default async function handler(req, res) {
           };
 
           // Find recipes that match the search text and return the full object
-          const recipes = await Recipe.find(query).sort({ name: 1 }).lean();
+          const recipes = await Recipe.find(query)
+            .select("_id name")
+            .sort({ name: 1 })
+            .lean();
 
           res.status(200).json({ success: true, data: recipes }); // Send the full recipe object
         } else {

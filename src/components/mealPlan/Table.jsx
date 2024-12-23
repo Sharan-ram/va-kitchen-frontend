@@ -2,6 +2,7 @@ import React from "react";
 import RecipeSearchInput from "./RecipeSearchInput";
 import MealCountInput from "./MealCountInput";
 import { weekDays, meals, seasons, months } from "@/helpers/constants";
+import { parsedAndFormattedDate } from "@/helpers/utils";
 import { format } from "date-fns";
 import Input from "@/components/Input";
 
@@ -15,6 +16,7 @@ const MealPlanTable = ({
   setActiveRecipe,
   setActiveMealForComments,
 }) => {
+  // console.log({ mealPlan, days });
   const getMealPlanObj = (year, month) => {
     const mealPlanObj = mealPlan.find(
       (obj) => obj.year === year && obj.month === month
@@ -92,8 +94,9 @@ const MealPlanTable = ({
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {days.map((day) => {
+          {days.map((day, dayIndex) => {
             // console.log({ day, formattedDay: format(day, "dd-MM-yyyy") });
+            // console.log({ day });
             const date = day.getDate();
             const dayName = day.getDay();
             const monthRenderPage =
@@ -106,7 +109,12 @@ const MealPlanTable = ({
 
             const selectedDateObjIndex = specificMealPlan.days
               ? specificMealPlan.days?.findIndex((obj) => {
-                  return obj.date === format(day, "dd-MM-yyyy");
+                  // console.log({ obj });
+                  return (
+                    obj.date &&
+                    parsedAndFormattedDate(obj.date) ===
+                      format(day, "dd-MM-yyyy")
+                  );
                 })
               : -1;
 
@@ -120,7 +128,7 @@ const MealPlanTable = ({
             // console.log({ season });
             return (
               <tr key={day} className="border-b">
-                <td className="px-3 py-2 whitespace-nowrap font-bold min-w-[150px]">
+                <td className="px-3 py-2 whitespace-nowrap font-bold min-w-[150px] align-top">
                   <div>{`${date}, ${weekDays[dayName]}`}</div>
                   <div>
                     <Input
@@ -131,7 +139,7 @@ const MealPlanTable = ({
                           setSeasonPerDay({
                             season: e.target.value,
                             selectedDateObjIndex,
-                            date: format(day, "dd-MM-yyyy"),
+                            date: day.toISOString(),
                             mealPlan: specificMealPlan,
                           }),
                         options: [
@@ -153,7 +161,7 @@ const MealPlanTable = ({
                   return (
                     <td
                       key={meal}
-                      className="px-3 py-2 whitespace-nowrap capitalize min-w-[300px] max-w-[450px]"
+                      className="px-3 py-2 whitespace-nowrap capitalize min-w-[300px] max-w-[450px] align-top"
                     >
                       <RecipeSearchInput
                         placeholder={`Search for ${meal} recipe`}
@@ -165,6 +173,7 @@ const MealPlanTable = ({
                         year={year || yearRenderPage}
                         setActiveRecipe={setActiveRecipe}
                         allowRecipeUpdate={page === "create" ? false : true}
+                        dayIndex={dayIndex}
                       />
                       <MealCountInput
                         entireMonthCounts={specificMealPlan.entireMonthCounts}

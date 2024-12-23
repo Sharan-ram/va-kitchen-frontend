@@ -2,16 +2,41 @@ import { useState, useEffect } from "react";
 import classNames from "classnames";
 import { Trash } from "phosphor-react";
 import { searchIngredient } from "@/services/ingredient";
+import { getRecipeById } from "@/services/recipe";
+import {
+  saveTempRecipe,
+  getTempRecipeById,
+  updateTempRecipe,
+} from "@/services/tempRecipe";
+import Loader from "@/components/Loader";
 
-const UpdateRecipe = ({ recipe, onUpdateRecipe }) => {
+const UpdateRecipe = ({ recipe, onUpdateRecipe, recipeType }) => {
+  console.log({ recipe, recipeType });
   const [ingredients, setIngredients] = useState([]);
   const [search, setSearch] = useState("");
   const [showSearch, toggleSearch] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
+  const [recipeLoading, setRecipeLoading] = useState(true);
+  const [recipeDetail, setRecipeDetail] = useState();
 
   useEffect(() => {
-    setIngredients(recipe.ingredients);
-  }, [recipe.ingredients]);
+    const fetchRecipeDetail = async () => {
+      try {
+        const res =
+          recipeType === "originalRecipe"
+            ? await getRecipeById(recipe.originalRecipe)
+            : await getTempRecipeById(recipe.tempRecipe._id);
+        setRecipeDetail(res);
+        setIngredients(res.ingredients);
+        setRecipeLoading(false);
+        console.log({ res });
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    fetchRecipeDetail();
+  }, []);
 
   const handleAddIngredient = () => {
     toggleSearch(true);
@@ -99,21 +124,27 @@ const UpdateRecipe = ({ recipe, onUpdateRecipe }) => {
     setIngredients(newIngredients);
   };
 
-  const handleUpdateRecipe = () => {
+  const handleUpdateRecipe = async () => {
     const newRecipe = {
-      ...recipe,
+      name: recipeDetail.name,
+      originalRecipe: recipe.originalRecipe,
       ingredients: ingredients.map((ing) => {
         return {
           ...ing,
-          summerQuantity: Number(ing.summerQuantity),
-          winterQuantity: Number(ing.winterQuantity),
-          monsoonQuantity: Number(ing.monsoonQuantity),
-          retreatQuantity: Number(ing.retreatQuantity),
+          summerQuantity: Number(ing.summerQuantity) || 0,
+          winterQuantity: Number(ing.winterQuantity) || 0,
+          monsoonQuantity: Number(ing.monsoonQuantity) || 0,
+          retreatQuantity: Number(ing.retreatQuantity) || 0,
         };
       }),
     };
-    // console.log({ newRecipe });
-    onUpdateRecipe(newRecipe);
+
+    const res =
+      recipeType === "originalRecipe"
+        ? await saveTempRecipe(newRecipe)
+        : await updateTempRecipe({ ...newRecipe, _id: recipeDetail._id });
+    // console.log({ res });
+    onUpdateRecipe(res, recipeType === "originalRecipe" ? true : false);
   };
 
   // console.log({ recipe, ingredients });
@@ -121,124 +152,152 @@ const UpdateRecipe = ({ recipe, onUpdateRecipe }) => {
   return (
     <div>
       <h2 className="text-lg font-bold mb-4">{recipe.name}</h2>
-      <div className="mb-4">
-        {ingredients.map((ingredient, index) => (
-          <div key={ingredient._id} className="mb-6">
-            <div>
-              <div className="flex justify-between items-center w-full">
+      {recipeLoading ? (
+        <div className="flex justify-center">
+          <Loader />
+        </div>
+      ) : (
+        <>
+          <div className="mb-4">
+            {ingredients.map((ingredient, index) => (
+              <div key={ingredient._id} className="mb-6">
                 <div>
-                  <h3 className="font-semibold">
-                    {ingredient.ingredient.name}
-                  </h3>
+                  <div className="flex justify-between items-center w-full">
+                    <div>
+                      <h3 className="font-semibold">
+                        {ingredient.ingredient.name}
+                      </h3>
+                    </div>
+                    <div
+                      className="cursor-pointer"
+                      onClick={() => handleDeleteIngredient(index)}
+                    >
+                      <Trash size={22} color="#bb2124" />
+                    </div>
+                  </div>
                 </div>
-                <div
-                  className="cursor-pointer"
-                  onClick={() => handleDeleteIngredient(index)}
-                >
-                  <Trash size={22} color="#bb2124" />
+                <div>
+                  <label className="mr-2 text-sm">Summer Quantity:</label>
+                  <input
+                    type="text"
+                    className="border border-gray-300 px-2 py-1 w-full rounded"
+                    value={ingredient.summerQuantity}
+                    onChange={(e) =>
+                      handleQuantityChange(
+                        e,
+                        ingredient,
+                        "summerQuantity",
+                        index
+                      )
+                    }
+                  />
+                </div>
+
+                <div>
+                  <label className="mr-2 text-sm">Winter Quantity:</label>
+                  <input
+                    type="text"
+                    className="border border-gray-300 px-2 py-1 w-full rounded"
+                    value={ingredient.winterQuantity}
+                    onChange={(e) =>
+                      handleQuantityChange(
+                        e,
+                        ingredient,
+                        "winterQuantity",
+                        index
+                      )
+                    }
+                  />
+                </div>
+
+                <div>
+                  <label className="mr-2 text-sm">Monsoon Quantity:</label>
+                  <input
+                    type="text"
+                    className="border border-gray-300 px-2 py-1 w-full rounded"
+                    value={ingredient.monsoonQuantity}
+                    onChange={(e) =>
+                      handleQuantityChange(
+                        e,
+                        ingredient,
+                        "monsoonQuantity",
+                        index
+                      )
+                    }
+                  />
+                </div>
+
+                <div>
+                  <label className="mr-2 text-sm">Retreat Quantity:</label>
+                  <input
+                    type="text"
+                    className="border border-gray-300 px-2 py-1 w-full rounded"
+                    value={ingredient.retreatQuantity}
+                    onChange={(e) =>
+                      handleQuantityChange(
+                        e,
+                        ingredient,
+                        "retreatQuantity",
+                        index
+                      )
+                    }
+                  />
                 </div>
               </div>
-            </div>
-            <div>
-              <label className="mr-2 text-sm">Summer Quantity:</label>
-              <input
-                type="text"
-                className="border border-gray-300 px-2 py-1 w-full rounded"
-                value={ingredient.summerQuantity}
-                onChange={(e) =>
-                  handleQuantityChange(e, ingredient, "summerQuantity", index)
-                }
-              />
-            </div>
-
-            <div>
-              <label className="mr-2 text-sm">Winter Quantity:</label>
-              <input
-                type="text"
-                className="border border-gray-300 px-2 py-1 w-full rounded"
-                value={ingredient.winterQuantity}
-                onChange={(e) =>
-                  handleQuantityChange(e, ingredient, "winterQuantity", index)
-                }
-              />
-            </div>
-
-            <div>
-              <label className="mr-2 text-sm">Monsoon Quantity:</label>
-              <input
-                type="text"
-                className="border border-gray-300 px-2 py-1 w-full rounded"
-                value={ingredient.monsoonQuantity}
-                onChange={(e) =>
-                  handleQuantityChange(e, ingredient, "monsoonQuantity", index)
-                }
-              />
-            </div>
-
-            <div>
-              <label className="mr-2 text-sm">Retreat Quantity:</label>
-              <input
-                type="text"
-                className="border border-gray-300 px-2 py-1 w-full rounded"
-                value={ingredient.retreatQuantity}
-                onChange={(e) =>
-                  handleQuantityChange(e, ingredient, "retreatQuantity", index)
-                }
-              />
-            </div>
+            ))}
           </div>
-        ))}
-      </div>
-      {showSearch && (
-        <div className="my-4 relative">
-          <div>
-            <input
-              type="text"
-              className="border border-gray-300 px-2 py-1 w-full rounded"
-              value={search}
-              onChange={handleIngredientSearch}
-              placeholder="Search ingredient"
-            />
-          </div>
-          {searchResults.length > 0 && (
-            <div className="absolute left-0 right-0 mt-2 bg-white border border-gray-300 rounded-md shadow-md">
-              {searchResults.map((result, i) => {
-                return (
-                  <div
-                    key={i}
-                    className="p-2 hover:bg-gray-100 cursor-pointer"
-                    onClick={() => handleIngredientSelect(result)}
-                  >
-                    {result.name}
-                  </div>
-                );
-              })}
+          {showSearch && (
+            <div className="my-4 relative">
+              <div>
+                <input
+                  type="text"
+                  className="border border-gray-300 px-2 py-1 w-full rounded"
+                  value={search}
+                  onChange={handleIngredientSearch}
+                  placeholder="Search ingredient"
+                />
+              </div>
+              {searchResults.length > 0 && (
+                <div className="absolute left-0 right-0 mt-2 bg-white border border-gray-300 rounded-md shadow-md">
+                  {searchResults.map((result, i) => {
+                    return (
+                      <div
+                        key={i}
+                        className="p-2 hover:bg-gray-100 cursor-pointer"
+                        onClick={() => handleIngredientSelect(result)}
+                      >
+                        {result.name}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           )}
-        </div>
+          <button
+            className={classNames(
+              "text-white font-bold py-2 px-4 rounded mr-4",
+              !showSearch ? "bg-[#8e7576]" : "bg-[#bbacac]"
+            )}
+            onClick={handleAddIngredient}
+            disabled={showSearch}
+          >
+            +
+          </button>
+          <button
+            className={classNames(
+              "text-white font-semibold py-2 px-4 rounded mr-2",
+              !isFormFilled() || ingredients.length === 0
+                ? "bg-[#bbacac]"
+                : "bg-[#8e7576]"
+            )}
+            onClick={handleUpdateRecipe}
+            disabled={!isFormFilled() || ingredients.length === 0}
+          >
+            Update Recipe
+          </button>
+        </>
       )}
-      <button
-        className={classNames(
-          "text-white font-bold py-2 px-4 rounded mr-4",
-          !showSearch ? "bg-[#8e7576]" : "bg-[#bbacac]"
-        )}
-        onClick={handleAddIngredient}
-        disabled={showSearch}
-      >
-        +
-      </button>
-      <button
-        className={classNames(
-          "text-white font-semibold py-2 px-4 rounded mr-2",
-          !isFormFilled() || ingredients.length === 0
-            ? "bg-[#bbacac]"
-            : "bg-[#8e7576]"
-        )}
-        onClick={handleUpdateRecipe}
-        disabled={!isFormFilled() || ingredients.length === 0}
-      >
-        Update Recipe
-      </button>
     </div>
   );
 };

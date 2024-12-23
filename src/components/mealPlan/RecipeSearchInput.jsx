@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { Trash } from "phosphor-react";
 import { searchRecipe } from "@/services/recipe";
 import classNames from "classnames";
+import { parsedAndFormattedDate } from "@/helpers/utils";
 
 const RecipeSearchInput = ({
   placeholder,
@@ -15,6 +16,7 @@ const RecipeSearchInput = ({
   month,
   setActiveRecipe,
   allowRecipeUpdate,
+  dayIndex,
 }) => {
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
@@ -25,7 +27,8 @@ const RecipeSearchInput = ({
 
   useEffect(() => {
     const selectDateObj = mealPlan?.days?.find(
-      (dayObj) => dayObj.date === format(date, "dd-MM-yyyy")
+      (dayObj) =>
+        parsedAndFormattedDate(dayObj.date) === format(date, "dd-MM-yyyy")
     );
     // console.log({ date, selectDateObj });
     if (selectDateObj) {
@@ -61,7 +64,7 @@ const RecipeSearchInput = ({
     let newMealPlan = JSON.parse(JSON.stringify(mealPlan));
     if (newMealPlan && Object.keys(newMealPlan).length > 0) {
       const selectedDateObjIndex = newMealPlan.days?.findIndex((obj) => {
-        return obj.date === formattedDate;
+        return parsedAndFormattedDate(obj.date) === formattedDate;
       });
       if (selectedDateObjIndex >= 0) {
         if (newMealPlan.days[selectedDateObjIndex][meal]) {
@@ -84,7 +87,7 @@ const RecipeSearchInput = ({
       } else {
         if (newMealPlan.days) {
           newMealPlan.days.push({
-            date: formattedDate,
+            date: date.toISOString(),
             [meal]: {
               mealCounts: newMealPlan.entireMonthCounts,
               recipes: [recipe],
@@ -94,7 +97,7 @@ const RecipeSearchInput = ({
         } else {
           newMealPlan.days = [
             {
-              date: formattedDate,
+              date: date.toISOString(),
               [meal]: {
                 mealCounts: newMealPlan.entireMonthCounts,
                 recipes: [recipe],
@@ -111,7 +114,7 @@ const RecipeSearchInput = ({
         entireMonthCounts: newMealPlan.entireMonthCounts,
         days: [
           {
-            date: formattedDate,
+            date: date.toISOString(),
             [meal]: {
               mealCounts: newMealPlan.entireMonthCounts,
               recipes: [recipe],
@@ -134,7 +137,7 @@ const RecipeSearchInput = ({
   const handleDeleteRecipe = (recipe) => {
     let newMealPlan = JSON.parse(JSON.stringify(mealPlan));
     const selectedDateObjIndex = newMealPlan.days.findIndex(
-      (obj) => obj.date === format(date, "dd-MM-yyyy")
+      (obj) => parsedAndFormattedDate(obj.date) === format(date, "dd-MM-yyyy")
     );
     let recipes = newMealPlan?.days[selectedDateObjIndex]?.[meal]?.recipes;
     const recipeIndex = recipes.findIndex((obj) => obj._id === recipe._id);
@@ -180,7 +183,13 @@ const RecipeSearchInput = ({
                     )}
                     onClick={() => {
                       allowRecipeUpdate
-                        ? setActiveRecipe({ recipe, month, year })
+                        ? setActiveRecipe({
+                            recipe,
+                            month,
+                            year,
+                            date,
+                            meal,
+                          })
                         : () => {};
                     }}
                   >

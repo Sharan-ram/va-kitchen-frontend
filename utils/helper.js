@@ -1,5 +1,7 @@
 // const MealPlan = require("../models/mealPlan");
 import MealPlan from "../models/MealPlan";
+import Recipe from "../models/Recipe";
+import TempRecipe from "../models/TempRecipe";
 
 export const monthNames = [
   "January",
@@ -23,8 +25,95 @@ export const getNextMonthName = () => {
 };
 
 export const parseDate = (dateString) => {
+  // console.log({ dateString });
   const [day, month, year] = dateString.split("-").map(Number);
   return new Date(Date.UTC(year, month - 1, day));
+};
+
+export const getMealPlanProjection = {
+  year: 1,
+  month: 1,
+  season: 1,
+  entireMonthCounts: 1,
+  _id: 1,
+  "days._id": 1,
+  "days.date": 1,
+  "days.season": 1,
+  // Meal counts (added as per the requirement)
+  "days.earlyMorning.mealCounts": 1,
+  "days.breakfast.mealCounts": 1,
+  "days.lunch.mealCounts": 1,
+  "days.evening.mealCounts": 1,
+  "days.dinner.mealCounts": 1,
+  // Comments will now be directly under each meal
+  "days.earlyMorning.comments": 1,
+  "days.breakfast.comments": 1,
+  "days.lunch.comments": 1,
+  "days.evening.comments": 1,
+  "days.dinner.comments": 1,
+};
+
+export const populateMealPlanRecipes = () => {
+  const recipeFields = [
+    "days.earlyMorning.recipes",
+    "days.breakfast.recipes",
+    "days.lunch.recipes",
+    "days.evening.recipes",
+    "days.dinner.recipes",
+  ];
+
+  return recipeFields.map((field) => ({
+    path: field,
+    select: "_id name", // Specify which fields to populate
+  }));
+};
+
+export const populateMealPlanRecipesForDateRange = ({
+  ingredientFieldsSelect,
+}) => {
+  const recipeFields = [
+    "days.earlyMorning.recipes",
+    "days.breakfast.recipes",
+    "days.lunch.recipes",
+    "days.evening.recipes",
+    "days.dinner.recipes",
+  ];
+
+  return [
+    // Populate recipes
+    ...recipeFields.map((field) => ({
+      path: field,
+      select: "_id name dietType ingredients", // Include ingredients in the selection
+      populate: {
+        path: "ingredients.ingredient", // Populate the `ingredient` field inside `ingredients`
+        select: ingredientFieldsSelect, // Specify fields to include from the `Ingredient` model
+      },
+    })),
+    // Populate tempRecipes.tempRecipe and its ingredients
+    ...[
+      "days.earlyMorning.tempRecipes",
+      "days.breakfast.tempRecipes",
+      "days.lunch.tempRecipes",
+      "days.evening.tempRecipes",
+      "days.dinner.tempRecipes",
+    ].map((field) => ({
+      path: `${field}.tempRecipe`, // Populate only `tempRecipe` inside `tempRecipes`
+      select: "_id name ingredients dietType", // Include the ingredients array from `TempRecipe`
+      populate: {
+        path: "ingredients.ingredient", // Populate `ingredient` inside `TempRecipe.ingredients`
+        select: "_id name", // Specify fields to include from `Ingredient`
+      },
+    })),
+  ];
+};
+
+export const findTempRecipe = (originalRecipe, tempRecipes) => {
+  if (!tempRecipes || tempRecipes.length === 0) return originalRecipe;
+  const temp = tempRecipes.find(
+    (obj) => obj.originalRecipe === originalRecipe._id
+  );
+  if (temp) return temp;
+  return originalRecipe;
 };
 
 export const monthlyOrderTotalQuantity = (mealPlan, ingredientName) => {
@@ -33,7 +122,8 @@ export const monthlyOrderTotalQuantity = (mealPlan, ingredientName) => {
     ["earlyMorning", "breakfast", "lunch", "evening", "dinner"].forEach(
       (meal) => {
         if (day[meal]) {
-          day[meal]?.recipes.forEach((recipe) => {
+          day[meal]?.recipes.forEach((recipeObj) => {
+            const recipe = findTempRecipe(recipeObj, day[meal].tempRecipes);
             recipe.ingredients.forEach((ing) => {
               if (ing.ingredient.name === ingredientName) {
                 const mealCounts = day[meal].mealCounts;
@@ -60,27 +150,22 @@ export const monthlyOrderTotalQuantity = (mealPlan, ingredientName) => {
 };
 
 export const monthlyOrderRemainingQuantity = (
-  mealPlan,
-  ingredientName,
-  startDate,
-  endDate
+  mealPlans,
+  ingredientName
+  // startDate,
+  // endDate
 ) => {
   let totalQuantity = 0;
-  // const start = parseDate(startDate);
-  // const start = startDate;
-  // console.log({ mealPlan: mealPlan.days.map((day) => day.date) });
+  // console.log({ mealPlans });
 
-  if (!mealPlan) return 0;
-
-  mealPlan.days.forEach((day) => {
-    const dayDate = parseDate(day.date);
-    // console.log({ dayDate });
-    if (dayDate >= startDate && dayDate <= endDate) {
+  if (!mealPlans) return 0;
+  mealPlans.forEach((mealPlan) => {
+    mealPlan.days.forEach((day) => {
       ["earlyMorning", "breakfast", "lunch", "evening", "dinner"].forEach(
         (meal) => {
-          // console.log({ dayDate });
           if (day[meal]) {
-            day[meal]?.recipes.forEach((recipe) => {
+            day[meal]?.recipes.forEach((recipeObj) => {
+              const recipe = findTempRecipe(recipeObj, day[meal].tempRecipes);
               // console.log({ splitRecipe });
               recipe.ingredients.forEach((ing) => {
                 if (ing.ingredient.name === ingredientName) {
@@ -104,40 +189,29 @@ export const monthlyOrderRemainingQuantity = (
           }
         }
       );
-    }
+    });
   });
   return totalQuantity;
 };
 
 // Helper function to calculate the total quantity needed for a given ingredient in a meal plan
 export const weeklyOrderTotalQuantity = (
-  mealPlan,
-  ingredientName,
-  startDate,
-  endDate
+  mealPlans,
+  ingredientName
+  // startDate,
+  // endDate
 ) => {
   let totalQuantity = 0;
-  //   const start = parseDate(startDate);
-  //   const end = parseDate(endDate);
 
-  const start = startDate;
-  const end = endDate;
+  if (!mealPlans) return 0;
 
-  if (!mealPlan) return 0;
-
-  // console.log({ start, end });
-
-  //   console.log({ startTotal: start, endTotal: end });
-
-  //   console.log({ mealPlan });
-  // console.log({ days: mealPlan.days, mealPlan });
-  mealPlan?.days.forEach((day) => {
-    const dayDate = parseDate(day.date);
-    if (dayDate >= start && dayDate <= end) {
+  mealPlans.forEach((mealPlan) => {
+    mealPlan?.days.forEach((day) => {
       ["earlyMorning", "breakfast", "lunch", "evening", "dinner"].forEach(
         (meal) => {
           if (day[meal]) {
-            day[meal]?.recipes.forEach((recipe) => {
+            day[meal]?.recipes.forEach((recipeObj) => {
+              const recipe = findTempRecipe(recipeObj, day[meal].tempRecipes);
               recipe.ingredients.forEach((ing) => {
                 if (ing.ingredient.name === ingredientName) {
                   const mealCounts = day[meal].mealCounts;
@@ -160,45 +234,49 @@ export const weeklyOrderTotalQuantity = (
           }
         }
       );
-    }
+    });
   });
   // console.log({ weeklyQuant: totalQuantity });
   return totalQuantity;
 };
 
 // Helper function to calculate the remaining quantity needed for a given ingredient from the current date to the start date
-export const weeklyOrderRemainingQuantity = (mealPlan, ingredientName) => {
+export const weeklyOrderRemainingQuantity = (mealPlans, ingredientName) => {
   let totalQuantity = 0;
 
-  if (!mealPlan) return 0;
+  if (!mealPlans) return 0;
 
-  mealPlan.days.forEach((day) => {
-    const dayDate = parseDate(day.date);
-    ["earlyMorning", "breakfast", "lunch", "evening", "dinner"].forEach(
-      (meal) => {
-        if (day[meal]) {
-          day[meal]?.recipes.forEach((recipe) => {
-            recipe.ingredients.forEach((ing) => {
-              if (ing.ingredient.name === ingredientName) {
-                const mealCounts = day[meal].mealCounts;
-                let count = 0;
-                recipe.dietType.forEach((str) => {
-                  if (str === "vegan") {
-                    count = count + mealCounts.veganCount;
-                  } else if (str === "nonVegan") {
-                    count = count + mealCounts.nonVeganCount;
-                  } else {
-                    count = count + mealCounts.glutenFreeCount;
-                  }
-                });
-                totalQuantity += ing[day.season] ? ing[day.season] * count : 0;
-              }
+  mealPlans.forEach((mealPlan) => {
+    mealPlan.days.forEach((day) => {
+      ["earlyMorning", "breakfast", "lunch", "evening", "dinner"].forEach(
+        (meal) => {
+          if (day[meal]) {
+            day[meal]?.recipes.forEach((recipeObj) => {
+              const recipe = findTempRecipe(recipeObj, day[meal].tempRecipes);
+              recipe.ingredients.forEach((ing) => {
+                if (ing.ingredient.name === ingredientName) {
+                  const mealCounts = day[meal].mealCounts;
+                  let count = 0;
+                  recipe.dietType.forEach((str) => {
+                    if (str === "vegan") {
+                      count = count + mealCounts.veganCount;
+                    } else if (str === "nonVegan") {
+                      count = count + mealCounts.nonVeganCount;
+                    } else {
+                      count = count + mealCounts.glutenFreeCount;
+                    }
+                  });
+                  totalQuantity += ing[day.season]
+                    ? ing[day.season] * count
+                    : 0;
+                }
+              });
             });
-          });
+          }
         }
-      }
-    );
-    // }
+      );
+      // }
+    });
   });
   // console.log({ remainingQuant: totalQuantity });
   return totalQuantity;
@@ -247,54 +325,96 @@ export const isDateGreaterThan = (date1, date2) => {
 //   return utcDate;
 // }
 
-export const getMealPlanForDateRange = async (startDate, endDate = null) => {
+export const getMealPlanForDateRange = async ({
+  startDate,
+  endDate = null,
+  ingredientFieldsSelect,
+}) => {
   try {
-    // Convert start date to a Date object
     const startDateObj = parseDate(startDate);
+    const endDateObj = parseDate(endDate);
 
-    // Convert end date if provided, or set it to a very far-future date
-    const endDateObj = endDate ? parseDate(endDate) : new Date("9999-12-31");
+    // console.log({ startDateObj, endDateObj });
 
-    // Fetch all meal plans from the database
-    let mealPlans = await MealPlan.find();
+    // Fetch meal plans, filter days inside the query using MongoDB's date comparison
+    const mealPlans = await MealPlan.aggregate([
+      {
+        $match: {
+          "days.date": {
+            $gte: startDateObj, // Ensure days.date is greater than or equal to startDate
+            $lte: endDateObj, // Ensure days.date is less than or equal to endDate
+          },
+        },
+      },
+      {
+        $project: {
+          year: 1,
+          month: 1,
+          season: 1,
+          entireMonthCounts: 1,
+          days: {
+            $filter: {
+              input: "$days",
+              as: "day",
+              cond: {
+                $and: [
+                  { $gte: ["$$day.date", startDateObj] },
+                  { $lte: ["$$day.date", endDateObj] },
+                ],
+              },
+            },
+          },
+        },
+      },
 
-    // Step 1: Filter out meal plans that don't fall within the year and month range
-    const filteredMealPlans = mealPlans.filter((plan) => {
-      const mealPlanStartDate = new Date(plan.year, plan.month - 1); // Adjust for 0-indexed months
-      const mealPlanEndDate = new Date(plan.year, plan.month, 0); // Last day of the month
+      {
+        $project: {
+          year: 1,
+          month: 1,
+          season: 1,
+          entireMonthCounts: 1,
+          _id: 1,
+          "days._id": 1,
+          "days.date": 1,
+          "days.season": 1,
+          // Meal counts
+          "days.earlyMorning.mealCounts": 1,
+          "days.breakfast.mealCounts": 1,
+          "days.lunch.mealCounts": 1,
+          "days.evening.mealCounts": 1,
+          "days.dinner.mealCounts": 1,
+          // Comments
+          "days.earlyMorning.comments": 1,
+          "days.breakfast.comments": 1,
+          "days.lunch.comments": 1,
+          "days.evening.comments": 1,
+          "days.dinner.comments": 1,
+          // Recipes and their populated details
+          "days.earlyMorning.recipes": 1,
+          "days.breakfast.recipes": 1,
+          "days.lunch.recipes": 1,
+          "days.evening.recipes": 1,
+          "days.dinner.recipes": 1,
+          // Temp recipes
+          "days.earlyMorning.tempRecipes": 1,
+          "days.breakfast.tempRecipes": 1,
+          "days.lunch.tempRecipes": 1,
+          "days.evening.tempRecipes": 1,
+          "days.dinner.tempRecipes": 1,
+        },
+      },
+    ]);
 
-      return (
-        mealPlanStartDate <= endDateObj && mealPlanEndDate >= startDateObj // Check if meal plan falls in range
-      );
-    });
+    // console.log({ mealPlans: JSON.stringify(mealPlans) });
+    await MealPlan.populate(
+      mealPlans,
+      populateMealPlanRecipesForDateRange({ ingredientFieldsSelect })
+    );
 
-    // Step 2: For filtered meal plans, filter out `days` that don't fall within the date range
-    const mealPlansWithFilteredDays = filteredMealPlans.map((plan) => {
-      const filteredDays = plan.days
-        .filter((day) => {
-          const dayDate = parseDate(day.date);
-          return dayDate >= startDateObj && dayDate <= endDateObj;
-        })
-        .sort((a, b) => {
-          const dateA = new Date(a.date.split("-").reverse().join("-"));
-          const dateB = new Date(b.date.split("-").reverse().join("-"));
-          return dateA - dateB;
-        });
-
-      return {
-        _id: plan._id,
-        month: plan.month,
-        year: plan.year,
-        season: plan.season,
-        entireMonthCounts: plan.entireMonthCounts,
-        days: filteredDays,
-      };
-    });
-
-    return mealPlansWithFilteredDays;
-  } catch (e) {
-    console.log(e);
-    throw new Error(e);
+    return mealPlans;
+  } catch (error) {
+    console.error("Error fetching meal plans:", error);
+    throw new Error("Unable to fetch meal plans");
   }
 };
 
@@ -317,4 +437,44 @@ export const getCurrentDate = () => {
   const year = today.getFullYear();
 
   return `${day}-${month}-${year}`;
+};
+
+export const processMealPlanDays = (days) => {
+  const newDays = days.map((day) => {
+    // Spread all properties of `day` into a new object
+    const newDay = { ...day };
+
+    if (newDay.earlyMorning?.recipes) {
+      newDay.earlyMorning.recipes = newDay.earlyMorning.recipes.map(
+        (recipe) => recipe._id
+      );
+    }
+
+    if (newDay.breakfast?.recipes) {
+      newDay.breakfast.recipes = newDay.breakfast.recipes.map(
+        (recipe) => recipe._id
+      );
+    }
+
+    if (newDay.lunch?.recipes) {
+      newDay.lunch.recipes = newDay.lunch.recipes.map((recipe) => recipe._id);
+    }
+
+    if (newDay.evening?.recipes) {
+      newDay.evening.recipes = newDay.evening.recipes.map(
+        (recipe) => recipe._id
+      );
+    }
+
+    if (newDay.dinner?.recipes) {
+      newDay.dinner.recipes = newDay.dinner.recipes.map((recipe) => recipe._id);
+    }
+
+    // Preserve `tempRecipes` and any other unhandled fields
+    return newDay;
+  });
+
+  // console.log("newDays", JSON.stringify(newDays));
+
+  return newDays;
 };

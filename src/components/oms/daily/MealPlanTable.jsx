@@ -1,3 +1,5 @@
+import { parsedAndFormattedDate } from "@/helpers/utils";
+
 const MealPlanTable = ({
   mealPlan,
   selectedRecipes,
@@ -59,11 +61,11 @@ const MealPlanTable = ({
 
   const isRecipeSelected = (recipeName, date) => {
     if (selectAll) return true;
-    console.log({ recipeName, date });
+    // console.log({ recipeName, date });
     const recipe = selectedRecipes.find(
       (recipeObj) => recipeObj.recipe === recipeName && recipeObj.date === date
     );
-    console.log({ recipe });
+    // console.log({ recipe });
     if (recipe) return true;
     return false;
   };
@@ -149,7 +151,7 @@ const MealPlanTable = ({
             </td>
 
             <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold text-center">
-              {row.date && row.date}
+              {row.date && parsedAndFormattedDate(row.date)}
             </td>
             <td className="px-3 py-2 whitespace-nowrap capitalize font-semibold">
               {row.meal && row.meal}

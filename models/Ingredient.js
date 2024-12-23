@@ -27,5 +27,5 @@ const IngredientSchema = new mongoose.Schema({
   todo: String,
 });
 
-module.exports =
-  mongoose.models.Ingredient || mongoose.model("Ingredient", IngredientSchema);
+export default mongoose.models.Ingredient ||
+  mongoose.model("Ingredient", IngredientSchema);

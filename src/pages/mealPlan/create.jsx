@@ -25,6 +25,7 @@ const CreateMealPlanPage = () => {
       if (typeof isNew !== "undefined") {
         if (isNew) {
           const res = await saveNewMealPlan(mealPlan);
+          console.log({ res });
           setMealPlan(res);
           setIsNew(false);
         } else {
