@@ -1,6 +1,7 @@
 // const MealPlan = require("../models/mealPlan");
 import MealPlan from "../models/MealPlan";
 import Recipe from "../models/Recipe";
+import TempRecipe from "../models/TempRecipe";
 
 export const monthNames = [
   "January",
@@ -403,6 +404,8 @@ export const getMealPlanForDateRange = async ({
         },
       },
     ]);
+
+    // console.log({ mealPlans: JSON.stringify(mealPlans) });
     await MealPlan.populate(
       mealPlans,
       populateMealPlanRecipesForDateRange({ ingredientFieldsSelect })

@@ -41,8 +41,8 @@ export default async function handler(req, res) {
                   const mealCounts = dayObj[meal].mealCounts;
                   dayObj[meal]?.recipes.forEach((recipe) => {
                     const recipeObj = findTempRecipe(
-                      recipeObj,
-                      day[meal].tempRecipes
+                      recipe,
+                      dayObj[meal].tempRecipes
                     );
                     let recipeData = {
                       date: dayObj.date,
