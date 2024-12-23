@@ -78,14 +78,32 @@ export const populateMealPlanRecipesForDateRange = ({
     "days.dinner.recipes",
   ];
 
-  return recipeFields.map((field) => ({
-    path: field,
-    select: "_id name dietType ingredients", // Include ingredients in the selection
-    populate: {
-      path: "ingredients.ingredient", // Populate the `ingredient` field inside `ingredients`
-      select: ingredientFieldsSelect, // Specify fields to include from the `Ingredient` model
-    },
-  }));
+  return [
+    // Populate recipes
+    ...recipeFields.map((field) => ({
+      path: field,
+      select: "_id name dietType ingredients", // Include ingredients in the selection
+      populate: {
+        path: "ingredients.ingredient", // Populate the `ingredient` field inside `ingredients`
+        select: ingredientFieldsSelect, // Specify fields to include from the `Ingredient` model
+      },
+    })),
+    // Populate tempRecipes.tempRecipe and its ingredients
+    ...[
+      "days.earlyMorning.tempRecipes",
+      "days.breakfast.tempRecipes",
+      "days.lunch.tempRecipes",
+      "days.evening.tempRecipes",
+      "days.dinner.tempRecipes",
+    ].map((field) => ({
+      path: `${field}.tempRecipe`, // Populate only `tempRecipe` inside `tempRecipes`
+      select: "_id name ingredients", // Include the ingredients array from `TempRecipe`
+      populate: {
+        path: "ingredients.ingredient", // Populate `ingredient` inside `TempRecipe.ingredients`
+        select: "_id name", // Specify fields to include from `Ingredient`
+      },
+    })),
+  ];
 };
 
 export const monthlyOrderTotalQuantity = (mealPlan, ingredientName) => {
