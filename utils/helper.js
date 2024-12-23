@@ -106,13 +106,23 @@ export const populateMealPlanRecipesForDateRange = ({
   ];
 };
 
+export const findTempRecipe = (originalRecipe, tempRecipes) => {
+  if (!tempRecipes || tempRecipes.length === 0) return originalRecipe;
+  const temp = tempRecipes.find(
+    (obj) => obj.originalRecipe === originalRecipe._id
+  );
+  if (temp) return temp;
+  return originalRecipe;
+};
+
 export const monthlyOrderTotalQuantity = (mealPlan, ingredientName) => {
   let totalQuantity = 0;
   mealPlan.days.forEach((day) => {
     ["earlyMorning", "breakfast", "lunch", "evening", "dinner"].forEach(
       (meal) => {
         if (day[meal]) {
-          day[meal]?.recipes.forEach((recipe) => {
+          day[meal]?.recipes.forEach((recipeObj) => {
+            const recipe = findTempRecipe(recipeObj, day[meal].tempRecipes);
             recipe.ingredients.forEach((ing) => {
               if (ing.ingredient.name === ingredientName) {
                 const mealCounts = day[meal].mealCounts;
@@ -153,7 +163,8 @@ export const monthlyOrderRemainingQuantity = (
       ["earlyMorning", "breakfast", "lunch", "evening", "dinner"].forEach(
         (meal) => {
           if (day[meal]) {
-            day[meal]?.recipes.forEach((recipe) => {
+            day[meal]?.recipes.forEach((recipeObj) => {
+              const recipe = findTempRecipe(recipeObj, day[meal].tempRecipes);
               // console.log({ splitRecipe });
               recipe.ingredients.forEach((ing) => {
                 if (ing.ingredient.name === ingredientName) {
@@ -198,7 +209,8 @@ export const weeklyOrderTotalQuantity = (
       ["earlyMorning", "breakfast", "lunch", "evening", "dinner"].forEach(
         (meal) => {
           if (day[meal]) {
-            day[meal]?.recipes.forEach((recipe) => {
+            day[meal]?.recipes.forEach((recipeObj) => {
+              const recipe = findTempRecipe(recipeObj, day[meal].tempRecipes);
               recipe.ingredients.forEach((ing) => {
                 if (ing.ingredient.name === ingredientName) {
                   const mealCounts = day[meal].mealCounts;
@@ -238,7 +250,8 @@ export const weeklyOrderRemainingQuantity = (mealPlans, ingredientName) => {
       ["earlyMorning", "breakfast", "lunch", "evening", "dinner"].forEach(
         (meal) => {
           if (day[meal]) {
-            day[meal]?.recipes.forEach((recipe) => {
+            day[meal]?.recipes.forEach((recipeObj) => {
+              const recipe = findTempRecipe(recipeObj, day[meal].tempRecipes);
               recipe.ingredients.forEach((ing) => {
                 if (ing.ingredient.name === ingredientName) {
                   const mealCounts = day[meal].mealCounts;

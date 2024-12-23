@@ -3,6 +3,7 @@ import MealPlan from "../../../../models/MealPlan";
 import {
   dailyOrderIngredients,
   getMealPlanForDateRange,
+  findTempRecipe,
 } from "../../../../utils/helper";
 import authMiddleware from "../../../../middleware/auth";
 
@@ -38,7 +39,11 @@ export default async function handler(req, res) {
               (meal) => {
                 if (dayObj[meal]) {
                   const mealCounts = dayObj[meal].mealCounts;
-                  dayObj[meal]?.recipes.forEach((recipeObj) => {
+                  dayObj[meal]?.recipes.forEach((recipe) => {
+                    const recipeObj = findTempRecipe(
+                      recipeObj,
+                      day[meal].tempRecipes
+                    );
                     let recipeData = {
                       date: dayObj.date,
                       meal,
