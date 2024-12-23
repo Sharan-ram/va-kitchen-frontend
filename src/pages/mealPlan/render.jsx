@@ -2,7 +2,10 @@ import { useMemo, useState } from "react";
 import Selections from "@/components/mealPlan/render/Selections";
 import IngredientsTable from "@/components/mealPlan/render/IngredientsTable";
 import Table from "@/components/mealPlan/Table";
-import { generateDaysForDateRange } from "@/helpers/utils";
+import {
+  generateDaysForDateRange,
+  parsedAndFormattedDate,
+} from "@/helpers/utils";
 import Tabs from "@/components/Tabs";
 import Modal from "@/components/Modal";
 import UpdateRecipe from "@/components/mealPlan/render/UpdateRecipe";
@@ -310,11 +313,16 @@ const RenderMealPlanPage = () => {
               });
               setMealPlan(newPlans);
             }}
-            setActiveRecipe={({ recipe, month, year, dayIndex, meal }) => {
+            setActiveRecipe={({ recipe, month, year, date, meal }) => {
               const selectedMealPlan = mealPlan.find(
                 (obj) => obj.month === month && obj.year === year
               );
-              // console.log({ selectedMealPlan, dayIndex, meal });
+              const dayIndex = selectedMealPlan.days.findIndex(
+                (dayObj) =>
+                  parsedAndFormattedDate(dayObj.date) ===
+                  parsedAndFormattedDate(date)
+              );
+              console.log({ selectedMealPlan, dayIndex, meal });
               const tempRecipes =
                 selectedMealPlan.days[dayIndex][meal].tempRecipes;
 
@@ -326,11 +334,7 @@ const RenderMealPlanPage = () => {
               setActiveMealPlan(selectedMealPlan);
               setActiveRecipe(
                 tempRecipeObj
-                  ? {
-                      name: recipe.name,
-                      tempRecipe: tempRecipeObj.tempRecipe,
-                      originalRecipe: recipe._id,
-                    }
+                  ? tempRecipeObj
                   : { name: recipe.name, originalRecipe: recipe._id }
               );
               setActiveRecipeType(

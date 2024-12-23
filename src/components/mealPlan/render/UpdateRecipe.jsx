@@ -25,10 +25,11 @@ const UpdateRecipe = ({ recipe, onUpdateRecipe, recipeType }) => {
         const res =
           recipeType === "originalRecipe"
             ? await getRecipeById(recipe.originalRecipe)
-            : await getTempRecipeById(recipe.tempRecipe);
+            : await getTempRecipeById(recipe.tempRecipe._id);
         setRecipeDetail(res);
         setIngredients(res.ingredients);
         setRecipeLoading(false);
+        console.log({ res });
       } catch (e) {
         console.error(e);
       }
@@ -125,7 +126,7 @@ const UpdateRecipe = ({ recipe, onUpdateRecipe, recipeType }) => {
 
   const handleUpdateRecipe = async () => {
     const newRecipe = {
-      name: recipe.name,
+      name: recipeDetail.name,
       originalRecipe: recipe.originalRecipe,
       ingredients: ingredients.map((ing) => {
         return {
@@ -141,8 +142,8 @@ const UpdateRecipe = ({ recipe, onUpdateRecipe, recipeType }) => {
     const res =
       recipeType === "originalRecipe"
         ? await saveTempRecipe(newRecipe)
-        : await updateTempRecipe({ ...newRecipe, _id: recipe.tempRecipe });
-    console.log({ res });
+        : await updateTempRecipe({ ...newRecipe, _id: recipeDetail._id });
+    // console.log({ res });
     onUpdateRecipe(res, recipeType === "originalRecipe" ? true : false);
   };
 

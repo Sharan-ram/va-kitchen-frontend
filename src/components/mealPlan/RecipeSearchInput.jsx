@@ -187,7 +187,7 @@ const RecipeSearchInput = ({
                             recipe,
                             month,
                             year,
-                            dayIndex,
+                            date,
                             meal,
                           })
                         : () => {};

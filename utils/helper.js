@@ -97,7 +97,7 @@ export const populateMealPlanRecipesForDateRange = ({
       "days.dinner.tempRecipes",
     ].map((field) => ({
       path: `${field}.tempRecipe`, // Populate only `tempRecipe` inside `tempRecipes`
-      select: "_id name ingredients", // Include the ingredients array from `TempRecipe`
+      select: "_id name ingredients dietType", // Include the ingredients array from `TempRecipe`
       populate: {
         path: "ingredients.ingredient", // Populate `ingredient` inside `TempRecipe.ingredients`
         select: "_id name", // Specify fields to include from `Ingredient`
