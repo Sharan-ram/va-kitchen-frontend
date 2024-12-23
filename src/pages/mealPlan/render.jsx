@@ -88,21 +88,25 @@ const RenderMealPlanPage = () => {
       return;
     }
 
-    console.log("====================inside");
+    // console.log("====================inside");
 
     const newMealPlan = mealPlan.map((mealPlanObj) => {
+      // console.log({ mealPlanBefore: mealPlanObj });
       let newMealPlanObj = { ...mealPlanObj };
       newMealPlanObj.days = newMealPlanObj.days.map((day) => {
         let newDayObj = { ...day };
         if (day.earlyMorning && day.earlyMorning.recipes) {
+          // console.log({ earlyMorning: day.earlyMorning });
           newDayObj.earlyMorning = {
             ...day.earlyMorning,
-            tempRecipes: [...(day.tempRecipes || [])],
+            tempRecipes: [...(day.earlyMorning.tempRecipes || [])],
           };
           newDayObj.earlyMorning.recipes.forEach((r) => {
-            if (r._id === activeRecipe._id) {
+            // console.log("recipes map", tempRecipe, activeRecipe);
+            if (r._id === activeRecipe.originalRecipe) {
+              // console.log("actove recipe matched in early morning");
               newDayObj.earlyMorning.tempRecipes.push({
-                originalRecipe: activeRecipe._id,
+                originalRecipe: activeRecipe.originalRecipe,
                 tempRecipe: tempRecipe._id,
               });
             }
@@ -112,12 +116,12 @@ const RenderMealPlanPage = () => {
         if (day.breakfast && day.breakfast.recipes) {
           newDayObj.breakfast = {
             ...day.breakfast,
-            tempRecipes: [...(day.tempRecipes || [])],
+            tempRecipes: [...(day.breakfast.tempRecipes || [])],
           };
           newDayObj.breakfast.recipes.forEach((r) => {
-            if (r._id === activeRecipe._id) {
+            if (r._id === activeRecipe.originalRecipe) {
               newDayObj.breakfast.tempRecipes.push({
-                originalRecipe: activeRecipe._id,
+                originalRecipe: activeRecipe.originalRecipe,
                 tempRecipe: tempRecipe._id,
               });
             }
@@ -127,12 +131,12 @@ const RenderMealPlanPage = () => {
         if (day.lunch && day.lunch.recipes) {
           newDayObj.lunch = {
             ...day.lunch,
-            tempRecipes: [...(day.tempRecipes || [])],
+            tempRecipes: [...(day.lunch.tempRecipes || [])],
           };
           newDayObj.lunch.recipes.forEach((r) => {
-            if (r._id === activeRecipe._id) {
+            if (r._id === activeRecipe.originalRecipe) {
               newDayObj.lunch.tempRecipes.push({
-                originalRecipe: activeRecipe._id,
+                originalRecipe: activeRecipe.originalRecipe,
                 tempRecipe: tempRecipe._id,
               });
             }
@@ -142,12 +146,12 @@ const RenderMealPlanPage = () => {
         if (day.evening && day.evening.recipes) {
           newDayObj.evening = {
             ...day.evening,
-            tempRecipes: [...(day.tempRecipes || [])],
+            tempRecipes: [...(day.evening.tempRecipes || [])],
           };
           newDayObj.evening.recipes.forEach((r) => {
-            if (r._id === activeRecipe._id) {
+            if (r._id === activeRecipe.originalRecipe) {
               newDayObj.evening.tempRecipes.push({
-                originalRecipe: activeRecipe._id,
+                originalRecipe: activeRecipe.originalRecipe,
                 tempRecipe: tempRecipe._id,
               });
             }
@@ -157,12 +161,12 @@ const RenderMealPlanPage = () => {
         if (day.dinner && day.dinner.recipes) {
           newDayObj.dinner = {
             ...day.dinner,
-            tempRecipes: [...(day.tempRecipes || [])],
+            tempRecipes: [...(day.dinner.tempRecipes || [])],
           };
           newDayObj.dinner.recipes.forEach((r) => {
-            if (r._id === activeRecipe._id) {
+            if (r._id === activeRecipe.originalRecipe) {
               newDayObj.dinner.tempRecipes.push({
-                originalRecipe: activeRecipe._id,
+                originalRecipe: activeRecipe.originalRecipe,
                 tempRecipe: tempRecipe._id,
               });
             }
@@ -174,6 +178,8 @@ const RenderMealPlanPage = () => {
 
       return newMealPlanObj;
     });
+
+    // console.log({ newMealPlanAfter: newMealPlan });
 
     setMealPlan(newMealPlan);
     setActiveRecipe(false);
@@ -308,7 +314,7 @@ const RenderMealPlanPage = () => {
               const selectedMealPlan = mealPlan.find(
                 (obj) => obj.month === month && obj.year === year
               );
-              console.log({ selectedMealPlan, dayIndex, meal });
+              // console.log({ selectedMealPlan, dayIndex, meal });
               const tempRecipes =
                 selectedMealPlan.days[dayIndex][meal].tempRecipes;
 
