@@ -29,6 +29,7 @@ const RenderMealPlanPage = () => {
   const [activeRecipe, setActiveRecipe] = useState(null);
   const [activeMealPlan, setActiveMealPlan] = useState(null);
   const [activeRecipeType, setActiveRecipeType] = useState(null);
+  const [activeRecipeDetails, setActiveRecipeDetails] = useState(null);
 
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -337,6 +338,11 @@ const RenderMealPlanPage = () => {
                   ? tempRecipeObj
                   : { name: recipe.name, originalRecipe: recipe._id }
               );
+              setActiveRecipeDetails({
+                mealType: meal,
+                mealCounts: selectedMealPlan.days[dayIndex][meal].mealCounts,
+                season: selectedMealPlan.days[dayIndex].season,
+              });
               setActiveRecipeType(
                 tempRecipeObj ? "tempRecipe" : "originalRecipe"
               );
@@ -380,6 +386,7 @@ const RenderMealPlanPage = () => {
             recipe={activeRecipe}
             recipeType={activeRecipeType}
             onUpdateRecipe={handleRecipeUpdate}
+            activeRecipeDetails={activeRecipeDetails}
           />
         </Modal>
       )}

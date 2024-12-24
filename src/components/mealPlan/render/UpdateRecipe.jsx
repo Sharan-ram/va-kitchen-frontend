@@ -10,14 +10,20 @@ import {
 } from "@/services/tempRecipe";
 import Loader from "@/components/Loader";
 
-const UpdateRecipe = ({ recipe, onUpdateRecipe, recipeType }) => {
-  console.log({ recipe, recipeType });
+const UpdateRecipe = ({
+  recipe,
+  onUpdateRecipe,
+  recipeType,
+  activeRecipeDetails,
+}) => {
   const [ingredients, setIngredients] = useState([]);
   const [search, setSearch] = useState("");
   const [showSearch, toggleSearch] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [recipeLoading, setRecipeLoading] = useState(true);
   const [recipeDetail, setRecipeDetail] = useState();
+
+  console.log({ recipe, recipeType, activeRecipeDetails });
 
   useEffect(() => {
     const fetchRecipeDetail = async () => {
@@ -151,7 +157,7 @@ const UpdateRecipe = ({ recipe, onUpdateRecipe, recipeType }) => {
 
   return (
     <div>
-      <h2 className="text-lg font-bold mb-4">{recipe.name}</h2>
+      <h2 className="text-lg font-bold mb-4">{recipeDetail?.name}</h2>
       {recipeLoading ? (
         <div className="flex justify-center">
           <Loader />
@@ -177,23 +183,25 @@ const UpdateRecipe = ({ recipe, onUpdateRecipe, recipeType }) => {
                   </div>
                 </div>
                 <div>
-                  <label className="mr-2 text-sm">Summer Quantity:</label>
+                  <label className="mr-2 text-sm">
+                    {activeRecipeDetails?.season}
+                  </label>
                   <input
                     type="text"
                     className="border border-gray-300 px-2 py-1 w-full rounded"
-                    value={ingredient.summerQuantity}
+                    value={ingredient[activeRecipeDetails?.season]}
                     onChange={(e) =>
                       handleQuantityChange(
                         e,
                         ingredient,
-                        "summerQuantity",
+                        activeRecipeDetails?.season,
                         index
                       )
                     }
                   />
                 </div>
 
-                <div>
+                {/* <div>
                   <label className="mr-2 text-sm">Winter Quantity:</label>
                   <input
                     type="text"
@@ -242,7 +250,7 @@ const UpdateRecipe = ({ recipe, onUpdateRecipe, recipeType }) => {
                       )
                     }
                   />
-                </div>
+                </div> */}
               </div>
             ))}
           </div>

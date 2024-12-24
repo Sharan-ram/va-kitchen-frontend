@@ -334,6 +334,10 @@ export const getMealPlanForDateRange = async ({
     const startDateObj = parseDate(startDate);
     const endDateObj = parseDate(endDate);
 
+    // const mealPlansCheck = await MealPlan.find();
+
+    // console.log({ mealPlans: JSON.stringify(mealPlansCheck) });
+
     // console.log({ startDateObj, endDateObj });
 
     // Fetch meal plans, filter days inside the query using MongoDB's date comparison
@@ -404,6 +408,8 @@ export const getMealPlanForDateRange = async ({
         },
       },
     ]);
+
+    console.log({ mealPlans });
 
     // console.log({ mealPlans: JSON.stringify(mealPlans) });
     await MealPlan.populate(
