@@ -9,6 +9,7 @@ import {
   updateTempRecipe,
 } from "@/services/tempRecipe";
 import Loader from "@/components/Loader";
+import { dietTypeTextMap } from "@/helpers/constants";
 
 const UpdateRecipe = ({
   recipe,
@@ -23,7 +24,7 @@ const UpdateRecipe = ({
   const [recipeLoading, setRecipeLoading] = useState(true);
   const [recipeDetail, setRecipeDetail] = useState();
 
-  console.log({ recipe, recipeType, activeRecipeDetails });
+  console.log({ recipeDetail, recipeType, activeRecipeDetails });
 
   useEffect(() => {
     const fetchRecipeDetail = async () => {
@@ -35,7 +36,7 @@ const UpdateRecipe = ({
         setRecipeDetail(res);
         setIngredients(res.ingredients);
         setRecipeLoading(false);
-        console.log({ res });
+        // console.log({ res });
       } catch (e) {
         console.error(e);
       }
@@ -164,6 +165,27 @@ const UpdateRecipe = ({
         </div>
       ) : (
         <>
+          <div className="my-4">
+            {recipeDetail?.dietType.map((dt) => {
+              // console.log({ dt, text: dietTypeTextMap[dt], dietTypeTextMap });
+              const dietTypeCountStr = `${dt}Count`;
+              return (
+                <div key={dt} className="mb-2">
+                  <div className="font-bold">
+                    {dietTypeTextMap[dietTypeCountStr]}
+                  </div>
+
+                  <div className="">
+                    <input
+                      type="text"
+                      value={activeRecipeDetails?.mealCounts[dietTypeCountStr]}
+                      className="pl-2 py-1 rounded w-1/2 border border-gray-300"
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
           <div className="mb-4">
             {ingredients.map((ingredient, index) => (
               <div key={ingredient._id} className="mb-6">
@@ -182,23 +204,34 @@ const UpdateRecipe = ({
                     </div>
                   </div>
                 </div>
-                <div>
-                  <label className="mr-2 text-sm">
-                    {activeRecipeDetails?.season}
-                  </label>
-                  <input
-                    type="text"
-                    className="border border-gray-300 px-2 py-1 w-full rounded"
-                    value={ingredient[activeRecipeDetails?.season]}
-                    onChange={(e) =>
-                      handleQuantityChange(
-                        e,
-                        ingredient,
-                        activeRecipeDetails?.season,
-                        index
-                      )
-                    }
-                  />
+                <div className="flex justify-between items-center">
+                  <div className="w-[30%]">
+                    <label className="mr-2 text-sm">old</label>
+                    <input
+                      type="text"
+                      className="border border-gray-300 px-2 py-1 w-full rounded"
+                      value={ingredient[activeRecipeDetails?.season]}
+                      disabled
+                    />
+                  </div>
+                  <div className="w-[60%]">
+                    <label className="mr-2 text-sm">
+                      {activeRecipeDetails?.season}
+                    </label>
+                    <input
+                      type="text"
+                      className="border border-gray-300 px-2 py-1 w-full rounded"
+                      value={ingredient[activeRecipeDetails?.season]}
+                      onChange={(e) =>
+                        handleQuantityChange(
+                          e,
+                          ingredient,
+                          activeRecipeDetails?.season,
+                          index
+                        )
+                      }
+                    />
+                  </div>
                 </div>
 
                 {/* <div>
