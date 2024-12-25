@@ -23,8 +23,9 @@ const UpdateRecipe = ({
   const [searchResults, setSearchResults] = useState([]);
   const [recipeLoading, setRecipeLoading] = useState(true);
   const [recipeDetail, setRecipeDetail] = useState();
+  const [mealCounts, setMealCounts] = useState(activeRecipeDetails.mealCounts);
 
-  console.log({ recipeDetail, recipeType, activeRecipeDetails });
+  console.log({ recipeDetail, recipeType, activeRecipeDetails, recipe });
 
   useEffect(() => {
     const fetchRecipeDetail = async () => {
@@ -32,7 +33,9 @@ const UpdateRecipe = ({
         const res =
           recipeType === "originalRecipe"
             ? await getRecipeById(recipe.originalRecipe)
-            : await getTempRecipeById(recipe.tempRecipe._id);
+            : await getTempRecipeById(
+                recipe.tempRecipe._id || recipe.tempRecipe
+              );
         setRecipeDetail(res);
         setIngredients(res.ingredients);
         setRecipeLoading(false);
@@ -99,19 +102,6 @@ const UpdateRecipe = ({
   };
 
   const isIngredientFilled = (ingredient) => {
-    // Check if all fields inside the ingredient object are filled
-    // return Object.values(ingredient).every((value) => {
-    //   if (typeof value === "string") {
-    //     // If the value is a string, check if it's not empty after trimming
-    //     return value.trim() !== "";
-    //   } else if (typeof value === "object") {
-    //     // If the value is an object, recursively check its fields
-    //     return isIngredientFilled(value);
-    //   } else {
-    //     // For other types of values, consider them filled
-    //     return true;
-    //   }
-    // });
     if (ingredient.ingredient.name) {
       return true;
     }
@@ -154,6 +144,13 @@ const UpdateRecipe = ({
     onUpdateRecipe(res, recipeType === "originalRecipe" ? true : false);
   };
 
+  const getValue = (ingredientName, season) => {
+    const ingredient = ingredients.find(
+      (ing) => ing.ingredient.name === ingredientName
+    );
+    return ingredient[season];
+  };
+
   // console.log({ recipe, ingredients });
 
   return (
@@ -178,8 +175,67 @@ const UpdateRecipe = ({
                   <div className="">
                     <input
                       type="text"
-                      value={activeRecipeDetails?.mealCounts[dietTypeCountStr]}
+                      value={mealCounts[dietTypeCountStr]}
                       className="pl-2 py-1 rounded w-1/2 border border-gray-300"
+                      onChange={(e) => {
+                        const newMealCounts = {
+                          ...mealCounts,
+                          [dietTypeCountStr]: e.target.value,
+                        };
+                        setMealCounts(newMealCounts);
+                      }}
+                      onBlur={(e) => {
+                        let oldTotalCount = 0,
+                          newTotalCount = 0;
+
+                        recipeDetail.dietType.forEach((dt) => {
+                          const dietTypeCountStr = `${dt}Count`;
+                          oldTotalCount += Number(
+                            activeRecipeDetails.mealCounts[dietTypeCountStr]
+                          );
+                          newTotalCount += Number(mealCounts[dietTypeCountStr]);
+                        });
+
+                        const newIngredients = ingredients.map((ing) => {
+                          let oldIngredient = recipeDetail.ingredients.find(
+                            (oldIngObj) =>
+                              oldIngObj.ingredient.name === ing.ingredient.name
+                          );
+                          // console.log({ oldIngredient });
+                          if (oldIngredient) {
+                            let oldPerHeadQuantity =
+                              oldIngredient[activeRecipeDetails?.season];
+
+                            let newTotalQuantity =
+                              Number(oldPerHeadQuantity) * newTotalCount;
+
+                            // console.log({
+                            //   oldPerHeadQuantity,
+                            //   newPerHeadQuantity:
+                            //     newTotalQuantity / oldTotalCount,
+                            //   newTotalQuantity,
+                            //   newTotalCount,
+                            // });
+
+                            const newIng = {
+                              ...ing,
+                              [activeRecipeDetails?.season]: (
+                                newTotalQuantity / oldTotalCount
+                              ).toFixed(4),
+                            };
+
+                            return newIng;
+                          }
+                          return newIng;
+                        });
+
+                        console.log({
+                          oldIngredients: recipeDetail.ingredients,
+                          newIngredients,
+                        });
+
+                        setIngredients(newIngredients);
+                      }}
                     />
                   </div>
                 </div>
@@ -187,7 +243,7 @@ const UpdateRecipe = ({
             })}
           </div>
           <div className="mb-4">
-            {ingredients.map((ingredient, index) => (
+            {recipeDetail.ingredients.map((ingredient, index) => (
               <div key={ingredient._id} className="mb-6">
                 <div>
                   <div className="flex justify-between items-center w-full">
@@ -221,7 +277,10 @@ const UpdateRecipe = ({
                     <input
                       type="text"
                       className="border border-gray-300 px-2 py-1 w-full rounded"
-                      value={ingredient[activeRecipeDetails?.season]}
+                      value={getValue(
+                        ingredient.ingredient.name,
+                        activeRecipeDetails?.season
+                      )}
                       onChange={(e) =>
                         handleQuantityChange(
                           e,
@@ -233,57 +292,6 @@ const UpdateRecipe = ({
                     />
                   </div>
                 </div>
-
-                {/* <div>
-                  <label className="mr-2 text-sm">Winter Quantity:</label>
-                  <input
-                    type="text"
-                    className="border border-gray-300 px-2 py-1 w-full rounded"
-                    value={ingredient.winterQuantity}
-                    onChange={(e) =>
-                      handleQuantityChange(
-                        e,
-                        ingredient,
-                        "winterQuantity",
-                        index
-                      )
-                    }
-                  />
-                </div>
-
-                <div>
-                  <label className="mr-2 text-sm">Monsoon Quantity:</label>
-                  <input
-                    type="text"
-                    className="border border-gray-300 px-2 py-1 w-full rounded"
-                    value={ingredient.monsoonQuantity}
-                    onChange={(e) =>
-                      handleQuantityChange(
-                        e,
-                        ingredient,
-                        "monsoonQuantity",
-                        index
-                      )
-                    }
-                  />
-                </div>
-
-                <div>
-                  <label className="mr-2 text-sm">Retreat Quantity:</label>
-                  <input
-                    type="text"
-                    className="border border-gray-300 px-2 py-1 w-full rounded"
-                    value={ingredient.retreatQuantity}
-                    onChange={(e) =>
-                      handleQuantityChange(
-                        e,
-                        ingredient,
-                        "retreatQuantity",
-                        index
-                      )
-                    }
-                  />
-                </div> */}
               </div>
             ))}
           </div>

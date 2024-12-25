@@ -330,7 +330,7 @@ const RenderMealPlanPage = () => {
               const tempRecipeObj = tempRecipes?.find(
                 (tR) => tR.originalRecipe === recipe._id
               );
-              // console.log({ tempRecipeObj });
+              console.log({ tempRecipeObj });
 
               setActiveMealPlan(selectedMealPlan);
               setActiveRecipe(
