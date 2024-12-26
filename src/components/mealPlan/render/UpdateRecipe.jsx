@@ -125,6 +125,7 @@ const UpdateRecipe = ({
     const newRecipe = {
       name: recipeDetail.name,
       originalRecipe: recipe.originalRecipe,
+      dietType: recipeDetail.dietType,
       ingredients: ingredients.map((ing) => {
         return {
           ...ing,
