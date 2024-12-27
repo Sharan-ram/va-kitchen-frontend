@@ -211,7 +211,10 @@ const RenderMealPlanPage = () => {
     mealPlan.forEach((mealPlanObj) => {
       mealPlanObj.days.forEach((dayObj) => {
         ["breakfast", "lunch", "dinner"].forEach((meal, mealIndex) => {
-          let mealArr = [dayObj.date, meal.toUpperCase()];
+          let mealArr = [
+            parsedAndFormattedDate(dayObj.date),
+            meal.toUpperCase(),
+          ];
           let uniqueRecipes;
 
           if (dayObj[meal]) {
