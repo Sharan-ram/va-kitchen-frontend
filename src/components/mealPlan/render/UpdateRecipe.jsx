@@ -244,57 +244,68 @@ const UpdateRecipe = ({
             })}
           </div>
           <div className="mb-4">
-            {recipeDetail.ingredients.map((ingredient, index) => (
-              <div key={ingredient._id} className="mb-6">
-                <div>
-                  <div className="flex justify-between items-center w-full">
-                    <div>
-                      <h3 className="font-semibold">
-                        {ingredient.ingredient.name}
-                      </h3>
+            {ingredients.map((ingredient, index) => {
+              const oldIngredient = recipeDetail.ingredients.find(
+                (ing) => ing.ingredient._id === ingredient.ingredient._id
+              );
+              let oldValue = 0;
+              if (oldIngredient) {
+                oldValue = oldIngredient[activeRecipeDetails?.season];
+              }
+
+              return (
+                <div key={ingredient._id} className="mb-6">
+                  <div>
+                    <div className="flex justify-between items-center w-full">
+                      <div>
+                        <h3 className="font-semibold">
+                          {ingredient.ingredient.name}
+                        </h3>
+                      </div>
+                      <div
+                        className="cursor-pointer"
+                        onClick={() => handleDeleteIngredient(index)}
+                      >
+                        <Trash size={22} color="#bb2124" />
+                      </div>
                     </div>
-                    <div
-                      className="cursor-pointer"
-                      onClick={() => handleDeleteIngredient(index)}
-                    >
-                      <Trash size={22} color="#bb2124" />
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <div className="w-[30%]">
+                      <label className="mr-2 text-sm">old</label>
+                      <input
+                        type="text"
+                        className="border border-gray-300 px-2 py-1 w-full rounded"
+                        value={oldValue}
+                        disabled
+                      />
+                    </div>
+                    <div className="w-[60%]">
+                      <label className="mr-2 text-sm">
+                        {activeRecipeDetails?.season}
+                      </label>
+                      <input
+                        type="text"
+                        className="border border-gray-300 px-2 py-1 w-full rounded"
+                        // value={getValue(
+                        //   ingredient.ingredient.name,
+                        //   activeRecipeDetails?.season
+                        // )}
+                        value={ingredient[activeRecipeDetails?.season]}
+                        onChange={(e) =>
+                          handleQuantityChange(
+                            e,
+                            ingredient,
+                            activeRecipeDetails?.season,
+                            index
+                          )
+                        }
+                      />
                     </div>
                   </div>
                 </div>
-                <div className="flex justify-between items-center">
-                  <div className="w-[30%]">
-                    <label className="mr-2 text-sm">old</label>
-                    <input
-                      type="text"
-                      className="border border-gray-300 px-2 py-1 w-full rounded"
-                      value={ingredient[activeRecipeDetails?.season]}
-                      disabled
-                    />
-                  </div>
-                  <div className="w-[60%]">
-                    <label className="mr-2 text-sm">
-                      {activeRecipeDetails?.season}
-                    </label>
-                    <input
-                      type="text"
-                      className="border border-gray-300 px-2 py-1 w-full rounded"
-                      value={getValue(
-                        ingredient.ingredient.name,
-                        activeRecipeDetails?.season
-                      )}
-                      onChange={(e) =>
-                        handleQuantityChange(
-                          e,
-                          ingredient,
-                          activeRecipeDetails?.season,
-                          index
-                        )
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
           {showSearch && (
             <div className="my-4 relative">
