@@ -29,7 +29,8 @@
     "react-date-picker": "^10.5.0",
     "react-dom": "18.2.0",
     "react-to-pdf": "^1.0.1",
-    "react-toastify": "^10.0.5"
+    "react-toastify": "^10.0.5",
+    "react-window": "^1.8.11"
   },
   "devDependencies": {
     "@types/whatwg-url": "^11.0.5",

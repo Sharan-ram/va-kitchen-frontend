@@ -5,45 +5,44 @@ import Link from "next/link";
 import Loader from "@/components/Loader";
 import { toast } from "react-toastify";
 import classNames from "classnames";
+import { FixedSizeList as List } from "react-window";
 
 const Recipes = ({ recipes }) => {
   // const [recipes, setRecipes] = useState();
   const [recipesLoading, setRecipesLoading] = useState(false);
   const [exportInProgress, setExportInProgress] = useState(false);
-  // console.log({ recipes });
 
-  // useEffect(() => {
-  //   const fetchRecipes = async () => {
-  //     try {
-  //       setRecipesLoading(true);
-  //       const response = await searchRecipe();
-  //       console.log({ response });
-  //       setRecipes(response);
-  //       setRecipesLoading(false);
-  //     } catch (e) {
-  //       console.error(e);
-  //       setRecipesLoading(false);
-  //       toast.error("Error fetching recipes!");
-  //     }
-  //   };
+  const [viewportHeight, setViewportHeight] = useState();
+  const [viewportWidth, setViewportWidth] = useState();
+  const [itemSize, setItemSize] = useState();
+  const [isMounted, setIsMounted] = useState(false);
 
-  //   fetchRecipes();
-  // }, []);
+  useEffect(() => {
+    setIsMounted(true);
+    const handleResize = () => {
+      setViewportHeight(window.innerHeight);
+      setViewportWidth(window.innerWidth);
+
+      // Adjust item size based on viewport width or other criteria
+      if (window.innerWidth > 1200) {
+        setItemSize(80);
+      } else {
+        setItemSize(60);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Call on mount to set initial sizes
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const getRows = () => {
     if (recipesLoading || !recipes) return [];
     const rows = [];
     recipes.forEach((recipe, recipeIndex) => {
       recipe.ingredients.forEach((ingredient, index) => {
-        const {
-          _id,
-          name,
-          label,
-          dietType,
-          mealType,
-          tableSetting,
-          usualMealTime,
-        } = recipe;
+        const { _id, name, dietType } = recipe;
 
         const {
           summerQuantity,
@@ -56,13 +55,7 @@ const Recipes = ({ recipes }) => {
           num: index === 0 ? recipeIndex + 1 : "",
           _id: index === 0 ? _id : "",
           name: index === 0 ? name : "",
-          labelIndian: index === 0 ? label.indian : "",
-          labelEnglish: index === 0 ? label.english : "",
           dietType: index === 0 ? dietType : [],
-          mealType: index === 0 ? mealType : "",
-          usualMealTime: index === 0 ? usualMealTime : "",
-          tableSettingVessels: index === 0 ? tableSetting.vessels : "",
-          tableSettingUtensils: index === 0 ? tableSetting.utensils : "",
           summerQuantity,
           winterQuantity,
           monsoonQuantity,
@@ -107,13 +100,7 @@ const Recipes = ({ recipes }) => {
           winterQuantity,
           monsoonQuantity,
           retreatQuantity,
-          usualMealTime,
-          mealType,
           dietType,
-          labelIndian,
-          labelEnglish,
-          tableSettingVessels,
-          tableSettingUtensils,
         }) => [
           num,
           name,
@@ -122,15 +109,9 @@ const Recipes = ({ recipes }) => {
           winterQuantity,
           monsoonQuantity,
           retreatQuantity,
-          usualMealTime,
-          mealType,
           dietType?.map(
             (str, index) => `${str}${index !== dietType.length - 1 ? "," : ""} `
           ),
-          labelIndian,
-          labelEnglish,
-          tableSettingVessels,
-          tableSettingUtensils,
         ]
       ),
     ];
@@ -148,7 +129,64 @@ const Recipes = ({ recipes }) => {
     }
   };
 
-  return !recipes || recipesLoading ? (
+  // Virtualization Row component
+  // const Row = ({ index, style }) => {
+  //   const {
+  //     _id,
+  //     num,
+  //     name,
+  //     dietType,
+  //     summerQuantity,
+  //     winterQuantity,
+  //     monsoonQuantity,
+  //     retreatQuantity,
+  //     ingredientName,
+  //   } = rows[index];
+
+  //   return (
+  //     <tr key={index}>
+  //       <td className="px-3 py-2 whitespace-nowrap capitalize">{num}</td>
+  //       <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden max-w-[300px] text-ellipsis font-bold">
+  //         <Link href={`/recipes/${_id}`} className="hover:text-[#8e7576]">
+  //           {name}
+  //         </Link>
+  //       </td>
+  //       <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden text-center">
+  //         {ingredientName}
+  //       </td>
+  //       <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden text-center">
+  //         {summerQuantity}
+  //       </td>
+  //       <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden text-center">
+  //         {monsoonQuantity}
+  //       </td>
+  //       <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden text-center">
+  //         {winterQuantity}
+  //       </td>
+  //       <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden text-center">
+  //         {retreatQuantity}
+  //       </td>
+  //       <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden text-center">
+  //         {dietType &&
+  //           dietType.map((str, index) => {
+  //             let text = str;
+  //             if (str === "nonVegan") {
+  //               text = "Non Vegan";
+  //             } else if (str === "glutenFree") {
+  //               text = "Gluten Free";
+  //             }
+  //             return (
+  //               <p key={str}>{`${text}${
+  //                 index !== dietType.length - 1 ? "," : ""
+  //               } `}</p>
+  //             );
+  //           })}
+  //       </td>
+  //     </tr>
+  //   );
+  // };
+
+  return !recipes || recipesLoading || !isMounted ? (
     <div className="w-full flex justify-center items-center">
       <Loader />
     </div>
@@ -191,41 +229,25 @@ const Recipes = ({ recipes }) => {
               Retreat Quantity
             </th>
             <th className="px-3 py-2 font-bold uppercase tracking-wider text-center">
-              Usual Meal Time
-            </th>
-            <th className="px-3 py-2 font-bold uppercase tracking-wider text-center">
-              Type of Meal
-            </th>
-            <th className="px-3 py-2 font-bold uppercase tracking-wider text-center">
               Diet Type
-            </th>
-            <th className="px-3 py-2 font-bold uppercase tracking-wider text-center">
-              Indian Label
-            </th>
-            <th className="px-3 py-2 font-bold uppercase tracking-wider text-center">
-              English Label
-            </th>
-            <th className="px-3 py-2 font-bold uppercase tracking-wider text-center">
-              Vessels
-            </th>
-            <th className="px-3 py-2 font-bold uppercase tracking-wider text-center">
-              Utensils
             </th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200 max-w-[100%]">
+          {/* <List
+            height={viewportHeight} // Use dynamic height
+            itemCount={rows.length} // Total rows to render
+            itemSize={itemSize} // Use dynamic item size
+            width={viewportWidth} // Use dynamic width
+          >
+            {Row}
+          </List> */}
           {rows.map((recipe, index) => {
             const {
               _id,
               num,
               name,
-              labelIndian,
-              labelEnglish,
               dietType,
-              mealType,
-              tableSettingVessels,
-              tableSettingUtensils,
-              usualMealTime,
               summerQuantity,
               winterQuantity,
               monsoonQuantity,
@@ -261,12 +283,6 @@ const Recipes = ({ recipes }) => {
                   {retreatQuantity}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden text-center">
-                  {usualMealTime}
-                </td>
-                <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden text-center">
-                  {mealType}
-                </td>
-                <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden text-center">
                   {dietType &&
                     dietType.map((str, index) => {
                       let text = str;
@@ -281,18 +297,6 @@ const Recipes = ({ recipes }) => {
                         } `}</p>
                       );
                     })}
-                </td>
-                <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden text-center max-w-[300px] text-ellipsis">
-                  {labelIndian}
-                </td>
-                <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden text-center max-w-[300px] text-ellipsis">
-                  {labelEnglish}
-                </td>
-                <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden text-center">
-                  {tableSettingVessels}
-                </td>
-                <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden text-center">
-                  {tableSettingUtensils}
                 </td>
               </tr>
             );
