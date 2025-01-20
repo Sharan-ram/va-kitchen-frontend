@@ -12,30 +12,30 @@ const Recipes = ({ recipes }) => {
   const [recipesLoading, setRecipesLoading] = useState(false);
   const [exportInProgress, setExportInProgress] = useState(false);
 
-  const [viewportHeight, setViewportHeight] = useState();
-  const [viewportWidth, setViewportWidth] = useState();
-  const [itemSize, setItemSize] = useState();
-  const [isMounted, setIsMounted] = useState(false);
+  // const [viewportHeight, setViewportHeight] = useState();
+  // const [viewportWidth, setViewportWidth] = useState();
+  // const [itemSize, setItemSize] = useState();
+  // const [isMounted, setIsMounted] = useState(false);
 
-  useEffect(() => {
-    setIsMounted(true);
-    const handleResize = () => {
-      setViewportHeight(window.innerHeight);
-      setViewportWidth(window.innerWidth);
+  // useEffect(() => {
+  //   setIsMounted(true);
+  //   const handleResize = () => {
+  //     setViewportHeight(window.innerHeight);
+  //     setViewportWidth(window.innerWidth);
 
-      // Adjust item size based on viewport width or other criteria
-      if (window.innerWidth > 1200) {
-        setItemSize(80);
-      } else {
-        setItemSize(60);
-      }
-    };
+  //     // Adjust item size based on viewport width or other criteria
+  //     if (window.innerWidth > 1200) {
+  //       setItemSize(80);
+  //     } else {
+  //       setItemSize(60);
+  //     }
+  //   };
 
-    window.addEventListener("resize", handleResize);
-    handleResize(); // Call on mount to set initial sizes
+  //   window.addEventListener("resize", handleResize);
+  //   handleResize(); // Call on mount to set initial sizes
 
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  //   return () => window.removeEventListener("resize", handleResize);
+  // }, []);
 
   const getRows = () => {
     if (recipesLoading || !recipes) return [];
@@ -144,7 +144,7 @@ const Recipes = ({ recipes }) => {
   //   } = rows[index];
 
   //   return (
-  //     <tr key={index}>
+  //     <div style={style} className="tr">
   //       <td className="px-3 py-2 whitespace-nowrap capitalize">{num}</td>
   //       <td className="px-3 py-2 whitespace-nowrap capitalize overflow-hidden max-w-[300px] text-ellipsis font-bold">
   //         <Link href={`/recipes/${_id}`} className="hover:text-[#8e7576]">
@@ -182,11 +182,11 @@ const Recipes = ({ recipes }) => {
   //             );
   //           })}
   //       </td>
-  //     </tr>
+  //     </div>
   //   );
   // };
 
-  return !recipes || recipesLoading || !isMounted ? (
+  return !recipes || recipesLoading ? (
     <div className="w-full flex justify-center items-center">
       <Loader />
     </div>
@@ -235,13 +235,13 @@ const Recipes = ({ recipes }) => {
         </thead>
         <tbody className="bg-white divide-y divide-gray-200 max-w-[100%]">
           {/* <List
-            height={viewportHeight} // Use dynamic height
-            itemCount={rows.length} // Total rows to render
-            itemSize={itemSize} // Use dynamic item size
-            width={viewportWidth} // Use dynamic width
-          >
-            {Row}
-          </List> */}
+              height={viewportHeight} // Use dynamic height
+              itemCount={rows.length} // Total rows to render
+              itemSize={itemSize} // Use dynamic item size
+              width={viewportWidth} // Use dynamic width
+            >
+              {Row}
+            </List> */}
           {rows.map((recipe, index) => {
             const {
               _id,
