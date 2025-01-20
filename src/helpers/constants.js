@@ -117,6 +117,12 @@ export const dietTypeCounts = [
   "glutenFreeCount",
 ];
 
+export const dietTypeTextMap = {
+  veganCount: "Vegan Count",
+  nonVeganCount: "Non Vegan Count",
+  glutenFreeCount: "Gluten Free Count",
+};
+
 export const usualMealTime = [
   { text: "BF", value: "BF" },
   { text: "L", value: "L" },

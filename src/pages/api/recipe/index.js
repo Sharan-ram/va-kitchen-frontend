@@ -29,9 +29,11 @@ export default async function handler(req, res) {
 
           // Fetch all recipes but only select specific fields and filter ingredients
           const recipes = await Recipe.find({})
-            .select(
-              "_id dietType label mealType name tableSetting usualMealTime ingredients"
-            )
+            .select("_id dietType name ingredients")
+            .populate({
+              path: "ingredients.ingredient",
+              select: "_id name",
+            })
             .sort({ name: 1 })
             .lean();
 

@@ -29,6 +29,7 @@ const RenderMealPlanPage = () => {
   const [activeRecipe, setActiveRecipe] = useState(null);
   const [activeMealPlan, setActiveMealPlan] = useState(null);
   const [activeRecipeType, setActiveRecipeType] = useState(null);
+  const [activeRecipeDetails, setActiveRecipeDetails] = useState(null);
 
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -210,7 +211,10 @@ const RenderMealPlanPage = () => {
     mealPlan.forEach((mealPlanObj) => {
       mealPlanObj.days.forEach((dayObj) => {
         ["breakfast", "lunch", "dinner"].forEach((meal, mealIndex) => {
-          let mealArr = [dayObj.date, meal.toUpperCase()];
+          let mealArr = [
+            parsedAndFormattedDate(dayObj.date),
+            meal.toUpperCase(),
+          ];
           let uniqueRecipes;
 
           if (dayObj[meal]) {
@@ -329,7 +333,7 @@ const RenderMealPlanPage = () => {
               const tempRecipeObj = tempRecipes?.find(
                 (tR) => tR.originalRecipe === recipe._id
               );
-              // console.log({ tempRecipeObj });
+              console.log({ tempRecipeObj });
 
               setActiveMealPlan(selectedMealPlan);
               setActiveRecipe(
@@ -337,6 +341,11 @@ const RenderMealPlanPage = () => {
                   ? tempRecipeObj
                   : { name: recipe.name, originalRecipe: recipe._id }
               );
+              setActiveRecipeDetails({
+                mealType: meal,
+                mealCounts: selectedMealPlan.days[dayIndex][meal].mealCounts,
+                season: selectedMealPlan.days[dayIndex].season,
+              });
               setActiveRecipeType(
                 tempRecipeObj ? "tempRecipe" : "originalRecipe"
               );
@@ -380,6 +389,7 @@ const RenderMealPlanPage = () => {
             recipe={activeRecipe}
             recipeType={activeRecipeType}
             onUpdateRecipe={handleRecipeUpdate}
+            activeRecipeDetails={activeRecipeDetails}
           />
         </Modal>
       )}
